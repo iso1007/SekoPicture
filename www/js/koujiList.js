@@ -789,8 +789,8 @@ function picturePreview() {
   $('#koujiviewModal').hide();
   $('#picturePreviewModal').show();
 
-  var scale = 1;
-  var prevScale = 1;
+  var scale = 0.9;
+  var prevScale = 0.9;
   var dragFlg = false;
 
   var marginPosX = 0;
@@ -806,7 +806,7 @@ function picturePreview() {
 
   // 2本指でピンチ動作を行なった場合は拡大・縮小
   $('#pictureView').on('transform', function(event) {
-    scale = Math.max(0.5, Math.min(prevScale * event.originalEvent.gesture.scale, 3));
+    scale = Math.max(0.9, Math.min(prevScale * event.originalEvent.gesture.scale, 4));
     $('#pictureView').css({'transform': 'translate(' + resizeLeft + 'px, ' + resizeTop + 'px) scale(' + scale + ',' + scale +')'});
   });
 

@@ -143,12 +143,12 @@
   <!--写真閲覧用ダイアログ-->
   <ons-modal id="picturePreviewModal">
     <ons-list style="background-color:gray;width:100%;height:100%">
-      <ons-button modifier="quiet" onclick="picturePreviewClose()">
-        <p>閉じる</p>
+      <ons-button modifier="quiet" onclick="picturePreviewClose()" style="z-index: 3000">
+        <p style="color:white">閉じる</p>
       </ons-button>
       <ons-gesture-detector>
-        <div border="1"  id="pictureViewDiv">
-          <img id="pictureView" style="width:100%;height:auto;">
+        <div id="pictureViewDiv">
+          <img id="pictureView" border="1" style="width:100%;height:auto;">
         </div>
       </ons-gesture-detector>
     </ons-list>  
