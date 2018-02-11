@@ -117,7 +117,7 @@
  
 2018/02/09
 ※○ 写真のプレビュー画面で、写真をタップす拡大・縮小表示が可能なウィンドウを表示するようにした
-     関連モジュール:koujiListItem.html,koujilist.js[koujiPictureView(),picturePreview()]
+     関連モジュール:koujiListItem.html,koujilist.js[koujiPictureView(),picturePreview(),picturePreviewClose()]
 
 
 
