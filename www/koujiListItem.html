@@ -1,0 +1,172 @@
+<ons-page id="koujiListItem">
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" onclick="koujiPictureListTokoujiList()">
+      <ons-button id="pop-button" modifier="quiet" style='color: white'>
+      <ons-icon icon="fa-angle-double-left" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+    
+    <div class="center" style="color: white;text-align:center">工事写真一覧</div>
+    
+    <div class="right" onclick="koujiListToCamera()">
+      <ons-button id="pop-camera" modifier="quiet" style='margin-top:5px;color: white'>
+      <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  </ons-toolbar>
+  
+  <ons-list id="koujiPictureListHeader" style="width:100%;height:100%" class="content_back_color">
+    <ons-list-header modifier="longdivider">
+      <ons-row>
+        <ons-col width="100%" id="koujiListItemName" style="color: blue"></ons-col>
+        <ons-col width="0%" id="koujiListCountId" style="color: whitesmoke"></ons-col>
+      </ons-row>
+    </ons-list-header>
+
+    <ons-list id="koujiPictureList" style="width:100%;height:95%;overflow:scroll" class="content_back_color">
+    </ons-list>
+    
+    <div class="tabbar">
+      <label class="tabbar__item">
+        <input type="radio" id="pictureListButton-cloud" onclick="koujiFilesToolMenu(this)" checked>
+        <button class="tabbar__button">
+          <i class="tabbar__icon fa fa-cloud"></i>
+          <div class="tabbar__label">クラウド</div>
+        </button>
+      </label>
+
+      <label class="tabbar__item">
+        <input type="radio" id="pictureListButton-sort" onclick="koujiFilesToolMenu(this)" checked>
+        <button class="tabbar__button">
+          <i class="tabbar__icon fa fa-sort-alpha-asc"></i>
+          <div class="tabbar__label">並べ替え</div>
+        </button>
+      </label>
+
+      <label class="tabbar__item">
+        <input type="radio" id="pictureListButton-display" onclick="koujiFilesToolMenu(this)" disabled="true">
+        <button class="tabbar__button">
+          <i class="tabbar__icon fa fa-th-large"></i>
+          <div class="tabbar__label">表示切替</div>
+        </button>
+      </label>
+    </div>
+  </ons-list>
+  
+  <ons-modal id="koujiviewModal">
+    <ons-list modifier="inset" style="background-color:lightgray;">
+      <ons-list-item modifier="nodivider">
+        <ons-row> 
+          <ons-col width="25%" style="color:blue;">撮影日時:</ons-col>
+          <ons-col width="45%" align="left" id="koujiviewDatetime" style="color:blue;"></ons-col>
+          <ons-col width="30%" align="right" id="koujiviewName" style="color:darkgray"></ons-col>
+          <ons-col width="0%" id="koujiviewUpload" style="visibility:hidden"></ons-col>
+        </ons-row>
+        <ons-row>
+          <div align="center" style="width:98%">
+            <!--<img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;">-->    
+            <img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;" onclick="picturePreview()">
+          </div>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">工種:</ons-col>  
+          <ons-col width="80%" id="koujiviewKousyu"></ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">測点:</ons-col>  
+          <ons-col width="80%" id="koujiviewSokuten"></ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px black;">
+          <ons-col width="15%">日付:</ons-col>  
+          <ons-col width="80%" id="koujiviewHiduke"></ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">備考:</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou0">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">　</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou1">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">　</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou2">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">　</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou3">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">　</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou4">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        <ons-row style="border-bottom:dotted 1px white;">
+          <ons-col width="15%">　</ons-col>  
+          <ons-col width="80%" id="koujiviewBikou5">　</ons-col>  
+          <ons-col width=" 5%"></ons-col>
+        </ons-row>
+        
+        <ons-row>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="koujiPictureDelete()">
+              <p class="iconbutton_text">削除</p>
+              <!--<ons-icon class="iconbutton_icon" icon="ion-trash-a" size="30px" fixed-width="true"></ons-icon>-->
+              <ons-icon class="iconbutton_icon" icon="ion-trash-a" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>
+          <ons-col width="30%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="koujiPictureViewClose()">
+              <p class="iconbutton_text">黒板編集</p>
+              <ons-icon class="iconbutton_icon" icon="fa-list-alt" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>
+          <ons-col width="10%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="koujiPictureViewClose()">
+              <p class="iconbutton_text">戻る</p>
+              <ons-icon class="iconbutton_icon" icon="ion-reply" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+    </ons-list>
+  </ons-modal>
+  
+  <!-- 2018/02/09 ADD ↓------->
+  <!--写真閲覧用ダイアログ-->
+  <ons-modal id="picturePreviewModal">
+    <ons-list style="background-color:gray;width:100%;height:100%">
+      <ons-button modifier="quiet" onclick="picturePreviewClose()">
+        <p>閉じる</p>
+      </ons-button>
+      <ons-gesture-detector>
+        <div border="1"  id="pictureViewDiv">
+          <img id="pictureView" style="width:100%;height:auto;">
+        </div>
+      </ons-gesture-detector>
+    </ons-list>  
+  </ons-modal>
+  <!-- 2018/02/09 ADD ↑------->
+
+  <ons-alert-dialog id="upload-dlg" animation="default" cancelable>
+    <div class="alert-dialog-title">クラウドへアップロード</div>
+    <div class="alert-dialog-content">
+      <p id="upload-dlg-mesage"></p>
+      <ons-progress-bar id="upload-dlg-progress" value="0"></ons-progress-bar>
+      <p id="upload-dlg-counter"></p>
+    </div>
+    
+    <div class="alert-dialog-footer" id="upload-dlg-footer">
+      <!--<button class="alert-dialog-button" id="upload-dlg-button" onclick="$('#upload-dlg').hide()">OK</button>-->
+      <button class="alert-dialog-button" id="upload-dlg-button" onclick="pictureUpload.uploadDlgHide()">OK</button>
+    </div>
+  </ons-alert-dialog>
+  
+</ons-page>

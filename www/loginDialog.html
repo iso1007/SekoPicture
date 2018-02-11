@@ -1,0 +1,33 @@
+<ons-dialog var="loginDialog" id="loginDialog" modifier='material'>
+  <ons-toolbar inline> 
+    <div class="center">ログイン</div>
+  </ons-toolbar>
+  
+  <div style="margin: 0 10px">
+    <ons-row> 
+      <p style="font-size: 70%; height:10px">ログインユーザー:</p>
+      <input type="email" id="email-input" placeholder="example@mail.co.jp" class="" style="width: 100%;font-size: 100%"></input>
+    </ons-row>
+    <p></p>
+    <ons-row id="pass-input">
+      <p style="font-size: 70%; height:10px">パスワード:</p>
+      <input type="password" id="pass-input" placeholder="パスワード" class="" style="width: 100%;font-size: 100%" />
+    </ons-row>
+    <p></p>
+    <ons-row id="passconf-input">
+      <p style="font-size: 70%; height:10px">確認パスワード:</p>
+      <input type="password" id="passconf-input" placeholder="パスワード" class="" style="width: 100%;font-size: 100%" />
+    </ons-row>
+    <p></p>
+    <ons-row>
+      <ons-col align="right">
+        <ons-button onclick="firebaseAuth.loginChecked()">使用する</ons-button>
+      </ons-col>
+    </ons-row>  
+    <ons-row>
+      <ons-col width="65%">
+        <ons-button modifier="quiet" id="logoff" onclick="firebaseAuth.logoffLinkClick()" style="font-size: 60%"></ons-button>
+      </ons-col>
+    </ons-row>  
+  </div>
+</ons-dialog>

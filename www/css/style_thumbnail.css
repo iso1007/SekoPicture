@@ -1,0 +1,25 @@
+/* サムネイル(小) */
+.thumbnail-s {
+  /*padding: 2px 2px 2% 2%;*/
+  padding: 0px 0px 0% 0%;
+  /*border: 1px #000 dotted;*/
+  border: 1px #000 double;  
+  /*margin: 2px;*/
+  margin: 0px;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+/* サムネイル(中) */
+/*.thumbnail-m {
+  padding: 0px 0px 0px 0px;
+  width: 95%;
+  height: auto;
+  height: 150px;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+/**/
+

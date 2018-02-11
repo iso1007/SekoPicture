@@ -1,0 +1,67 @@
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+  background-color: transparent;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* 写真エリアの枠定義 */
+#pic-box-border {
+  padding: 0;
+  background-color: transparent;
+  border: solid 5px #202020;
+}
+
+/* 写真エリアのグリッド線定義 */
+#vertical-grid-border1, #horizon-grid-border1,
+#vertical-grid-border2, #horizon-grid-border2 {
+  z-index: 990;
+  padding: 0;
+  background-color: transparent;
+  border: dotted 1px palegoldenrod;
+}
+#vertical-grid-border {
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+}  
+#horizon-grid-border {
+  border-left-width: 0px;
+  border-right-width: 0px;
+}
+#previewMessage,#selfTimerMessage {
+  background-color: transparent;
+  position: absolute;
+  z-index: 4000;
+  color: white;
+  font-family: sans-serif;
+}
+
+#setNavigator, #topNavigator, #lstNavigator, #chkNavigator {
+  z-index: 2000;
+}
+
+#tool-button1,#tool-button2,#setSelfTimer,#setFlashMode,#setGridBroder,#switchCamera,
+#controlPanel,#koujiListDisplay,#pictureCheckList,#cameraTakeButton {
+  z-index: 1500;
+}
+
+/*黒板イメージ*/
+#kokuban {
+  z-index: 999;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+#preview {
+  z-index: 3000;
+}

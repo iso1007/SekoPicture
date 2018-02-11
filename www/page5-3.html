@@ -1,0 +1,210 @@
+<ons-page>
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" onclick="setNavigator.popPage()">
+      <ons-button id="pop-button" modifier="quiet" style='margin-top:0px;color: white'>
+        <ons-icon icon="fa-angle-double-left" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+    
+    <div class="center" style="color: white;text-align:center">黒板項目保守守</div>
+    
+    <div class="right" onclick="app.cameraButtonClick()">
+      <ons-button id="pop-camera" modifier="quiet" style='margin-top:5px;color: white'>
+        <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  </ons-toolbar>
+
+  <div>
+    <ons-list modifier="inset" class="content_back_color">
+      <ons-list-header modifier='longdivider'>
+        <ons-row>
+          <ons-col width="10%"><a class="fa fa-binoculars" style="color: blue"></a></ons-col>
+          <ons-col>備考</ons-col>
+        </ons-row>  
+      </ons-list-header>
+      
+      <ons-list-item tappable modifier='longdivider'>
+        <ons-row>
+          <ons-col width="10%">
+            <ons-icon icon="fa-plus-square-o" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="80%">共通項目
+          </ons-col>  
+          <ons-col width="10%">
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+      
+      <ons-list-item tappable modifier='longdivider'>
+        <ons-row>
+          <ons-col width="10%">
+            <ons-icon icon="fa-minus-square-o" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="80%">施工前／準備
+          </ons-col>  
+          <ons-col width="10%">
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+    
+      <ons-list-item tappable modifier='longdivider'>
+        <ons-row>
+          <ons-col width="05%">
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-minus-square-o" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="75%">使用機材搬入
+          </ons-col>  
+          <ons-col width="10%">
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+    
+      <ons-list-item tappable class="item1-sub2-sub" onclick="document.getElementById('BikouMainte').show()">
+        <ons-row>
+          <ons-col width="10%">
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-caret-right" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="70%">施工機械搬入<br>改良機(DHJ-12)
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-trash-o" size="25px" fixed-width="true" style="color: red"></ons-icon>
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+      
+      <ons-list-item tappable class="item1-sub2-sub">
+        <ons-row>
+          <ons-col width="10%">
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-caret-right" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="70%">施工機械搬入<br>改良機(GI-50C)
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-trash-o" size="25px" fixed-width="true" style="color: red"></ons-icon>
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+    
+      <ons-list-item tappable class="item1-sub2-sub">
+        <ons-row>
+          <ons-col width="10%">
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-caret-right" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="70%">施工機械搬入<br>バックホウ(RX-505)
+          </ons-col>  
+          <ons-col width="10%">
+            <ons-icon icon="fa-trash-o" size="25px" fixed-width="true" style="color: red"></ons-icon>
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+      
+      <ons-list-item tappable modifier='longdivider'>
+        <ons-row>
+          <ons-col width="10%">
+            <ons-icon icon="fa-plus-square-o" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="80%">施工状況
+          </ons-col>  
+          <ons-col width="10%">
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+      
+      <ons-list-item tappable modifier='longdivider'>
+        <ons-row>
+          <ons-col width="10%">
+            <ons-icon icon="fa-plus-square-o" size="25px" fixed-width="true" style="color: green"></ons-icon>
+          </ons-col>  
+          <ons-col width="80%">施工後作業
+          </ons-col>  
+          <ons-col width="10%">
+          </ons-col>
+        </ons-row>  
+      </ons-list-item>
+      
+    </ons-list>
+  </div>
+  
+  <ons-speed-dial id="speed-dlg" position="bottom right" direction="left">
+    <ons-fab>
+      <ons-icon icon="fa-wrench" onclick="document.getElementById('speed-dlg').showItems()"></ons-icon>
+    </ons-fab>
+    <ons-speed-dial-item>
+      <ons-icon icon="fa-sort" onclick="document.getElementById('speed-dlg').hideItems()"></ons-icon>
+    </ons-speed-dial-item>
+    <ons-speed-dial-item>
+      <ons-icon icon="fa-plus" onclick="document.getElementById('speed-dlg').hideItems()"></ons-icon>
+    </ons-speed-dial-item>
+    <ons-speed-dial-item>
+      <ons-icon icon="fa-minus" onclick="document.getElementById('speed-dlg').hideItems()"></ons-icon>
+    </ons-speed-dial-item>
+  </ons-speed-dial>
+
+
+  <ons-modal id="BikouMainte">
+    <br />    
+    <ons-list modifier="inset" style="background-color:lightgray;">
+      <ons-list-item modifier="nodivider">
+        <ons-row>
+          <ons-col style="font-size:50%">備考＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <ons-col>
+            <textarea class="textarea textarea--transparent" id="KojiName"
+            style="width:100%;height:100px;background-color:white;">BM･GL確認
+ GL=BM^^^^^㎜</textarea>
+          </ons-col>  
+        </ons-row>
+
+        <ons-row>
+          <ons-col style="font-size:50%">撮影枚数＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <ons-col width="15%">
+            <ons-select id="Maisuu" style="width:100%;background-color:white;">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </ons-select>
+          </ons-col>
+        </ons-row>
+
+        <hr width="98%">
+        
+        <ons-row>
+          <ons-col width="60%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="document.getElementById('BikouMainte').hide()">
+              <p class="iconbutton_text">戻る</p>
+              <ons-icon class="iconbutton_icon" icon="ion-reply" size="30px" fixed-width="true"></ons-icon>
+          </ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="document.getElementById('BikouMainte').hide()">
+              <p class="iconbutton_text">保存</p>
+              <ons-icon class="iconbutton_icon" icon="ion-archive" size="30px" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>    
+        </ons-row>
+        
+      </ons-list-item>
+    </ons-list>
+  </ons-modal>
+
+</ons-page>
+
+
+
+
+
+
+

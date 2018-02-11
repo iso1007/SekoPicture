@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="components/monaca-onsenui/js/onsenui.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="components/monaca-onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="components/monaca-onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!--<link rel="stylesheet" href="css/style_size.css">-->
+  <link rel="stylesheet" href="css/style_backcolor.css">
+  <link rel="stylesheet" href="css/style_thumbnail.css">
+  <link rel="stylesheet" href="css/style_iconbutton.css">
+  <link rel="stylesheet" href="css/style_popover.css">
+</head>
+<body>
+  <!--機能メニュー画面 -->
+  <ons-navigator id="setNavigator" var="setNavigator" page="confMenu.html" style="visibility:hidden">
+  </ons-navigator>
+  
+  <!--黒板入力メニュー画面 -->
+  <ons-navigator id="topNavigator" var="topNavigator" page="setKokuban.html" style="visibility:hidden">
+  </ons-navigator>
+  
+  <!--工事写真リスト画面 -->
+  <ons-navigator id="lstNavigator" var="lstNavigator" page="koujiList.html" style="visibility:hidden">
+  </ons-navigator>
+  
+  <!--撮影リスト画面 -->
+  <ons-navigator id="chkNavigator" var="chkNavigator" page="checkPicture.html" style="visibility:hidden">
+  </ons-navigator>
+  
+  <!--起動時のスプラッシュ表示 -->
+  <ons-modal id="splashModal">
+    <div style="margin: auto 15%">
+      <ons-icon icon="ion-load-c" size="5x" spin="true"></ons-icon>
+      <br>
+      <br>しばらくお待ちください。
+    </div>
+  </ons-modal>
+
+  <!--カメラ画面  -->
+  <div id="camera" style="visibility:hidden">
+    <!--機能ボタン-->
+    <div id="tool-button1">
+      <ons-button class="cameraCtrl" id="setSelfTimer"  modifier="outline" onclick="app.setSelfTimerClick()">
+        <ons-icon icon="ion-clock" rotate="0" size="40px"></ons-icon>
+        <span class="notification" id="selfTimerTime" style=""></span>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="setFlashMode"  modifier="outline" onclick="app.setFlashModeClick()">
+        <ons-icon icon="ion-flash" rotate="0" size="40px"></ons-icon>
+        <span id="setFlashType" style=""></span>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="setGridBroder" modifier="outline" onclick="app.setGridBroderClick()">
+        <ons-icon icon="ion-ios-grid-view-outline" rotate="0" size="40px"></ons-icon>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="switchCamera"  modifier="outline" onclick="app.switchCameraClick()">
+        <ons-icon icon="ion-ios-reverse-camera-outline" rotate="0" size="40px"></ons-icon>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="controlPanel"  modifier="outline" onclick="app.controlPanelClick()">
+        <ons-icon icon="ion-gear-a" rotate="0" size="40px"></ons-icon>
+      </ons-button>
+    </div>
+    <!--シャッターボタン-->
+    <div id="tool-button2">
+      <ons-button class="cameraCtrl" id="koujiListDisplay" modifier="outline" onclick="app.koujiListDisplayClick()">
+        <ons-icon icon="fa-picture-o" rotate="0" size="35px"></ons-icon>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="cameraTakeButton" modifier="outline" onclick="app.cameraTakeButtonClick()">
+        <ons-icon icon="fa-camera" rotate="0" size="35px"></ons-icon>
+      </ons-button>
+      <ons-button class="cameraCtrl" id="pictureCheckList" modifier="outline" onclick="app.pictureCheckListClick()">
+        <ons-icon icon="fa-check-square-o" rotate="0" size="35px"></ons-icon>
+      </ons-button>
+    </div>
+
+    <!--カメラ表示-->
+    <ons-gesture-detector class="zoom">
+      <div id="pic-box-border">
+        <div id="pic-box" style="height:100%; width:100%">
+        </div>
+      </div> 
+    </ons-gesture-detector>
+    <!--グリッド表示-->
+    <div id="grid-border">
+      <div id="horizon-grid-border1"></div>
+      <div id="horizon-grid-border2"></div>
+      <div id="vertical-grid-border1"></div> 
+      <div id="vertical-grid-border2"></div> 
+    </div> 
+    
+    <!--黒板表示-->
+    <ons-gesture-detector class="kokuban">
+      <canvas id="kokuban" onclick="app.kokubanClick()"></canvas>
+    </ons-gesture-detector>
+    
+    <!--プレビュー縮小表示-->
+    <div>
+      <img id="preview" onclick="app.takePicturePreviewhide()">
+    </div>
+    <div id="previewMessage" onclick="app.takePicturePreviewhide()">
+      <p>プレビュー表示中</p>
+    </div>
+    <div id="selfTimerMessage">
+      <p id="selfTimerCounter"></p>
+    </div>
+  </div>  
+
+  <script type="text/javascript" src="../plugins/cordova-plugin-camera-preview/www/CameraPreview.js"></script>
+  <script type="text/javascript" src="js/function.js"></script>
+  <script type="text/javascript" src="js/parameter.js"></script>
+  <script type="text/javascript" src="js/firebaseAuth.js"></script>
+  <script type="text/javascript" src="js/firebaseDatabase.js"></script>
+  <script type="text/javascript" src="js/firebaseStorage.js"></script>
+  <script type="text/javascript" src="js/localStorage.js"></script>
+  <script type="text/javascript" src="js/kokuban.js"></script>
+  <script type="text/javascript" src="js/setKokuban.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/confMenu.js"></script>
+  <script type="text/javascript" src="js/confKokuban.js"></script>
+  <script type="text/javascript" src="js/confPicture.js"></script>
+  <script type="text/javascript" src="js/checkPicture.js"></script>
+  <script type="text/javascript" src="js/koujiList.js"></script>
+  <script type="text/javascript" src="js/pictureUpload.js"></script>
+  <!-- 2018/02/07 ADD -->  
+  <script type="text/javascript" src="js/piexif.js"></script>
+</body>
+</html>

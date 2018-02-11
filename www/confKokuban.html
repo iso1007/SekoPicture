@@ -1,0 +1,154 @@
+<ons-page id="confkokuban">
+  <ons-toolbar class="toolbar_back_color">
+    <div class="left" onclick="setNavigator.popPage()">
+      <ons-button id="pop-button" modifier="quiet" style="margin-top:0px;color: white">
+        <ons-icon icon="fa-angle-double-left" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+    
+    <div class="center" style="color: white;text-align:center">黒板の設定</div>
+    
+    <div class="right" onclick="app.cameraButtonClick()">
+      <ons-button id="pop-camera" modifier="quiet" style="margin-top:5px;color: white">
+        <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  </ons-toolbar>
+  
+  <div>
+    <ons-list id='confKokubanItem' modifier="inset" class="content_back_color">
+    
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <div class="left"><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>黒板の表示</div>
+        </ons-row>
+        
+        <ons-row>
+          <div class="segment" style="width: 100%; margin: 10px">
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-showflag-on" name="kokuban-showflag">
+              <button class="segment__button">表示</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-showflag-off" name="kokuban-showflag">
+              <button class="segment__button">非表示</button>
+            </div>
+          </div>
+        </ons-row>
+        
+      </ons-list-item>
+      
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <div class="left"><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>黒板のサイズ</div>
+        </ons-row>
+        
+        <ons-row>
+          <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-size-minimum" name="kokuban-size">
+              <button class="segment__button">最小</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-size-small" name="kokuban-size">
+              <button class="segment__button">小</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-size-medium" name="kokuban-size">
+              <button class="segment__button">中</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-size-large" name="kokuban-size">
+              <button class="segment__button">大</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-size-free" name="kokuban-size">
+              <button class="segment__button">自由</button>
+            </div>
+          </div>
+        </ons-row>
+      </ons-list-item>
+      
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <ons-col class="left"><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>黒板の色</ons-col>
+        </ons-row>
+
+        <ons-row>
+          <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-color-w" name="kokuban-color">
+              <button class="segment__button">白</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-color-g" name="kokuban-color">
+              <button class="segment__button">緑</button>
+            </div>
+            <div class="segment__item">
+              <input type="radio" class="segment__input" id="kokuban-color-dg" name="kokuban-color">
+              <button class="segment__button">深緑</button>
+            </div>
+          </div>
+        </ons-row>
+      </ons-list-item>
+      
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <ons-col><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>使用する黒板</ons-col>
+        </ons-row>  
+        <ons-row>
+          <ons-col width="50%">
+            <!--<img id="kokuban-image" border="0" width="120px" onclick="kokubanSelectModal()">-->
+            <img id="kokuban-image" border="0" width="90%" onclick="kokubanSelectModal()">
+          </ons-col>  
+          <ons-col width="50%">
+            <ons-list modifier="inset" class="thumbnail-s">
+              <ons-list-item modifier="tappable" class="kokuban-itemset">
+                <div style="width:45%;">工事名</div>
+                <div style="width:10%;"><a class="fa fa-arrow-right" style="color: cornflowerblue"></a></div>
+                <div style="width:45%;">工事名</div>
+              </ons-list-item>
+              <ons-list-item modifier="tappable" class="kokuban-itemset" >
+                <div style="width:45%;">工　種</div>
+                <div style="width:10%;"><a class="fa fa-arrow-right" style="color: cornflowerblue"></a></div>
+                <div style="width:45%;">工　種</div>
+              </ons-list-item>
+              <ons-list-item modifier="tappable" class="kokuban-itemset">
+                <div style="width:45%;">測　点</div>
+                <div style="width:10%;"><a class="fa fa-arrow-right" style="color: cornflowerblue"></a></div>
+                <div style="width:45%;">測　点</div>
+              </ons-list-item>
+              <ons-list-item modifier="tappable" class="kokuban-itemset">
+                <div style="width:45%;">日　付</div>
+                <div style="width:10%;"><a class="fa fa-arrow-right" style="color: cornflowerblue"></a></div>
+                <div style="width:45%;">日　付</div>
+              </ons-list-item>
+            </ons-list>
+
+          </ons-col>  
+        </ons-row>  
+      </ons-list-item>
+    </ons-list>
+  　<br/>
+  </div>
+  
+  <ons-modal id="kokubanViewModal">
+    <ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">
+      <ons-list-header>黒板選択</ons-list-header>
+      
+      <ons-list id="kokubanSelected" style="width:100%;height:82%;overflow:auto">
+      </ons-list>
+      
+      <ons-list-item> 
+        <ons-row>
+          <ons-col width="80%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="kokubanViewModal.hide()">
+              <p class="iconbutton_text">戻る</p>
+              <ons-icon class="iconbutton_icon" icon="ion-reply" size="30px" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+    </ons-list>
+  </ons-modal>
+  
+</ons-page>

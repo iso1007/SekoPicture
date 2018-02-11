@@ -1,0 +1,28 @@
+/*ポップオーバーメニューの表示スタイル*/
+.menu-item-col {
+  text-align: center;
+  padding: 12px 0 12px 0;
+}
+
+.menu-item-col:not(:first-child) {
+  border-left: 1px solid #eee;
+}
+
+.menu-item-col:active {
+  background-color: #eee;
+}
+
+.menu-item-label {
+  font-size: 11px;
+  color: #333;
+  margin-top: 3px;
+}
+
+.menu-item-icon {
+  color: #999;
+  font-size: 38px;
+}
+
+.popover__content {
+  min-height: 0;
+}

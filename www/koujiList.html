@@ -1,0 +1,31 @@
+<ons-page id="koujiList">
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="center" style="color: white;text-align:center">工事写真一覧</div>
+    
+    <div class="right" onclick="koujiListToCamera()">
+      <ons-button id="pop-camera" modifier="quiet" style='margin-top:5px;color: white'>
+      <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  </ons-toolbar>
+
+  <ons-list id="koujiListBoxHeader" style="width:100%;height:100%" class="content_back_color">
+    <ons-list-header modifier="longdivider">
+      <ons-row>
+        <ons-col width="10%"><a class="fa fa-clone" style="color: blue"></a></ons-col>
+        <ons-col width="60%">工事一覧</ons-col>
+        <ons-col width="30%" id="koujiListCount"></ons-col>
+      </ons-row>
+    </ons-list-header>
+
+    <ons-list id="koujiListBox" style="width:100%;height:97%;overflow:scroll" class="content_back_color">
+    </ons-list>
+  </ons-list>
+    
+</ons-page>
+
+
+
+
+
+
+

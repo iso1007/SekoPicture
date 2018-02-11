@@ -1,0 +1,74 @@
+.iconbutton_text {
+  position: absolute;
+  text-align:center;
+  margin-top:10px;
+  font-size:70%;
+  font-weight: bold;
+}
+
+.iconbutton_icon {
+  color: darkorange;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+}
+
+/*カメラ画面の機能ボタン*/
+ons-button.cameraCtrl {
+  padding-top: 3%;
+  color: #1c4466;
+  text-align: center;
+  background-image: -webkit-linear-gradient(#dddddd 0%, #bbbbbb 100%);
+  background-image: linear-gradient(#dddddd 0%, #bbbbbb 100%);
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+/*メインメニュー画面の機能ボタン*/
+ons-col.functionButton {
+  padding-top: 5%;
+  color: #1c4466;
+  text-align: center;
+  background-image: -webkit-linear-gradient(#dddddd 0%, #bbbbbb 100%);
+  background-image: linear-gradient(#dddddd 0%, #bbbbbb 100%);
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+p.menubutton_text {
+  color:#1c4466;
+  margin-top:-5px;
+}
+
+ons-icon.menubutton_icon {
+  color: #1c4466;
+}
+
+/*黒板備考欄の数字項目入力支援*/
+.keybord-num-button,.keybord-etc-button {
+  width: 65px;
+  height:65px;
+  font-size: 45px;
+  text-align: center;
+  vertical-align: middle;
+  margin: 5px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  background-color: gray;
+  border 1px solid white;
+  box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+  -webkit-box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+}
+
+.keybord-num-button {
+  padding: 17px;
+}
+
+.keybord-etc-button {
+  padding: 13px;
+}
+
+

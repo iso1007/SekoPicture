@@ -1,0 +1,59 @@
+<ons-page>
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" onclick="setNavigator.popPage()">
+      <ons-button id="pop-button" modifier="quiet" style='margin-top:0px;color: white'>
+        <ons-icon icon="fa-angle-double-left" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+    
+    <div class="center" style="color: white;text-align:center">黒板項目保守</div>
+    
+    <div class="right" onclick="app.cameraButtonClick()">
+      <ons-button id="pop-camera" modifier="quiet" style='margin-top:5px;color: white'>
+        <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  </ons-toolbar>
+
+  <div>
+    <ons-list modifier="inset" class="content_back_color">
+      <ons-list-header>
+        <ons-row>
+          <ons-col width="10%"><a class="fa fa-wrench" style="color: blue"></a></ons-col>
+          <ons-col>保守項目</ons-col>
+        </ons-row>  
+      </ons-list-header>
+      <ons-list-item modifier="chevron" tappable id="pop_KousyuMaint" onclick="setNavigator.pushPage('page5-1.html')">
+        <ons-col width="10%"><a class="fa fa-gavel" style="color: blue"></a></ons-col>
+        <ons-col>工種</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable id="pop_SokutenMaint" onclick="setNavigator.pushPage('page5-2.html')">
+        <ons-col width="10%"><a class="fa fa-binoculars" style="color: blue"></a></ons-col>
+        <ons-col>測点</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable id="pop_BikouMaint" onclick="setNavigator.pushPage('page5-3.html')">
+        <ons-col width="10%"><a class="fa fa-file-text-o" style="color: blue"></a></ons-col>
+        <ons-col>備考</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable id="pop_CorpMainte" onclick="setNavigator.pushPage('page5-4.html')">
+        <ons-col width="10%"><a class="fa fa-building-o" style="color: blue"></a></ons-col>
+        <ons-col>会社名</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable id="pop_DateMainte" onclick="setNavigator.pushPage('page5-5.html')">
+        <ons-col width="10%"><a class="fa fa-calendar" style="color: blue"></a></ons-col>
+        <ons-col>日付</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable>
+        <ons-col width="10%"><a class="fa fa-paperclip" style="color: blue"></a></ons-col>
+        <ons-col>予備①</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable>
+        <ons-col width="10%"><a class="fa fa-paperclip" style="color: blue"></a></ons-col>
+        <ons-col>予備②</ons-col>  
+      </ons-list-item>
+      <ons-list-item modifier="chevron" tappable>
+        <ons-col width="10%"><a class="fa fa-paperclip" style="color: blue"></a></ons-col>
+        <ons-col>予備③</ons-col>  
+      </ons-list-item>
+    </ons-list>
+  </div>
+
+</ons-page>

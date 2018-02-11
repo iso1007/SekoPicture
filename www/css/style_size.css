@@ -1,0 +1,33 @@
+/* 画面サイズの横幅が374px以下の場合に適用 */
+@media (max-width: 374px) {
+  /*div { font-size: 20px; }*/
+  .iconbutton_icon {
+    size: 100px;
+    color:red;
+  }
+  .iconbutton_text {
+    font-size: 16px;
+  }
+}
+
+/* 画面サイズの横幅が375px～1023pxの場合に適用 */
+@media (min-width: 375px) and (max-width: 767px) {
+  /*div { font-size: 30px; }*/
+  .iconbutton_text {
+    font-size: 20px; /*16px;*/
+  }
+  .iconbutton_icon {
+    size: 70px;
+  }
+}
+
+/* 画面サイズの横幅が10244px以上の場合に適用 */
+@media (min-width: 768px) {
+  /*div { font-size: 70px; }*/
+  .iconbutton_text {
+    font-size: 24px;
+  }
+  .iconbutton_icon {
+    size: 80px;
+  }
+}

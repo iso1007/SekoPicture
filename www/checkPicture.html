@@ -1,0 +1,54 @@
+<ons-page id="checkPicture">
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" id="pictureCheckListName" style="color: white; margin: 0px 30px;" onclick="pictureCheckList.checkListSelectModal()"></div>'+
+    
+    <div class="right" onclick="pictureCheckList.toCamera()">
+      <ons-button id="pop-camera" modifier="quiet" style='margin-top:5px;color: white'>
+        <ons-icon icon="fa-camera" size="30px" fixed-width="true"></ons-icon>
+      </ons-button>
+    </div>
+  </ons-toolbar>
+  
+  <ons-list id="pictureCheckListHeader" style="width:100%;height:100%" class="content_back_color">
+    <ons-list-header modifier="longdivider" height="50px">
+      <ons-row>
+        <ons-col id="pictureCheckKoujimei" style="color: blue;"></ons-col>
+      </ons-row>
+    </ons-list-header>
+    <div class="button-bar" style="width:100%;background-color:white;">
+      <div class="button-bar__item">
+        <button class="button-bar__button" onclick="pictureCheckList.treeOpen()">
+        <ons-icon icon="fa-folder-open-o" fixed-width="true"></ons-icon> 全て開く</button>
+      </div>
+      <div class="button-bar__item">
+        <button class="button-bar__button" onclick="pictureCheckList.treeClose()">
+        <ons-icon icon="fa-folder-o" fixed-width="true"></ons-icon> 全て閉じる</button>
+      </div>
+    </div>
+
+    <ons-list id="pictureCheckList" style="width:100%;height:93%;overflow:scroll" class="content_back_color">
+    </ons-list>
+  </ons-list>
+  
+  <ons-modal id="pictureCheckNameList">
+    <ons-list modifier="inset" class="modal_back_color">
+      <ons-list-header>撮影項目リスト選択</ons-list-header>
+      
+      <ons-list id="pictureCheckListSelected">
+      </ons-list>
+      
+      <ons-list-item> 
+        <ons-row>
+          <ons-col width="80%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="pictureCheckNameList.hide()">
+              <p class="iconbutton_text">戻る</p>
+              <ons-icon class="iconbutton_icon" icon="ion-reply" size="30px" fixed-width="true"></ons-icon>
+            </ons-button>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+    </ons-list>
+  </ons-modal>
+
+</ons-page>
