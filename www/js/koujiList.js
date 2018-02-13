@@ -690,33 +690,32 @@ function koujiPictureView(obj) {
                 // イメージが縦型の場合は表示幅を80%にする
                 var img = new Image();
                 img.src = e.target.result; 
-img.onload = function() {                
-                $("#koujiviewPicture").css({'width':'100%','height':'auto'});
-                // 写真が縦の場合は、横幅を80%にして全体が画面に収まるようにする
-console.log('img.height => '+img.height+'      img.width => '+img.width)                
-                if(img.height>img.width) {
-                  $("#koujiviewPicture").css({'width':'80%','height':'auto'});
-                };
+                img.onload = function() {                
+                  $("#koujiviewPicture").css({'width':'100%','height':'auto'});
+                  // 写真が縦の場合は、横幅を80%にして全体が画面に収まるようにする
+                  if(img.height>img.width) {
+                    $("#koujiviewPicture").css({'width':'80%','height':'auto'});
+                  };
                 
-                // 画面のサイズによってフォントサイズを変える
-                if(displayDeviceSize()==='small') {
-                  $('#koujiviewModal ons-col').css({'font-size':'16px'});
-                  $('#koujiviewModal button').css({'font-size':'16px'});
-                  $('#koujiviewModal ons-icon').attr({'size':'20px'});
-                  $('#koujiviewModal #koujiviewDatetime').css({'font-size':'15px'});
-                  $('#koujiviewModal #koujiviewName').css({'font-size':'5px'});
-                };  
-                if(displayDeviceSize()==='large') {
-                  $('#koujiviewModal ons-col').css({'font-size':'22px'});
-                  $('#koujiviewModal button').css({'font-size':'22px'});
-                  $('#koujiviewModal ons-icon').attr({'size':'26px'});
-                  $('#koujiviewModal #koujiviewDatetime').css({'font-size':'22px'});
-                  $('#koujiviewModal #koujiviewName').css({'font-size':'10px'});
-                };
+                  // 画面のサイズによってフォントサイズを変える
+                  if(displayDeviceSize()==='small') {
+                    $('#koujiviewModal ons-col').css({'font-size':'16px'});
+                    $('#koujiviewModal button').css({'font-size':'16px'});
+                    $('#koujiviewModal ons-icon').attr({'size':'20px'});
+                    $('#koujiviewModal #koujiviewDatetime').css({'font-size':'15px'});
+                    $('#koujiviewModal #koujiviewName').css({'font-size':'5px'});
+                  };  
+                  if(displayDeviceSize()==='large') {
+                    $('#koujiviewModal ons-col').css({'font-size':'22px'});
+                    $('#koujiviewModal button').css({'font-size':'22px'});
+                    $('#koujiviewModal ons-icon').attr({'size':'26px'});
+                    $('#koujiviewModal #koujiviewDatetime').css({'font-size':'22px'});
+                    $('#koujiviewModal #koujiviewName').css({'font-size':'10px'});
+                  };
                 
-                // 詳細画面を表示する
-                $("#koujiviewModal").show();
-};                
+                  // 詳細画面を表示する
+                  $("#koujiviewModal").show();
+                };
               };
             },
             function fail(e) {
