@@ -298,14 +298,14 @@ pictureCheckList.htmlHeader = function(koujiname,listname) {
   
   // 画面のサイズによってフォントサイズを変える
   if(displayDeviceSize()==='small') {
-    $('ons-toolbar ons-icon').attr({'size':'30px'});
+//    $('ons-toolbar ons-icon').attr({'size':'30px'});
     $('#pictureCheckListName').css({'font-size':'16px'});
     $('#pictureCheckListHeader ons-col').css({'font-size':'16px'});
     $('#pictureCheckListHeader button').css({'font-size':'16px'});
     $('#pictureCheckListHeader ons-icon').attr({'size':'20px'});
   };
   if(displayDeviceSize()==='large') {
-    $('ons-toolbar ons-icon').attr({'size':'36px'});
+//    $('ons-toolbar ons-icon').attr({'size':'36px'});
     $('#pictureCheckListName').css({'font-size':'22px'});
     $('#pictureCheckListHeader ons-col').css({'font-size':'22px'});
     $('#pictureCheckListHeader button').css({'font-size':'22px'});

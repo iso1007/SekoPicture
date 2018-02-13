@@ -1,33 +1,108 @@
 /* 画面サイズの横幅が374px以下の場合に適用 */
 @media (max-width: 374px) {
-  /*div { font-size: 20px; }*/
-  .iconbutton_icon {
-    size: 100px;
-    color:red;
+  div#tool-button1 ons-icon
+  {
+    font-size: 33px;
   }
-  .iconbutton_text {
-    font-size: 16px;
+  
+  div#tool-button1 ons-icon.normal-clock
+  {
+    font-size: 33px;
+  }
+  
+  div#tool-button1 ons-icon.small-clock
+  {
+    font-size: 20px;
+  }
+  
+  div#tool-button2 ons-icon
+  {
+    font-size: 28px;
+  }
+  
+  ons-toolbar .toCamera
+  {
+    margin-top: 5px;
+    color: white;
+    font-size: 33px;
+  }
+  
+  #selftimer .menu-item-label,
+  #flashMode .menu-item-label
+  {
+    font-size: 18px;
   }
 }
 
-/* 画面サイズの横幅が375px～1023pxの場合に適用 */
+/* 画面サイズの横幅が375px～767pxの場合に適用 */
 @media (min-width: 375px) and (max-width: 767px) {
-  /*div { font-size: 30px; }*/
-  .iconbutton_text {
-    font-size: 20px; /*16px;*/
+  div#tool-button1 ons-icon
+  {
+    font-size: 33px;
   }
-  .iconbutton_icon {
-    size: 70px;
+  
+  div#tool-button1 ons-icon.normal-clock
+  {
+    font-size: 33px;
+  }
+  
+  div#tool-button1 ons-icon.small-clock
+  {
+    font-size: 20px;
+  }
+  
+  div#tool-button2 ons-icon
+  {
+    font-size: 28px;
+  }
+  
+  ons-toolbar .toCamera
+  {
+    margin-top: 5px;
+    color: white;
+    font-size: 33px;
+  }
+  
+  #selftimer .menu-item-label,
+  #flashMode .menu-item-label
+  {
+    font-size: 18px;
   }
 }
 
-/* 画面サイズの横幅が10244px以上の場合に適用 */
+/* 画面サイズの横幅が768px以上の場合に適用 */
 @media (min-width: 768px) {
-  /*div { font-size: 70px; }*/
-  .iconbutton_text {
-    font-size: 24px;
+  div#tool-button1 ons-icon
+  {
+    font-size: 37px;
   }
-  .iconbutton_icon {
-    size: 80px;
+  
+  div#tool-button1 ons-icon.normal-clock
+  {
+    font-size: 37px;
+  }
+  
+  div#tool-button1 ons-icon.small-clock
+  {
+    font-size: 32px;
+  }
+  
+  div#tool-button2 ons-icon
+  {
+    font-size: 30px;
+  }
+  
+  ons-toolbar .toCamera
+  {
+    margin-top: 5px;
+    color: white;
+    font-size: 37px;
+  } 
+  
+  #selftimer .menu-item-label,
+  #flashMode .menu-item-label
+  {
+    font-size: 20px;
   }
 }
+

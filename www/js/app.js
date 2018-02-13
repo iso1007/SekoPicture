@@ -154,14 +154,14 @@ app.afterLoginInitialize2 = function() {
   if(displayDeviceSize()==='small') {
     $('ons-col').css({'font-size':'16px'});
     $('button').css({'font-size':'16px'});
-    $('ons-toolbar').css({'font-size':'16px'});
-    $('ons-toolbar ons-icon').attr({'size':'30px'});
+//    $('ons-toolbar').css({'font-size':'16px'});
+//    $('ons-toolbar ons-icon').attr({'size':'30px'});
   };
   if(displayDeviceSize()==='large') {
     $('ons-col').css({'font-size':'22px'});
     $('button').css({'font-size':'22px'});
-    $('ons-toolbar').css({'font-size':'22px'});
-    $('ons-toolbar ons-icon').attr({'size':'36px'});
+//    $('ons-toolbar').css({'font-size':'22px'});
+//    $('ons-toolbar ons-icon').attr({'size':'36px'});
   };
   
   // 背景を透過にする
@@ -183,13 +183,13 @@ app.setSelfTimerClick = function() {
   
   menuSelfTimer.show(event);
   
-  // 画面サイズによってフォントサイズを変更
-  if(displayDeviceSize()==='small') {
-    $('#selftimer .menu-item-label').css({'font-size':'16px'});
-  }
-  if(displayDeviceSize()==='large') {
-    $('#selftimer .menu-item-label').css({'font-size':'22px'});
-  }
+//  // 画面サイズによってフォントサイズを変更
+//  if(displayDeviceSize()==='small') {
+//    $('#selftimer .menu-item-label').css({'font-size':'16px'});
+//  }
+//  if(displayDeviceSize()==='large') {
+//    $('#selftimer .menu-item-label').css({'font-size':'22px'});
+//  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -203,10 +203,12 @@ app.setSelfTimer = function(waiteTime) {
   // タイマーをオフにした場合はバッジを消してアイコンサイズを元に戻す
   if(waiteTime==='0') {
     $('#selfTimerTime').text('');
-    $('#setSelfTimer ons-icon').attr('size','40px');
+//    $('#setSelfTimer ons-icon').attr('size','40px');
+      $('#iconSelfTimer').removeClass('small-clock').addClass('normal-clock');
   }else{
     $('#selfTimerTime').text(waiteTime);
-    $('#setSelfTimer ons-icon').attr('size','25px');
+//    $('#setSelfTimer ons-icon').attr('size','25px');
+    $('#iconSelfTimer').removeClass('normal-clock').addClass('small-clock');
   }
   
   // ポップオーバーメニューを消去
@@ -223,12 +225,12 @@ app.setFlashModeClick = function() {
   menuFlashMode.show(event);
   
   // 画面サイズによってフォントサイズを変更
-  if(displayDeviceSize()==='small') {
-    $('#flashMode .menu-item-label').css({'font-size':'16px'});
-  }  
-  if(displayDeviceSize()==='large') {
-    $('#flashMode .menu-item-label').css({'font-size':'22px'});
-  }
+//  if(displayDeviceSize()==='small') {
+//    $('#flashMode .menu-item-label').css({'font-size':'16px'});
+//  }  
+//  if(displayDeviceSize()==='large') {
+//    $('#flashMode .menu-item-label').css({'font-size':'22px'});
+//  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -652,9 +654,11 @@ app.setElementPosition = function() {
 
   // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
   if($('#selfTimerTime').text()==='') {
-    $('#setSelfTimer ons-icon').attr('size','40px');
+//    $('#setSelfTimer ons-icon').attr('size','40px');
+    $('#iconSelfTimer').removeClass('small-clock').addClass('normal-clock');
   }else{  
-    $('#setSelfTimer ons-icon').attr('size','25px');
+//    $('#setSelfTimer ons-icon').attr('size','25px');
+    $('#iconSelfTimer').removeClass('normal-clock').addClass('small-clock');
   }
 
   // 起動時のフラッシュモードを'auto'にする
@@ -834,16 +838,21 @@ app.setOrientationChange = function(acceleration) {
 
     // ボタンアイコンの向きを変える
     if(nowOrientation==='portrait') {
-      $('#tool-button1 ons-icon').attr({'rotate':'0','size':'40px'});
-      $('#tool-button2 ons-icon').attr({'rotate':'0','size':'35px'});
+//      $('#tool-button1 ons-icon').attr({'rotate':'0','size':'40px'});
+//      $('#tool-button2 ons-icon').attr({'rotate':'0','size':'35px'});
+      $('#tool-button1 ons-icon').attr({'rotate':'0'});
+      $('#tool-button2 ons-icon').attr({'rotate':'0'});
     }  
     if(nowOrientation==='landscape') {
-      $('#tool-button1 ons-icon').attr({'rotate':'90','size':'40px'});
-      $('#tool-button2 ons-icon').attr({'rotate':'90','size':'35px'});
+//      $('#tool-button1 ons-icon').attr({'rotate':'90','size':'40px'});
+//      $('#tool-button2 ons-icon').attr({'rotate':'90','size':'35px'});
+      $('#tool-button1 ons-icon').attr({'rotate':'90'});
+      $('#tool-button2 ons-icon').attr({'rotate':'90'});
     }
     // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
     if($('#selfTimerTime').text()!=='') {
-      $('#setSelfTimer ons-icon').attr('size','25px');
+//      $('#setSelfTimer ons-icon').attr('size','25px');
+      $('#iconSelfTimer').removeClass('normal-clock').addClass('small-clock');
     }
     
     devaiceOrientation = nowOrientation;

@@ -140,12 +140,12 @@ function koujiListHeader() {
   
   // 画面のサイズによってフォントサイズを変える
   if(displayDeviceSize()==='small') {
-    $('ons-toolbar ons-icon').attr({'size':'30px'});
+//    $('ons-toolbar ons-icon').attr({'size':'30px'});
     $('ons-toolbar div').css({'font-size':'16px'});
     $('#koujiListBoxHeader ons-col').css({'font-size':'16px'});
   };
   if(displayDeviceSize()==='large') {
-    $('ons-toolbar ons-icon').attr({'size':'36px'});
+//    $('ons-toolbar ons-icon').attr({'size':'36px'});
     $('ons-toolbar div').css({'font-size':'22px'});
     $('#koujiListBoxHeader ons-col').css({'font-size':'22px'});
   };
@@ -309,14 +309,14 @@ function koujiPictureListHeader(koujiname, koujiListCountId) {
 
   // 画面のサイズによってフォントサイズを変える
   if(displayDeviceSize()==='small') {
-    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'30px'});
+//    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'30px'});
     $('#koujiListItem ons-toolbar div').css({'font-size':'16px'});
     $('#koujiPictureListHeader ons-col').css({'font-size':'16px'});
     $('#koujiPictureListHeader button').css({'font-size':'16px'});
     $('#koujiPictureListHeader ons-icon').attr({'size':'20px'});
   };
   if(displayDeviceSize()==='large') {
-    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'36px'});
+//    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'36px'});
     $('#koujiListItem ons-toolbar div').css({'font-size':'22px'});
     $('#koujiPictureListHeader ons-col').css({'font-size':'22px'});
     $('#koujiPictureListHeader button').css({'font-size':'22px'});

@@ -10,14 +10,14 @@ setKokuban.setItemInitialize = function() {
   
   // 画面のサイズによってフォントサイズを変える
   if(displayDeviceSize()==='small') {
-    $('ons-toolbar ons-icon').attr({'size':'30px'});
+//    $('ons-toolbar ons-icon').attr({'size':'30px'});
     $('ons-toolbar div').css({'font-size':'16px'});
     $('#setKokubanItems').css({'font-size':'16px'});
     $('#setKokubanItems ons-icon').attr({'size':'20px'});
     $('#setKokubanItems #setBikouPictureId').css({'font-size':'6px'});
   };
   if(displayDeviceSize()==='large') {
-    $('ons-toolbar ons-icon').attr({'size':'36px'});
+//    $('ons-toolbar ons-icon').attr({'size':'36px'});
     $('ons-toolbar div').css({'font-size':'22px'});
     $('#setKokubanItems').css({'font-size':'22px'});
     $('#setKokubanItems ons-icon').attr({'size':'26px'});
