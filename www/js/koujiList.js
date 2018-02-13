@@ -690,8 +690,10 @@ function koujiPictureView(obj) {
                 // イメージが縦型の場合は表示幅を80%にする
                 var img = new Image();
                 img.src = e.target.result; 
+img.onload = function() {                
                 $("#koujiviewPicture").css({'width':'100%','height':'auto'});
                 // 写真が縦の場合は、横幅を80%にして全体が画面に収まるようにする
+console.log('img.height => '+img.height+'      img.width => '+img.width)                
                 if(img.height>img.width) {
                   $("#koujiviewPicture").css({'width':'80%','height':'auto'});
                 };
@@ -714,6 +716,7 @@ function koujiPictureView(obj) {
                 
                 // 詳細画面を表示する
                 $("#koujiviewModal").show();
+};                
               };
             },
             function fail(e) {
