@@ -96,8 +96,8 @@ app.afterLoginInitialize1 = function() {
   // 起動時のスプラッシュ画面
   $('#splashModal').show();
   // 3秒後に初期処理2を実行し、スプラッシュ画面を消す
+  app.afterLoginInitialize2();
   setTimeout(function() {
-    app.afterLoginInitialize2();
     $('#splashModal').hide();
   }, 1500);
 };
@@ -715,7 +715,6 @@ app.setElementPosition = function() {
 app.setOrientationChange = function(acceleration) {
   // 大量にログが出力されるのでコメントアウト
   _log(1,'function','app.setOrientationChange()');
-  
   // 写真の向き設定を取得
   // ==================================================
   // ==================================================
@@ -728,7 +727,6 @@ app.setOrientationChange = function(acceleration) {
   if(direction !== 'device') {
     orientWatch('stop');
   }
-  
   var accel_x = 0.0;
   var accel_y = 0.0;
   if(direction === 'portrait') {
@@ -813,7 +811,6 @@ app.setOrientationChange = function(acceleration) {
 
     // 黒板の回転
     $('#kokuban').css({'transform': 'translate(' + x + 'px, ' + y + 'px) rotate(' + rot + ')'});
-
     // ボタンアイコンの向きを変える
     if(nowOrientation==='portrait') {
       $('#tool-button1 ons-icon').attr({'rotate':'0'});
