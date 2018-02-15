@@ -1,5 +1,8 @@
 /* 画面サイズの横幅が374px以下の場合に適用 */
-@media (max-width: 374px) {
+/* 中間サイズを分ける場合は以下の記述を追加する
+/*@media (min-width: 375px) and (max-width: 767px) {*/
+@media (max-width: 767px) {
+  /* カメラ画面のボタン */
   div#tool-button1 ons-icon
   {
     font-size: 33px;
@@ -28,52 +31,27 @@
     font-size: 18px;
   }
 
+  /* 撮影後のプレビューメッセージ */
   #previewMessage p
   {
     font-size : 20px;
     margin-top : 200px;
   }
-}
-
-/* 画面サイズの横幅が375px～767pxの場合に適用 */
-@media (min-width: 375px) and (max-width: 767px) {
-  div#tool-button1 ons-icon
-  {
-    font-size: 33px;
-  }
   
-  div#tool-button1 ons-icon.small-clock
+  /* 機能設定メニュー */
+  #pageConfMenu .menubutton_icon
   {
-    font-size: 20px;
+    font-size : 30px;
   }
-  
-  div#tool-button2 ons-icon
+  #pageConfMenu .menubutton_text  
   {
-    font-size: 28px;
-  }
-  
-  ons-toolbar .toCamera
-  {
-    margin-top: 5px;
-    color: white;
-    font-size: 33px;
-  }
-  
-  #selftimer .menu-item-label,
-  #flashMode .menu-item-label
-  {
-    font-size: 18px;
-  }
-
-  #previewMessage p
-  {
-    font-size : 20px;
-    margin-top : 200px;
+    font-size : 18px;
   }
 }
 
 /* 画面サイズの横幅が768px以上の場合に適用 */
 @media (min-width: 768px) {
+  /* カメラ画面のボタン */
   div#tool-button1 ons-icon
   {
     font-size: 37px;
@@ -102,10 +80,21 @@
     font-size: 20px;
   }
   
+  /* 撮影後のプレビューメッセージ */
   #previewMessage p
   {
     font-size : 40px;
     margin-top : 500px;
   }  
+  
+  /* 機能設定メニュー */
+  #pageConfMenu .menubutton_icon
+  {
+    font-size : 40px;
+  }
+  #pageConfMenu .menubutton_text  
+  {
+    font-size : 25px;
+  }
 }
 

@@ -966,12 +966,12 @@ app.cameraTakePicture = function() {
     var out_ctx = out_cvs.getContext('2d');
     out_cvs.width  = takeOption.width; 
     out_cvs.height = takeOption.height; 
-	
+
     // 写真イメージを出力用canvasに描画
     var pic_img = new Image();
     pic_img.src = imageSrcData;
     pic_img.onload = function() {
-      
+
       out_ctx.drawImage(pic_img, 0, 0, out_cvs.width, out_cvs.height);
 
       // 黒板canvasからイメージを作成
@@ -1044,7 +1044,7 @@ app.cameraTakePicture = function() {
           
           // 撮影後のプレビュー表示
           app.takePicturePreview(picImage);
-        });  
+         });  
 
         //======================================================================
         //======================================================================
