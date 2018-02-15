@@ -5,11 +5,6 @@
     font-size: 33px;
   }
   
-  div#tool-button1 ons-icon.normal-clock
-  {
-    font-size: 33px;
-  }
-  
   div#tool-button1 ons-icon.small-clock
   {
     font-size: 20px;
@@ -31,6 +26,12 @@
   #flashMode .menu-item-label
   {
     font-size: 18px;
+  }
+
+  #previewMessage p
+  {
+    font-size : 20px;
+    margin-top : 200px;
   }
 }
 
@@ -41,11 +42,6 @@
     font-size: 33px;
   }
   
-  div#tool-button1 ons-icon.normal-clock
-  {
-    font-size: 33px;
-  }
-  
   div#tool-button1 ons-icon.small-clock
   {
     font-size: 20px;
@@ -68,16 +64,17 @@
   {
     font-size: 18px;
   }
+
+  #previewMessage p
+  {
+    font-size : 20px;
+    margin-top : 200px;
+  }
 }
 
 /* 画面サイズの横幅が768px以上の場合に適用 */
 @media (min-width: 768px) {
   div#tool-button1 ons-icon
-  {
-    font-size: 37px;
-  }
-  
-  div#tool-button1 ons-icon.normal-clock
   {
     font-size: 37px;
   }
@@ -104,5 +101,11 @@
   {
     font-size: 20px;
   }
+  
+  #previewMessage p
+  {
+    font-size : 40px;
+    margin-top : 500px;
+  }  
 }
 

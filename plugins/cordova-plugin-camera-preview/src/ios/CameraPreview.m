@@ -78,23 +78,36 @@
 }
 
 - (void) stopCamera:(CDVInvokedUrlCommand*)command {
-  NSLog(@"stopCamera");
-  CDVPluginResult *pluginResult;
-
-  if(self.sessionManager != nil) {
+    
+    NSLog(@"stopCamera");
+    
     [self.cameraRenderController.view removeFromSuperview];
     [self.cameraRenderController removeFromParentViewController];
-
     self.cameraRenderController = nil;
-    self.sessionManager = nil;
-
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-  }
-  else {
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Camera not started"];
-  }
-
-  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+    [self.commandDelegate runInBackground:^{
+        
+        CDVPluginResult *pluginResult;
+        if(self.sessionManager != nil) {
+            
+            for(AVCaptureInput *input in self.sessionManager.session.inputs) {
+                [self.sessionManager.session removeInput:input];
+            }
+            
+            for(AVCaptureOutput *output in self.sessionManager.session.outputs) {
+                [self.sessionManager.session removeOutput:output];
+            }
+            
+            [self.sessionManager.session stopRunning];
+            self.sessionManager = nil;
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Camera not started"];
+        }
+        
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
 }
 
 - (void) hideCamera:(CDVInvokedUrlCommand*)command {
@@ -275,6 +288,20 @@
   if (self.sessionManager != nil) {
     CGFloat zoom = [self.sessionManager getZoom];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:zoom ];
+  } else {
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Session not started"];
+  }
+
+  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) getHorizontalFOV:(CDVInvokedUrlCommand*)command {
+
+  CDVPluginResult *pluginResult;
+
+  if (self.sessionManager != nil) {
+    float fov = [self.sessionManager getHorizontalFOV];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:fov ];
   } else {
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Session not started"];
   }
@@ -492,15 +519,10 @@
     }
 
     if (command.arguments.count > 1) {
-//        CGFloat width = (CGFloat)[command.arguments[0] floatValue];   // 2017/08/01 del isota
-//        CGFloat height = (CGFloat)[command.arguments[1] floatValue];  // 2017/08/01 del isota
-        CGFloat x = (CGFloat)[command.arguments[0] floatValue];         // 2017/08/01 add isota
-        CGFloat y = (CGFloat)[command.arguments[1] floatValue];         // 2017/08/01 add isota
-        CGFloat width = (CGFloat)[command.arguments[2] floatValue];     // 2017/08/01 add isota
-        CGFloat height = (CGFloat)[command.arguments[3] floatValue];    // 2017/08/01 add isota
+        CGFloat width = (CGFloat)[command.arguments[0] floatValue];
+        CGFloat height = (CGFloat)[command.arguments[1] floatValue];
 
-//        self.cameraRenderController.view.frame = CGRectMake(0, 0, width, height); // 2017/08/01 del isota
-        self.cameraRenderController.view.frame = CGRectMake(x, y, width, height);   // 2017/08/01 add isota
+        self.cameraRenderController.view.frame = CGRectMake(0, 0, width, height);
 
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     } else {

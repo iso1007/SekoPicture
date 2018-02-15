@@ -126,9 +126,7 @@ app.afterLoginInitialize2 = function() {
     menuFlashMode = popover;
   });
   
-  // カメラプレビューの開始
-  app.startCamera(true);
-  // カメラプレビュー画面位置の再定義
+  // カメラプレビュー画面位置の定義とビューの開始
   app.setPictureResize();
   
   // 黒板移動イベントの定義
@@ -838,16 +836,17 @@ app.setOrientationChange = function(acceleration) {
 // app.startCamera()
 // カメラプレビュー表示の定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-app.startCamera = function(toBK) {
+app.startCamera = function(x, y, width, height, toBK) {
   _log(1,'function','app.startCamera()');
   
   var param = {
-    x: 0,                // 仮位置
-    y: 0,                // 仮位置
-    width: 1,            // 仮幅
-    height: 1,           // 仮高さ
+    x: x,                // 仮位置
+    y: y,                // 仮位置
+    width: width,        // 仮幅
+    height: height,      // 仮高さ
     camera: "back",      // 背面カメラ
     tapPhoto: false,     // 
+    tapFocus: false,     // 
     previewDrag: false,  // 撮影イメージのドラッグ移動を不可　　
     toBack: toBK         // カメラ画像をHTMLの背面:false、前面:true　
   };
@@ -871,7 +870,8 @@ app.setPictureResize = function() {
     width: $('#pic-box').width(),
     height: $('#pic-box').height()
   };
-  CameraPreview.setPreviewSize(param);
+  // カメラプレビュー表示
+  app.startCamera(param.x, param.y, param.width, param.height, true);
   
   // 撮影後のプレビュー表示エリアの定義 
   $('#preview').css({
@@ -1116,18 +1116,18 @@ app.previewMessageSetStyle = function() {
     'opacity'    : '0.5',
   });
   
-  if(displayDeviceSize()==='small') {
-    $('#previewMessage p').css({
-      'font-size'  : '20px',
-      'margin-top' : '200px'
-    });
-  }
-  if(displayDeviceSize()==='large') {
-    $('#previewMessage p').css({
-      'font-size'  : '40px',
-      'margin-top' : '500px'
-    });
-  }
+//  if(displayDeviceSize()==='small') {
+//    $('#previewMessage p').css({
+//      'font-size'  : '20px',
+//      'margin-top' : '200px'
+//    });
+//  }
+//  if(displayDeviceSize()==='large') {
+//    $('#previewMessage p').css({
+//      'font-size'  : '40px',
+//      'margin-top' : '500px'
+//    });
+//  }
   // 黒板の向きを取得し、メッセージを表示する向きを設定する
   var transform = getTransformParam($('#kokuban').css('transform'));
   var trns = 'rotate('+transform.rotate+')';

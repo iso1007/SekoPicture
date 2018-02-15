@@ -88,15 +88,16 @@ CameraPreview.getZoom = function(onSuccess, onError) {
     exec(onSuccess, onError, PLUGIN_NAME, "getZoom", []);
 };
 
+CameraPreview.getHorizontalFOV = function(onSuccess, onError) {
+    exec(onSuccess, onError, PLUGIN_NAME, "getHorizontalFOV", []);
+};
+
 CameraPreview.setPreviewSize = function(dimensions, onSuccess, onError) {
     dimensions = dimensions || {};
-    dimensions.x = dimensions.x || 0;  // 2017/08/01 add isota 
-    dimensions.y = dimensions.y || 0;  // 2017/08/01 add isota
     dimensions.width = dimensions.width || window.screen.width;
     dimensions.height = dimensions.height || window.screen.height;
 
-//    exec(onSuccess, onError, PLUGIN_NAME, "setPreviewSize", [dimensions.width, dimensions.height]); // 2017/08/01 del isota
-    exec(onSuccess, onError, PLUGIN_NAME, "setPreviewSize", [dimensions.x, dimensions.y, dimensions.width, dimensions.height]); // 2017/08/01 add isota
+    exec(onSuccess, onError, PLUGIN_NAME, "setPreviewSize", [dimensions.width, dimensions.height]);
 };
 
 CameraPreview.getSupportedPictureSizes = function(onSuccess, onError) {
@@ -105,6 +106,10 @@ CameraPreview.getSupportedPictureSizes = function(onSuccess, onError) {
 
 CameraPreview.getSupportedFlashModes = function(onSuccess, onError) {
     exec(onSuccess, onError, PLUGIN_NAME, "getSupportedFlashModes", []);
+};
+
+CameraPreview.getSupportedColorEffects = function(onSuccess, onError) {
+    exec(onSuccess, onError, PLUGIN_NAME, "getSupportedColorEffects", []);
 };
 
 CameraPreview.setFlashMode = function(flashMode, onSuccess, onError) {
