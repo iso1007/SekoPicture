@@ -7,22 +7,6 @@ var commonShapeFolderName = 'CommonShape';
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.setItemInitialize = function() {
   _log(1,'function','setKokuban.setItemInitialize()');
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-//    $('ons-toolbar ons-icon').attr({'size':'30px'});
-    $('ons-toolbar div').css({'font-size':'16px'});
-    $('#setKokubanItems').css({'font-size':'16px'});
-    $('#setKokubanItems ons-icon').attr({'size':'20px'});
-    $('#setKokubanItems #setBikouPictureId').css({'font-size':'6px'});
-  };
-  if(displayDeviceSize()==='large') {
-//    $('ons-toolbar ons-icon').attr({'size':'36px'});
-    $('ons-toolbar div').css({'font-size':'22px'});
-    $('#setKokubanItems').css({'font-size':'22px'});
-    $('#setKokubanItems ons-icon').attr({'size':'26px'});
-    $('#setKokubanItems #setBikouPictureId').css({'font-size':'10px'});
-  };
 
   // ローカルストレージから読み込み
   var str = localStrage.getItems('firebase:temp/kokuban');
@@ -160,14 +144,14 @@ setKokuban.setHelpKouji = function(json) {
     $.each( koujilist, function(i, data) {
       // 検索リストに要素を追加
       var elm = '';
-      elm = elm + '<ons-list-item tappable modifier="longdivider" onClick="setKokuban.setHelpKoujiClick(this)">'+data[0]+'\n';
+      elm = elm + '<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpKoujiClick(this)">'+data[0]+'\n';
       elm = elm + '  <ons-row>';
       if(data[2]==='2199/01/01') {
-        elm = elm + '    <ons-col id="takeDateTime" width="50%" style="padding:0px;color:darkorange">New!</ons-col>';
+        elm = elm + '    <ons-col class="textsize4" id="takeDateTime" width="50%" style="padding:0px;color:darkorange">New!</ons-col>';
       }else{  
-        elm = elm + '    <ons-col id="takeDateTime" width="50%" style="padding:0px;color:gray">'+data[1].slice(0,10)+' ～ '+data[2].slice(0,10)+'</ons-col>';
+        elm = elm + '    <ons-col class="textsize3" id="takeDateTime" width="50%" style="padding:0px;color:gray">'+data[1].slice(0,10)+' ～ '+data[2].slice(0,10)+'</ons-col>';
       }  
-      elm = elm + '    <ons-col id="builderName" width="50%" style="padding:0px;color:gray">'+data[3]+'</ons-col>';
+      elm = elm + '    <ons-col class="textsize3" id="builderName" width="50%" style="padding:0px;color:gray">'+data[3]+'</ons-col>';
       elm = elm + '  </ons-row>';
       elm = elm + '</ons-list-item>';
       $(elm).appendTo($('#setHelpList'));
@@ -175,9 +159,6 @@ setKokuban.setHelpKouji = function(json) {
   } catch(e) {
     alert(e);
   };
-
-  // 画面のサイズによってフォントサイズを変える
-  setKokuban.setHelpFontSize();
 
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
@@ -224,15 +205,12 @@ setKokuban.setHelpKousyu = function(json) {
     obj.forEach(function(key) {
       var str = json[field][key][name];
       // 検索リストに要素を追加
-      var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpKousyuClick(this)'>"+str+"</ons-list-item>");
+      var elm = $('<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpKousyuClick(this)">'+str+'</ons-list-item>');
       elm.appendTo($("#setHelpList"));
     });
   } catch(e) {
     alert(e);
   };  
-
-  // 画面のサイズによってフォントサイズを変える
-  setKokuban.setHelpFontSize();
   
   if($("#setHelpList>ons-list-item").length>0) {
     $("#setInputKousyu").blur();
@@ -275,15 +253,12 @@ setKokuban.setHelpSokuten = function(json) {
     obj.forEach(function(key) {
       var str = json[field][key][name];
       // 検索リストに要素を追加
-      var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpSokutenClick(this)'>"+str+"</ons-list-item>");
+      var elm = $('<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpSokutenClick(this)">'+str+'</ons-list-item>');
       elm.appendTo($("#setHelpList"));
     });
   } catch(e) {
     alert(e);
   };  
-
-  // 画面のサイズによってフォントサイズを変える
-  setKokuban.setHelpFontSize();
   
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
@@ -458,15 +433,12 @@ setKokuban.setHelpBikou = function(json) {
   function addListItem(level, str, fid, flg) {
     var elm = $('');
     if(flg === 'header') {
-      elm = $('<ons-list-header id="'+fid+'" modifier="longdivider" style="padding-left:'+(level*14)+'px">'+str+'</ons-list-header>');
+      elm = $('<ons-list-header class="textsize4" id="'+fid+'" modifier="longdivider" style="padding-left:'+(level*14)+'px;color:blue">'+str+'</ons-list-header>');
     }else{
-      elm = $('<ons-list-item tappable id="'+fid+'" modifier="longdivider" onClick="setKokuban.setHelpBikouClick(this)" style="padding-left:'+(level*14)+'px">'+str+'</ons-list-item>');
+      elm = $('<ons-list-item class="textsize5" tappable id="'+fid+'" modifier="longdivider" onclick="setKokuban.setHelpBikouClick(this)" style="padding-left:'+(level*14)+'px">'+str+'</ons-list-item>');
     }
     elm.appendTo($('#setHelpList'));
   };
-
-  // 画面のサイズによってフォントサイズを変える
-  setKokuban.setHelpFontSize();
   
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
@@ -670,15 +642,12 @@ setKokuban.setHelpSyamei = function(json) {
     obj.forEach(function(key) {
       var str = json[field][key][name];
       // 検索リストに要素を追加
-      var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpSyameiClick(this)'>"+str+"</ons-list-item>");
-      elm.appendTo($("#setHelpList"));
+      var elm = $('<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpSyameiClick(this)">'+str+'</ons-list-item>');
+      elm.appendTo($('#setHelpList'));
     });
   } catch(e) {
     alert(e);
   };  
-
-  // 画面のサイズによってフォントサイズを変える
-  setKokuban.setHelpFontSize();
   
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
@@ -692,7 +661,7 @@ setKokuban.setHelpSyamei = function(json) {
 // setKokuban.setHelpSyameiClick()
 // 社名の検索リストのアイテムをクリック
 //====================================================
-setKokuban.setHelpSyameiClick = function() {
+setKokuban.setHelpSyameiClick = function(obj) {
   _log(1,'function','setKokuban.setHelpSyameiClick()');
   
   // 選択項目を入力フィールドにコピー
@@ -700,36 +669,6 @@ setKokuban.setHelpSyameiClick = function() {
   $("#setHelpModal").hide();
 };
   
-//====================================================
-// setKokuban.setHelpFontSize()
-// 社名の検索リストのアイテムをクリック
-//====================================================
-setKokuban.setHelpFontSize = function() {
-  _log(1,'function','setKokuban.setHelpFontSize()');
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#setHelpModal').css({'font-size':'16px'});
-    $('#setHelpModal ons-list-header').css({'font-size':'16px'});
-    $('#setHelpModal p').css({'font-size':'16px'});
-    $('#setHelpModal #takeDateTime').css({'font-size':'12px'}); 
-    $('#setHelpModal #builderName').css({'font-size':'12px'});    
-    $('#setHelpModal ons-icon').attr({'size':'20px'});
-    $('#setHelpModalBottom ons-icon').attr({'size':'26px'});
-    $('#setHelpModal #setHelpList').css({'height':'85%'});
-  };
-  if(displayDeviceSize()==='large') {
-    $('#setHelpModal').css({'font-size':'22px'});
-    $('#setHelpModal ons-list-header').css({'font-size':'22px'});
-    $('#setHelpModal p').css({'font-size':'22px'});
-    $('#setHelpModal #takeDateTime').css({'font-size':'16px'});    
-    $('#setHelpModal #builderName').css({'font-size':'16px'});    
-    $('#setHelpModal ons-icon').attr({'size':'26px'});
-    $('#setHelpModalBottom ons-icon').attr({'size':'32px'});
-    $('#setHelpModal #setHelpList').css({'height':'90%'});
-  };
-};
-
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // setKokuban.itemToCamera()
 // ローカルストレージに黒板設定情報を更新しカメラに切り替える
@@ -836,40 +775,6 @@ setKokuban.shapeSelectedMenu = function () {
 setKokuban.shapeSelectedModal = function () {
   _log(1,'function','setKokuban.shapeSelectedModal()');
   
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#shapeViewModal').css({'font-size':'16px'});
-    $('#shapeViewModal ons-list-header').css({'font-size':'16px'});
-    $('#shapeViewModal p').css({'font-size':'16px'});
-    $('#shapeViewModal ons-icon').attr({'size':'20px'});
-    $('#shapeViewModalBottom ons-icon').attr({'size':'26px'});
-    
-    $('#shapePositionModal').css({'font-size':'16px'});
-    $('#shapePositionModal ons-list-header').css({'font-size':'16px'});
-    $('#shapePositionModal p').css({'font-size':'16px'});
-    $('#shapePositionModal ons-icon').attr({'size':'20px'});
-    $('#shapePositionModalBottom ons-icon').attr({'size':'26px'});
-    
-    $('#setViewShape').css({height:'70px'});   
-    $('#setViewShapePosition').css({height:'70px'});   
-  };
-  if(displayDeviceSize()==='large') {
-    $('#shapeViewModal').css({'font-size':'22px'});
-    $('#shapeViewModal ons-list-header').css({'font-size':'22px'});
-    $('#shapeViewModal p').css({'font-size':'22px'});
-    $('#shapeViewModal ons-icon').attr({'size':'26px'});
-    $('#shapeViewModalBottom ons-icon').attr({'size':'32px'});
-    
-    $('#shapePositionModal').css({'font-size':'22px'});
-    $('#shapePositionModal ons-list-header').css({'font-size':'22px'});
-    $('#shapePositionModal p').css({'font-size':'22px'});
-    $('#shapePositionModal ons-icon').attr({'size':'26px'});
-    $('#shapePositionModalBottom ons-icon').attr({'size':'32px'});
-
-    $('#setViewShape').css({height:'100px'});   
-    $('#setViewShapePosition').css({height:'100px'});   
-  };
-  
   $("#shapeSelected").empty();
   var str = '';
   
@@ -909,10 +814,12 @@ setKokuban.shapeSelectedModal = function () {
 
     var name = filename.split('.');
 
-    // 黒板イメージのリストを作成
-    var html = '<ons-list-item id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" style="padding-top:0px" onclick="setKokuban.shapeSelected(this)">'+filename+
+    // 略図イメージのリストを作成
+//    var html = '<ons-list-item class="textsize5" id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" style="padding-top:0px" onclick="setKokuban.shapeSelected(this)">'+filename+
+    var html = '<ons-list-item class="textsize5" id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" onclick="setKokuban.shapeSelected(this)">'+filename+    
                '  <ons-row>'+
-               '    <img id="shape-'+name[0]+'" width="auto" style="padding-top:0px;margin-top:0px;">'+
+//               '    <img id="shape-'+name[0]+'" width="auto" style="padding-top:0px;margin-top:0px;">'+
+               '    <img id="shape-'+name[0]+'" width="auto">'+
                '  </ons-row>'+
                '</ons-list-item>';
     var elm = $(html);

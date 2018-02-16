@@ -5,18 +5,6 @@
 function confPictureInitial() {
   _log(1,'function','confPictureInitial()');
 
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#confPictureItem ons-col').css({'font-size':'16px'});
-    $('#confPictureItem button').css({'font-size':'16px'});
-    $('#confPictureItem ons-icon').attr({'size':'20px'});
-  };  
-  if(displayDeviceSize()==='large') {
-    $('#confPictureItem ons-col').css({'font-size':'22px'});
-    $('#confPictureItem button').css({'font-size':'22px'});
-    $('#confPictureItem ons-icon').attr({'size':'30px'});
-  };  
-  
   // ローカルストレージから読み込み
   var str = localStrage.getItems('firebase:group00/config/picture');
   // 読み込んだテキストをJSON形式に変換
@@ -147,13 +135,13 @@ function pictureChangeCompress(obj) {
       // 圧縮率指定
       switch (compress[2]) {
         case  'normal' :
-          sizeinfo = '概算容量 800KB';       // <<  値は調整する
+          sizeinfo = '概算容量 30KB';       // <<  値は調整する
           break;
         case 'heightQuality' :
-          sizeinfo = '概算容量 1.0MB';       // <<  値は調整する
+          sizeinfo = '概算容量 100KB';       // <<  値は調整する
           break;
         case 'bestQuality' :
-          sizeinfo = '概算容量 1.4MB';       // <<  値は調整する
+          sizeinfo = '概算容量 350KB';       // <<  値は調整する
           break;
       }; 
       // 概算容量表示を変更

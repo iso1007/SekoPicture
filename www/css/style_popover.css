@@ -13,14 +13,8 @@
 }
 
 .menu-item-label {
-  font-size: 11px;
   color: #333;
   margin-top: 3px;
-}
-
-.menu-item-icon {
-  color: #999;
-  font-size: 38px;
 }
 
 .popover__content {

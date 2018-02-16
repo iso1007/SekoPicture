@@ -5,18 +5,6 @@
 function confKokubanInitial() {
   _log(1,'function','confKokubanInitial()');
 
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#confKokubanItem ons-col').css({'font-size':'16px'});
-    $('#confKokubanItem button').css({'font-size':'16px'});
-    $('#confKokubanItem ons-icon').attr({'size':'20px'});
-  };  
-  if(displayDeviceSize()==='large') {
-    $('#confKokubanItem ons-col').css({'font-size':'22px'});
-    $('#confKokubanItem button').css({'font-size':'22px'});
-    $('#confKokubanItem ons-icon').attr({'size':'30px'});
-  };  
-  
   // ローカルストレージから読み込み
   var str = localStrage.getItems('firebase:group00/config/kokuban');
   // 読み込んだテキストをJSON形式に変換
@@ -138,7 +126,7 @@ function kokubanSelectModal() {
       
     // 黒板イメージのリストを作成
     var html = '<ons-list-item id="kokuban-'+code+'" tappable modifier="longdivider chevron" style="padding-top:0px" onclick="kokubanSelected(this)">'+
-               '  <ons-row><p>'+name+'</p></ons-row>'+
+               '  <ons-row><p class="textsize5">'+name+'</p></ons-row>'+
                '  <ons-row>'+
                '    <img id="image-'+code+'" width="'+width+'px" height="'+height+'px" src="img/kokuban/'+code+fileEx+'" style="padding-top:0px;margin-top:0px;">'+
                '  </ons-row>'+

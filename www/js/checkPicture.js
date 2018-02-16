@@ -264,18 +264,6 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
   } catch(e) {
     _errorlog(1,'pictureCheckList.getPictureItem()',e);
   };
-
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#pictureCheckList ons-col').css({'font-size':'16px'});
-    $('#pictureCheckList button').css({'font-size':'16px'});
-    $('#pictureCheckList ons-icon').attr({'size':'20px'});
-  };
-  if(displayDeviceSize()==='large') {
-    $('#pictureCheckList ons-col').css({'font-size':'22px'});
-    $('#pictureCheckList button').css({'font-size':'22px'});
-    $('#pictureCheckList ons-icon').attr({'size':'26px'});
-  };
 };
 
 
@@ -295,22 +283,6 @@ pictureCheckList.htmlHeader = function(koujiname,listname) {
   
   // 工事名称を表示
   $('#pictureCheckKoujimei').text(koujiname);
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-//    $('ons-toolbar ons-icon').attr({'size':'30px'});
-    $('#pictureCheckListName').css({'font-size':'16px'});
-    $('#pictureCheckListHeader ons-col').css({'font-size':'16px'});
-    $('#pictureCheckListHeader button').css({'font-size':'16px'});
-    $('#pictureCheckListHeader ons-icon').attr({'size':'20px'});
-  };
-  if(displayDeviceSize()==='large') {
-//    $('ons-toolbar ons-icon').attr({'size':'36px'});
-    $('#pictureCheckListName').css({'font-size':'22px'});
-    $('#pictureCheckListHeader ons-col').css({'font-size':'22px'});
-    $('#pictureCheckListHeader button').css({'font-size':'22px'});
-    $('#pictureCheckListHeader ons-icon').attr({'size':'26px'});
-  };
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -322,19 +294,17 @@ pictureCheckList.htmlItem = function(level, str, fid, flg, num) {
   
   var html = '<ons-list-item id="'+fid+'" tappable modifier="longdivider" style="padding-left:0px" onclick="pictureCheckList.takeItemClick(this)">'+
              '  <ons-row>'+
-             '    <ons-col width="'+((level-1)*4)+'%"></ons-col>'+
-             '    <ons-col width="7%">'+
-//             '      <ons-icon id="icon1'+fid+'" icon="" size="20px" fixed-width="true" style="color: green"></ons-icon>'+
-             '      <ons-icon id="icon1'+fid+'" fixed-width="true" style="color: green"></ons-icon>'+
+             '    <ons-col class="textsize5" width="'+((level-1)*4)+'%"></ons-col>'+
+             '    <ons-col class="textsize5" width="7%">'+
+             '      <ons-icon class="iconsize3" id="icon1'+fid+'" fixed-width="true" style="color: green"></ons-icon>'+
              '    </ons-col>'+
-             '    <ons-col id="biko'+fid+'" width="'+(69-((level-1)*4))+'%">'+str+'</ons-col>'+
+             '    <ons-col class="textsize5" id="biko'+fid+'" width="'+(69-((level-1)*4))+'%">'+str+'</ons-col>'+
              '    <ons-col>'+
-//             '      <ons-icon id="icon2'+fid+'" size="20px" fixed-width="true"></ons-icon>'+
-             '      <ons-icon id="icon2'+fid+'" fixed-width="true"></ons-icon>'+
+             '      <ons-icon class="iconsize3" id="icon2'+fid+'" fixed-width="true"></ons-icon>'+
              '    </ons-col>'+
-             '    <ons-col width="7%" style="color:blue;text-align:right" id="pcnt'+fid+'"">0</ons-col>'+
-             '    <ons-col width="2%" style="text-align:right">/</ons-col>'+
-             '    <ons-col width="7%" style="color:blue;text-align:right" id="pmax'+fid+'""></ons-col>'+
+             '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pcnt'+fid+'"">0</ons-col>'+
+             '    <ons-col class="textsize5" width="2%" style="text-align:right">/</ons-col>'+
+             '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pmax'+fid+'""></ons-col>'+
              '  </ons-row>'+
              '</ons-list-item>';
   var elm = $(html);
@@ -687,7 +657,7 @@ pictureCheckList.checkListSelectModal = function() {
   
   function setCheckList(key, name) {
     // 撮影リストの名前リストを作成
-    var html = '<ons-list-item id="pictureCheckList-'+key+'" tappable modifier="chevron" onclick="pictureCheckList.listSelected(this)">'+name+'</ons-list-item>';
+    var html = '<ons-list-item class="textsize5" id="pictureCheckList-'+key+'" tappable modifier="chevron" onclick="pictureCheckList.listSelected(this)">'+name+'</ons-list-item>';
     var elm = $(html);
     elm.appendTo($("#pictureCheckListSelected"));
   };  

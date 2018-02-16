@@ -2,99 +2,55 @@
 /* 中間サイズを分ける場合は以下の記述を追加する
 /*@media (min-width: 375px) and (max-width: 767px) {*/
 @media (max-width: 767px) {
-  /* カメラ画面のボタン */
-  div#tool-button1 ons-icon
-  {
-    font-size: 33px;
-  }
+  /* アイコンサイズ */
+  .iconsize1 { font-size: 14px; }
+  .iconsize2 { font-size: 18px; }
+  .iconsize3 { font-size: 20px; }
+  .iconsize4 { font-size: 28px; }
+  .iconsize5 { font-size: 31px; }
+  .iconsize6 { font-size: 35px; }
+  .iconsize8 { font-size: 50px; }
   
-  div#tool-button1 ons-icon.small-clock
-  {
-    font-size: 20px;
-  }
+  /* テキストサイズ */
+  .textsize1 { font-size:  4px; }
+  .textsize3 { font-size: 12px; }
+  .textsize4 { font-size: 14px; }
+  .textsize5 { font-size: 16px; }
+  .textsize6 { font-size: 18px; }
+  .textsize9 { font-size: 30px; }
   
-  div#tool-button2 ons-icon
-  {
-    font-size: 28px;
-  }
+  /*.contentsize7 { height:80%; }*/
+  .contentsize8 { height:83%; }
   
-  ons-toolbar .toCamera
-  {
-    margin-top: 5px;
-    color: white;
-    font-size: 33px;
-  }
-  
-  #selftimer .menu-item-label,
-  #flashMode .menu-item-label
-  {
-    font-size: 18px;
-  }
-
-  /* 撮影後のプレビューメッセージ */
-  #previewMessage p
-  {
-    font-size : 20px;
-    margin-top : 200px;
-  }
-  
-  /* 機能設定メニュー */
-  #pageConfMenu .menubutton_icon
-  {
-    font-size : 30px;
-  }
-  #pageConfMenu .menubutton_text  
-  {
-    font-size : 18px;
-  }
+  /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
+  #previewMessage { font-size: 30px; margin-top : 150px; }
+  #selfTimerCounter { font-size: 200px; margin-top: 100px; }
 }
 
 /* 画面サイズの横幅が768px以上の場合に適用 */
 @media (min-width: 768px) {
-  /* カメラ画面のボタン */
-  div#tool-button1 ons-icon
-  {
-    font-size: 37px;
-  }
+  /* アイコンサイズ */
+  .iconsize1 { font-size: 26px; }
+  .iconsize2 { font-size: 30px; }
+  .iconsize3 { font-size: 32px; }
+  .iconsize4 { font-size: 37px; }
+  .iconsize5 { font-size: 40px; }
+  .iconsize6 { font-size: 45px; }
+  .iconsize8 { font-size: 62px; }
   
-  div#tool-button1 ons-icon.small-clock
-  {
-    font-size: 32px;
-  }
-  
-  div#tool-button2 ons-icon
-  {
-    font-size: 30px;
-  }
-  
-  ons-toolbar .toCamera
-  {
-    margin-top: 5px;
-    color: white;
-    font-size: 37px;
-  } 
-  
-  #selftimer .menu-item-label,
-  #flashMode .menu-item-label
-  {
-    font-size: 20px;
-  }
-  
-  /* 撮影後のプレビューメッセージ */
-  #previewMessage p
-  {
-    font-size : 40px;
-    margin-top : 500px;
-  }  
-  
-  /* 機能設定メニュー */
-  #pageConfMenu .menubutton_icon
-  {
-    font-size : 40px;
-  }
-  #pageConfMenu .menubutton_text  
-  {
-    font-size : 25px;
-  }
+  /* テキストサイズ */
+  .textsize1 { font-size: 10px; }
+  .textsize3 { font-size: 18px; }
+  .textsize4 { font-size: 20px; }
+  .textsize5 { font-size: 22px; }
+  .textsize6 { font-size: 24px; }
+  .textsize9 { font-size: 40px; }
+
+  /*.contentsize7 { height:85%; }*/
+  .contentsize8 { height:90%; }
+
+  /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
+  #previewMessage { font-size: 50px; margin-top : 450px; }
+  #selfTimerCounter { font-size: 300px; margin-top: 300px; }
 }
 

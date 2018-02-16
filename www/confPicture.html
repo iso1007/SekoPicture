@@ -2,14 +2,14 @@
   <ons-toolbar class='toolbar_back_color'>
     <div class="left" onclick="setNavigator.popPage()">
       <ons-button id="pop-button" modifier="quiet" style='margin-top:0px;color: white'>
-        <ons-icon icon="fa-angle-double-left" size="30px" fixed-width="true"></ons-icon>
+        <ons-icon class="iconsize5" icon="fa-angle-double-left" fixed-width="true"></ons-icon>
     </ons-button></div>
     
-    <div class="center" style="color: white;text-align:center">写真の設定</div>
+    <div class="center textsize5" style="color: white">写真の設定</div>
     
     <div class="right" onclick="app.cameraButtonClick()">
       <ons-button class="toCamera" modifier="quiet">
-        <ons-icon icon="fa-camera" fixed-width="true"></ons-icon>
+        <ons-icon class="iconsize5" icon="fa-camera" fixed-width="true" style="color: white"></ons-icon>
       </ons-button>
     </div>
   </ons-toolbar>
@@ -19,11 +19,11 @@
     
       <ons-list-item modifier="longdivider">
         <ons-row>
-          <ons-col width="55%">
+          <ons-col width="50%" class="textsize5">
             <a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>写真のサイズ
           </ons-col>    
-          <ons-col width="45%">
-            <a id="picture-pixelinfo" style="font-size:70%;color:blue;text-align:right;">1024×768(79万画素)</a>
+          <ons-col width="50%" class="textsize3">
+            <a id="picture-pixelinfo" style="color:blue;text-align:right;">1024×768(79万画素)</a>
           </ons-col>    
         </ons-row>
         
@@ -31,23 +31,23 @@
           <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-size-minimum" name="picture-size">
-              <button class="segment__button">最小</button>
+              <button class="segment__button textsize5">最小</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-size-small" name="picture-size">
-              <button class="segment__button">小</button>
+              <button class="segment__button textsize5">小</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-size-medium" name="picture-size">
-              <button class="segment__button">中</button>
+              <button class="segment__button textsize5">中</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-size-large" name="picture-size">
-              <button class="segment__button">大</button>
+              <button class="segment__button textsize5">大</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-size-maximum" name="picture-size">
-              <button class="segment__button">最大</button>
+              <button class="segment__button textsize5">最大</button>
             </div>
           </div>
         </ons-row>
@@ -55,11 +55,11 @@
       
       <ons-list-item modifier="longdivider">
         <ons-row>
-          <ons-col width="60%">
+          <ons-col width="60%" class="textsize5">
             <a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>写真の画質(圧縮率)
           </ons-col>    
-          <ons-col width="40%">
-            <a id="picture-sizeinfo" style="font-size:70%;color:blue;text-align:right;">概算容量 800KB</a>
+          <ons-col width="40%" class="textsize3">
+            <a id="picture-sizeinfo" style="color:blue;text-align:right;">概算容量 800KB</a>
           </ons-col>    
         </ons-row>
         
@@ -67,15 +67,15 @@
           <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-compress-normal" name="picture-compress">
-              <button class="segment__button">標準</button>
+              <button class="segment__button textsize5">標準</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-compress-heightQuality" name="picture-compress">
-              <button class="segment__button">高画質</button>
+              <button class="segment__button textsize5">高画質</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-compress-bestQuality" name="picture-compress">
-              <button class="segment__button">最高画質</button>
+              <button class="segment__button textsize5">最高画質</button>
             </div>
           </div>
         </ons-row>
@@ -83,30 +83,30 @@
     
       <ons-list-item modifier="longdivider">
         <ons-row>
-          <div class='left'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>撮影後のプレビュー表示</div>
+          <div class='left textsize5'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>撮影後のプレビュー表示</div>
         </ons-row>
         
         <ons-row>
           <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-preview-0" name="picture-preview">
-              <button class="segment__button">off</button>
+              <button class="segment__button textsize5">off</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-preview-1" name="picture-preview">
-              <button class="segment__button">1秒</button>
+              <button class="segment__button textsize5">1秒</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-preview-2" name="picture-preview">
-              <button class="segment__button">2秒</button>
+              <button class="segment__button textsize5">2秒</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-preview-3" name="picture-preview">
-              <button class="segment__button">3秒</button>
+              <button class="segment__button textsize5">3秒</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-preview-60" name="picture-preview">
-              <button class="segment__button">HOLD</button>
+              <button class="segment__button textsize5">HOLD</button>
             </div>
           </div>
         </ons-row>
@@ -114,22 +114,22 @@
       
       <ons-list-item modifier="longdivider">
         <ons-row>
-          <div class='left'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>写真の向き</div>
+          <div class='left textsize5'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>写真の向き</div>
         </ons-row>
         
         <ons-row>
           <div class="segment" style="width: 100%; margin: 10px 10px 10px 10px">
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-direction-portrait" name="picture-direction">
-              <button class="segment__button">縦固定</button>
+              <button class="segment__button textsize5">縦固定</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-direction-device" name="picture-direction">
-              <button class="segment__button">端末の向き</button>
+              <button class="segment__button textsize5">端末の向き</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-direction-landscape" name="picture-direction">
-              <button class="segment__button">横固定</button>
+              <button class="segment__button textsize5">横固定</button>
             </div>
           </div>
         </ons-row>
@@ -137,18 +137,18 @@
       
       <ons-list-item modifier="longdivider">
         <row>
-          <div class='left'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>位置情報の付加</div>
+          <div class='left textsize5'><a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>位置情報の付加</div>
         </row>
         
         <ons-row>
           <div class="segment" style="width: 100%; margin: 10px">
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-location-on" name="picture-location">
-              <button class="segment__button">付加する</button>
+              <button class="segment__button textsize5">付加する</button>
             </div>
             <div class="segment__item">
               <input type="radio" class="segment__input" id="picture-location-off" name="picture-location">
-              <button class="segment__button">付加しない</button>
+              <button class="segment__button textsize5">付加しない</button>
             </div>
           </div>
         </ons-row>

@@ -1,10 +1,10 @@
 <ons-page id="setKokubanPage">
   <ons-toolbar class='toolbar_back_color'>
-    <div class="center" style="color: white;text-align:center">黒板編集</div>
+    <div class="center textsize5" style="color: white">黒板編集</div>
     
     <div class="right" onclick="setKokuban.itemToCamera()">
       <ons-button class="toCamera" modifier="quiet">
-        <ons-icon icon="fa-camera" fixed-width="true"></ons-icon>
+        <ons-icon class="iconsize5" icon="fa-camera" fixed-width="true" style="color: white"></ons-icon>
       </ons-button>
     </div>
   </ons-toolbar>
@@ -13,72 +13,72 @@
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-building-o" style="color: blue"></ons-icon></ons-col>
-        <ons-col>工事名</ons-col>
+        <ons-col class="textsize4">工事名</ons-col>
       </ons-row>  
     </ons-list-header>
     <!--工事名の入力-->
     <ons-list-item id="setHelpKouji">
-      <textarea id="setInputKouji" rows="2" style="width:90%;height:120%;overflow:hidden;margin:-5px auto;font-size:100%" class="textarea--transparent" placeholder="工事名を入力"></textarea>
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <textarea id="setInputKouji" rows="2" style="width:90%;height:120%;overflow:hidden;margin:-5px auto;" class="textarea--transparent textsize5" placeholder="工事名を入力"></textarea>
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
     
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-gavel" style="color: blue"></ons-icon></ons-col>
-        <ons-col>工　種</ons-col>
+        <ons-co class="textsize4">工　種</ons-col>
       </ons-row>  
     </ons-list-header>
     <!--工種の入力-->
     <ons-list-item id="setHelpKousyu" style="height:50px">
-      <input id="setInputKousyu" type="text" class="text-input" style="width:90%;margin:-5px auto;font-size:100%" placeholder="工種名を入力">
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <input id="setInputKousyu" type="text" class="text-input textsize5" style="width:90%;margin:-5px auto;" placeholder="工種名を入力">
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
     
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-binoculars" style="color: blue"></ons-icon></ons-col>
-        <ons-col>測　点</ons-col>
+        <ons-col class="textsize4">測　点</ons-col>
       </ons-row>  
     </ons-list-header>
     <!--測点の入力-->
     <ons-list-item id="setHelpSokuten">
-      <input id="setInputSokuten" type="text" class="text-input" style="width:90%;margin:-5px auto;font-size:100%" placeholder="測点を入力">
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <input id="setInputSokuten" type="text" class="text-input textsize5" style="width:90%;margin:-5px auto;" placeholder="測点を入力">
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
 
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-calendar" style="color: blue"></ons-icon></ons-col>
-        <ons-col>日　付</ons-col>
+        <ons-col class="textsize4">日　付</ons-col>
       </ons-row>  
     </ons-list-header>
     <!--日付の入力-->
     <ons-list-item id="setHelpHiduke">
-      <input id="setInputHiduke" type="text" class="text-input" style="width:90%;margin:-5px auto;font-size:100%" placeholder="日付を入力">
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <input id="setInputHiduke" type="text" class="text-input textsize5" style="width:90%;margin:-5px auto;" placeholder="日付を入力">
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
 
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-file-text-o" style="color: blue"></ons-icon></ons-col>
-        <ons-col>備　考</ons-col>
-        <ons-col id="setBikouPictureId" style="color: gray"></ons-col>
+        <ons-col class="textsize4">備　考</ons-col>
+        <ons-col class="textsize1" id="setBikouPictureId" style="color: gray"></ons-col>
       </ons-row>  
     </ons-list-header>
     <!--備考の入力-->
     <ons-list-item id="setHelpBikou">
-      <textarea id="setInputBikou" rows="10" style="width:90%;height:100%;overflow:hidden;margin:-5px auto;font-size:130%" class="textarea--transparent" placeholder="備考を入力" onFocus="setKokuban.bikouTextSupport()"></textarea>
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <textarea id="setInputBikou" rows="10" style="width:90%;height:100%;overflow:hidden;margin:-5px auto;" class="textarea--transparent textsize6" placeholder="備考を入力" onFocus="setKokuban.bikouTextSupport()"></textarea>
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
     
     <!-- 2018/01/24 追加 ↓-->
-    <div id="setShapeButton">
+    <div id="setShapeButton" class="textsize4">
       <ons-button modifier="large--quiet" onclick="setKokuban.shapeSelectedMenu()">略図選択</ons-button>
     </div>
     <ons-list-item id="setShapePanel" style="display:none">
       <ons-col width="70%" onclick="setKokuban.shapeSelectedMenu()">
         <div align="center">
-          <p id="setShapePanelShapeName" style="margin:0px;"></p>
+          <p class="textsize4" id="setShapePanelShapeName" style="margin:0px;"></p>
           <img id="setViewShape" width="auto" height="70px">
         </div>
       </ons-col>
@@ -86,7 +86,7 @@
       </ons-col>
       <ons-col width="25%">
         <div align="center">
-          <p style="margin:0px;">略図の位置</p>
+          <p class="textsize4" style="margin:0px;">略図の位置</p>
           <img id="setViewShapePosition" width="auto" height="70px" src="img/shape-position/bottom-middle.gif" onclick="shapePositionModal.show()">
         </div>
       </ons-col>
@@ -96,23 +96,23 @@
     <ons-list-header>
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-building-o" style="color: blue"></ons-icon></ons-col>
-        <ons-col>会社名</ons-col>
+        <ons-col class="textsize4">会社名</ons-col>
       </ons-row>  
     </ons-list-header>
     <!--会社名の入力-->
     <ons-list-item id="setHelpSyamei">
-      <input id="setInputSyamei" type="text" class="text-input" style="width:90%;margin:-5px auto;font-size:100%" placeholder="会社名を入力">
-      <ons-icon icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
+      <input id="setInputSyamei" type="text" class="text-input textsize5" style="width:90%;margin:-5px auto;" placeholder="会社名を入力">
+      <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
   </ons-list>  
 
   <ons-modal id="setHelpModal">
     <ons-list modifier="inset" class="modal_back_color" style="height:90%;overflow:scroll">
       <ons-list-header>
-        <ons-col id="setHelpTitle"></ons-col>
+        <ons-col class="textsize4" id="setHelpTitle"></ons-col>
       </ons-list-header>
       
-      <ons-list id="setHelpList" style="height:90%;overflow:scroll">
+      <ons-list id="setHelpList" class="contentsize8" style="overflow:scroll">
       </ons-list>
       
       <ons-list-item id="setHelpModalBottom"> 
@@ -120,8 +120,8 @@
           <ons-col width="80%"></ons-col>
           <ons-col width="20%">
             <ons-button modifier="quiet" onclick="setHelpModal.hide()">
-              <p class="iconbutton_text">戻る</p>
-              <ons-icon class="iconbutton_icon" icon="ion-reply" fixed-width="true"></ons-icon>
+              <p class="iconbutton_text textsize5">戻る</p>
+              <ons-icon class="iconbutton_icon iconsize5" icon="ion-reply" fixed-width="true"></ons-icon>
             </ons-button>
           </ons-col>
         </ons-row>
@@ -133,11 +133,11 @@
   <ons-modal id="numberInputModal">
     <div id="numberInputPanel" align="center" class="content_back_color" style="width:320px">
       <hr size="2">
-      <div style="font-size:28px;color:black;text-align:left">
+      <div style="color:black;text-align:left">
         <span>　</span>
-        <span id="numberFrontLabel"></span>
-        <span id="numberInputText" style="text-decoration: underline;color:blue"></span>
-        <span id="numberBackLabel"></span>
+        <span class="textsize5" id="numberFrontLabel"></span>
+        <span class="textsize5" id="numberInputText" style="text-decoration: underline;color:blue"></span>
+        <span class="textsize5" id="numberBackLabel"></span>
       </div>
       <hr size="2">
       <div id="numberString"></div>
@@ -210,7 +210,9 @@
           <!-- 2018/01/23 ↑ ADD -->
           <ons-col width="5px"></ons-col> 
           <ons-col width="70px">
-            <ons-button class="keybord-etc-button" onclick="setKokuban.numberKeyInput(this)"><ons-icon icon="ion-backspace-outline" size="25px"></ons-icon></ons-button>
+            <ons-button class="keybord-etc-button" onclick="setKokuban.numberKeyInput(this)">
+              <ons-icon class="iconsize4" icon="ion-backspace-outline"></ons-icon>
+            </ons-button>
           </ons-col>  
         </ons-row>
       </div>
@@ -231,19 +233,20 @@
   <!--2018/01/24 ADD↓----->
   <!--共通略図選択用ダイアログ-->
   <ons-modal id="shapeViewModal">
-    <ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">
-      <ons-list-header>略図選択</ons-list-header>
+    <ons-list modifier="inset" style="height:90%;overflow:auto" class="modal_back_color">
+    <!--<ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">-->
+      <ons-list-header class="textsize4">略図選択</ons-list-header>
       
-      <ons-list id="shapeSelected" style="width:100%;height:82%;overflow:auto">
+      <ons-list id="shapeSelected" class="contentsize8" style="overflow:auto">
       </ons-list>
       
-      <ons-list-item id="shapeViewModalBottom"> 
+      <ons-list-item> 
         <ons-row>
           <ons-col width="80%"></ons-col>
           <ons-col width="20%">
             <ons-button modifier="quiet" onclick="shapeViewModal.hide()">
-              <p class="iconbutton_text">戻る</p>
-              <ons-icon class="iconbutton_icon" icon="ion-reply" fixed-width="true"></ons-icon>
+              <p class="iconbutton_text text5">戻る</p>
+              <ons-icon class="iconbutton_icon iconsize5" icon="ion-reply" fixed-width="true"></ons-icon>
             </ons-button>
           </ons-col>
         </ons-row>
@@ -254,24 +257,24 @@
   <!--略図表示位置選択用ダイアログ-->
   <ons-modal id="shapePositionModal">
     <ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">
-      <ons-list-header>表示設定</ons-list-header>
+      <ons-list-header class="textsize4">表示設定</ons-list-header>
       
-      <ons-list id="shapePisitionSelected" style="width:100%;height:82%;overflow:auto">
+      <ons-list id="shapePisitionSelected" class="contentsize8" style="overflow:auto">
         <ons-list-item>
           <ons-row>
-            <img id="bottom-middle" src="img/shape-position/bottom-middle.gif" width="49%" height="auto" onclick="setKokuban.shapePosition(this)">
-            <img id="bottom-half" src="img/shape-position/bottom-half.gif" width="49%" height="auto" onclick="setKokuban.shapePosition(this)">
+            <img id="bottom-middle" src="img/shape-position/bottom-middle.gif" width="49%" height="30%" onclick="setKokuban.shapePosition(this)">
+            <img id="bottom-half" src="img/shape-position/bottom-half.gif" width="49%" height="30%" onclick="setKokuban.shapePosition(this)">
           </ons-row>
         </ons-list-item>
         <ons-list-item>
           <ons-row>
-            <img id="bottom-right" src="img/shape-position/bottom-right.gif" width="49%" height="auto" onclick="setKokuban.shapePosition(this)">
-            <img id="right-half" src="img/shape-position/right-half.gif" width="49%" height="auto" onclick="setKokuban.shapePosition(this)">
+            <img id="bottom-right" src="img/shape-position/bottom-right.gif" width="49%" height="30%" onclick="setKokuban.shapePosition(this)">
+            <img id="right-half" src="img/shape-position/right-half.gif" width="49%" height="3%" onclick="setKokuban.shapePosition(this)">
           </ons-row>
         </ons-list-item>
         <ons-list-item>
           <ons-row>
-            <img id="full" src="img/shape-position/full.gif" width="49%" height="auto" onclick="setKokuban.shapePosition(this)">
+            <img id="full" src="img/shape-position/full.gif" width="49%" height="30%" onclick="setKokuban.shapePosition(this)">
           </ons-row>
         </ons-list-item>
       </ons-list>
@@ -282,14 +285,14 @@
           
             <label class="checkbox checkbox--material">
               <input id="shapeReverseCheck" type="checkbox" class="checkbox__input checkbox--material__input" checked="checked">
-              <div class="checkbox__checkmark checkbox--material__checkmark"></div>
+              <div class="checkbox__checkmark checkbox--material__checkmark textsize5"></div>
                 黒板の色に合わせる
             </label>
           </ons-col>
           <ons-col width="20%">
             <ons-button modifier="quiet" onclick="setKokuban.shapePositionModalHide()">
-              <p class="iconbutton_text">戻る</p>
-              <ons-icon class="iconbutton_icon" icon="ion-reply" fixed-width="true"></ons-icon>
+              <p class="iconbutton_text textsize5">戻る</p>
+              <ons-icon class="iconbutton_icon iconsize5" icon="ion-reply" fixed-width="true"></ons-icon>
             </ons-button>
           </ons-col>
         </ons-row>

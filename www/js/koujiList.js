@@ -137,18 +137,6 @@ function koujiListHeader() {
 
   // 工事リストのアイテムをクリアする
   $('#koujiListBox').empty();
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-//    $('ons-toolbar ons-icon').attr({'size':'30px'});
-    $('ons-toolbar div').css({'font-size':'16px'});
-    $('#koujiListBoxHeader ons-col').css({'font-size':'16px'});
-  };
-  if(displayDeviceSize()==='large') {
-//    $('ons-toolbar ons-icon').attr({'size':'36px'});
-    $('ons-toolbar div').css({'font-size':'22px'});
-    $('#koujiListBoxHeader ons-col').css({'font-size':'22px'});
-  };
 };      
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -161,15 +149,15 @@ function koujiListHtml(obj, cnt) {
   var elm = $('<ons-list-item id="koujiList_item_' + cnt + '" tappable modifier="longdivider" onClick="koujiListItemClick(this)">'+
                 '<ons-col width="90%">'+
                   '<ons-row>'+
-                    '<ons-col id="koujiList_name_' + cnt + '" style="color:blue;font-weight:bold"></ons-col>'+
+                    '<ons-col class="textsize5" id="koujiList_name_' + cnt + '"></ons-col>'+
                   '</ons-row>'+
                   '<ons-row>'+
-                    '<ons-col id="koujiList_date_' + cnt + '"></ons-col>'+
+                    '<ons-col class="textsize3" style="color:gray" id="koujiList_date_' + cnt + '"></ons-col>'+
                   '</ons-row>'+
                 '</ons-col>'+
                 '<ons-col width="10%">'+
                   '<ons-row>'+
-                    '<ons-col><span id="koujiList_count_' + cnt + '" class="notification" style="background-color: darkorange"></span></ons-col>'+
+                    '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: darkorange"></span></ons-col>'+
                   '</ons-row>'+
                 '</ons-col>'+
               '</ons-list-item>');
@@ -193,16 +181,6 @@ function koujiListHtml(obj, cnt) {
       $('#koujiList_count_'+cnt).css('background-color', 'darkorange');
     }
   }
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#koujiListBox').css({'font-size':'16px'});
-    $('[id^="koujiList_date_"]').css({'font-size':'12px'});
-  };  
-  if(displayDeviceSize()==='large') {
-    $('#koujiListBox').css({'font-size':'22px'});
-    $('#koujiListBox [id^="koujiList_date_"]').css({'font-size':'18px'});
-  };  
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -306,22 +284,6 @@ function koujiPictureListHeader(koujiname, koujiListCountId) {
   $('#koujiListItemName').text(koujiname);
   // 工事一覧の何番目が選択されたのかID
   $('#koujiListCountId').text(koujiListCountId);
-
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-//    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'30px'});
-    $('#koujiListItem ons-toolbar div').css({'font-size':'16px'});
-    $('#koujiPictureListHeader ons-col').css({'font-size':'16px'});
-    $('#koujiPictureListHeader button').css({'font-size':'16px'});
-    $('#koujiPictureListHeader ons-icon').attr({'size':'20px'});
-  };
-  if(displayDeviceSize()==='large') {
-//    $('#koujiListItem ons-toolbar ons-icon').attr({'size':'36px'});
-    $('#koujiListItem ons-toolbar div').css({'font-size':'22px'});
-    $('#koujiPictureListHeader ons-col').css({'font-size':'22px'});
-    $('#koujiPictureListHeader button').css({'font-size':'22px'});
-    $('#koujiPictureListHeader ons-icon').attr({'size':'26px'});
-  };
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -412,44 +374,28 @@ function koujiListAddElement(filename, uri) {  // 2018/01/25 ADD
                 '<ons-col width="55%" align="top">'+
                   '<ons-row style="color:blue;">'+
                     '<ons-col width="94%" align="top">'+
-                      '<p id="date'+filename+'" style="margin:0">'+filename+'</p>'+
+                      '<p class="textsize3" id="date'+filename+'" style="margin:0">'+filename+'</p>'+
                     '</ons-col>'+
                     
                     '<ons-col width="6%" align="top">'+
-                      '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color:darkorange" size="20px"></ons-icon>'+
+                      '<ons-icon class="iconsize3" id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color:darkorange"></ons-icon>'+
                     '</ons-col>'+
                   '</ons-row>'+
                   
                   '<ons-row style="color:gray;">'+
-                    '<p id="kousyu'+filename+'" style="margin:0"></p>'+
+                    '<p class="textsize3" id="kousyu'+filename+'" style="margin:0"></p>'+
                   '</ons-row>'+
                   
                   '<ons-row style="color:gray;">'+
-                    '<p id="sokuten'+filename+'" style="margin:0"></p>'+
+                    '<p class="textsize3" id="sokuten'+filename+'" style="margin:0"></p>'+
                   '</ons-row>'+
                   
                   '<ons-row style="color:black;">'+
-                    '<p id="bikou'+filename+'" style="margin:0"></p>'+
+                    '<p class="textsize4" id="bikou'+filename+'" style="margin:0"></p>'+
                   '</ons-row>'+
                 '</ons-col>'+
               '</ons-list-item>');
   elm.appendTo($('#koujiPictureList'));
-  
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('#koujiPictureList p').css({'font-size':'14px'});
-//    $('#koujiPictureList p').css({'font-size':'16px'});
-//    $('#koujiPictureList ons-col').css({'font-size':'16px'});
-//    $('#koujiPictureList button').css({'font-size':'16px'});
-//    $('#koujiPictureList ons-icon').attr({'size':'20px'});
-  };  
-  if(displayDeviceSize()==='large') {
-    $('#koujiPictureList p').css({'font-size':'20px'});
-//    $('#koujiPictureList p').css({'font-size':'22px'});
-//    $('#koujiPictureList ons-col').css({'font-size':'22px'});
-//    $('#koujiPictureList button').css({'font-size':'22px'});
-//    $('#koujiPictureList ons-icon').attr({'size':'26px'});
-  };  
 } 
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -694,23 +640,7 @@ function koujiPictureView(obj) {
                   $("#koujiviewPicture").css({'width':'100%','height':'auto'});
                   // 写真が縦の場合は、横幅を80%にして全体が画面に収まるようにする
                   if(img.height>img.width) {
-                    $("#koujiviewPicture").css({'width':'80%','height':'auto'});
-                  };
-                
-                  // 画面のサイズによってフォントサイズを変える
-                  if(displayDeviceSize()==='small') {
-                    $('#koujiviewModal ons-col').css({'font-size':'16px'});
-                    $('#koujiviewModal button').css({'font-size':'16px'});
-                    $('#koujiviewModal ons-icon').attr({'size':'20px'});
-                    $('#koujiviewModal #koujiviewDatetime').css({'font-size':'15px'});
-                    $('#koujiviewModal #koujiviewName').css({'font-size':'5px'});
-                  };  
-                  if(displayDeviceSize()==='large') {
-                    $('#koujiviewModal ons-col').css({'font-size':'22px'});
-                    $('#koujiviewModal button').css({'font-size':'22px'});
-                    $('#koujiviewModal ons-icon').attr({'size':'26px'});
-                    $('#koujiviewModal #koujiviewDatetime').css({'font-size':'22px'});
-                    $('#koujiviewModal #koujiviewName').css({'font-size':'10px'});
+                    $("#koujiviewPicture").css({'width':'75%','height':'auto'});
                   };
                 
                   // 詳細画面を表示する

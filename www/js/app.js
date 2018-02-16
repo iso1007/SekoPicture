@@ -2,7 +2,7 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 1;  
+var logMessageLevel = 0;  
 var errorlogMessageLevel = 5;
 _log(0,'===========================Pocess Start=================================');
 
@@ -148,20 +148,6 @@ app.afterLoginInitialize2 = function() {
   $('#preview').hide();
   $('#previewMessage').hide();
 
-  // 画面のサイズによってフォントサイズを変える
-  if(displayDeviceSize()==='small') {
-    $('ons-col').css({'font-size':'16px'});
-    $('button').css({'font-size':'16px'});
-//    $('ons-toolbar').css({'font-size':'16px'});
-//    $('ons-toolbar ons-icon').attr({'size':'30px'});
-  };
-  if(displayDeviceSize()==='large') {
-    $('ons-col').css({'font-size':'22px'});
-    $('button').css({'font-size':'22px'});
-//    $('ons-toolbar').css({'font-size':'22px'});
-//    $('ons-toolbar ons-icon').attr({'size':'36px'});
-  };
-  
   // 背景を透過にする
   $('html').css('background-color','transparent');
 };
@@ -193,10 +179,10 @@ app.setSelfTimer = function(waiteTime) {
   // タイマーをオフにした場合はバッジを消してアイコンサイズを元に戻す
   if(waiteTime==='0') {
     $('#selfTimerTime').text('');
-      $('#iconSelfTimer').removeClass('small-clock');
+      $('#iconSelfTimer').removeClass('iconsize3').addClass('iconsize5');
   }else{
     $('#selfTimerTime').text(waiteTime);
-    $('#iconSelfTimer').addClass('small-clock');
+    $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
   }
   
   // ポップオーバーメニューを消去
@@ -443,22 +429,6 @@ app.cameraTakeButtonClick = function() {
     $('#selfTimerMessage').show();
     $('#selfTimerCounter').text('');
   
-    if(displayDeviceSize()==='small') {
-      $('#selfTimerCounter').css({
-        'background-color' : 'transparent',
-        'text-align' : 'center',
-        'font-size'  : '200px',
-        'margin-top' : '100px'
-      });
-    }
-    if(displayDeviceSize()==='large') {
-      $('#selfTimerCounter').css({
-        'background-color' : 'transparent',
-        'text-align' : 'center',
-        'font-size'  : '300px',
-        'margin-top' : '300px'
-      });
-    }
     var transform = getTransformParam($('#kokuban').css('transform'));
     var trns = 'rotate('+transform.rotate+')';
     $('#selfTimerCounter').css({'transform' : trns});
@@ -634,9 +604,9 @@ app.setElementPosition = function() {
 
   // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
   if($('#selfTimerTime').text()==='') {
-    $('#iconSelfTimer').removeClass('small-clock');
+    $('#iconSelfTimer').removeClass('iconsize3').addClass('iconsize5');
   }else{  
-    $('#iconSelfTimer').addClass('small-clock');
+    $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
   }
 
   // 起動時のフラッシュモードを'auto'にする
@@ -822,7 +792,7 @@ app.setOrientationChange = function(acceleration) {
     }
     // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
     if($('#selfTimerTime').text()!=='') {
-      $('#iconSelfTimer').addClass('small-clock');
+      $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
     }
     
     devaiceOrientation = nowOrientation;
@@ -1104,27 +1074,7 @@ app.takePicturePreview = function(img_url) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.previewMessageSetStyle = function() {
   _log(1,'function','app.previewMessageSetStyle()');
-
-  // プレビューメッセージの表示スタイルをcss設定
-  $('#previewMessage p').css({
-    'background-color' : 'transparent',
-    'text-align' : 'center',
-    'font-weight': 'bold',
-    'opacity'    : '0.5',
-  });
   
-//  if(displayDeviceSize()==='small') {
-//    $('#previewMessage p').css({
-//      'font-size'  : '20px',
-//      'margin-top' : '200px'
-//    });
-//  }
-//  if(displayDeviceSize()==='large') {
-//    $('#previewMessage p').css({
-//      'font-size'  : '40px',
-//      'margin-top' : '500px'
-//    });
-//  }
   // 黒板の向きを取得し、メッセージを表示する向きを設定する
   var transform = getTransformParam($('#kokuban').css('transform'));
   var trns = 'rotate('+transform.rotate+')';
