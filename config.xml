@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" id="custom.camera" version="1.0.0" ios-CFBundleVersion="1.0.0">
   <name>施工写真</name>
-  <description>Made with Monaca (http://monaca.mobi)</description>
+  <description>Made with YATAMA (http://yatama.co.jp)</description>
   <author/>
   <content src="index.html"/>
   <allow-navigation href="*"/>
   <allow-intent href="itms:*"/>
   <allow-intent href="itms-apps:*"/>
+  <preference name="Orientation" value="portrait"/>
+  <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root"/>
+  <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,root"/>
+  <preference name="iosPersistentFileLocation" value="Compatibility"/>
   <preference name="loglevel" value="DEBUG"/>
   <preference name="AndroidLaunchMode" value="singleTop"/>
   <preference name="ErrorUrl" value=""/>
+  <preference name="Fullscreen" value="false"/>
+  <preference name="KeepRunning" value="true"/>
   <preference name="SplashScreen" value="screen"/>
+  <preference name="SplashScreenDelay" value="1000"/>
   <preference name="AllowInlineMediaPlayback" value="false"/>
   <preference name="BackupWebStorage" value="cloud"/>
   <preference name="FadeSplashScreenDuration" value="250"/>
@@ -26,7 +33,17 @@
     <param name="ios-package" value="CDVLocalStorage"/>
   </feature>
   <preference name="UIWebViewDecelerationSpeed" value="normal"/>
+  <preference name="monaca:AndroidIsPackageNameSeparate" value="false"/>
   <platform name="ios">
+    <icon src="/res/ios/icon/icon.png" width="57" height="57"/>
+    <icon src="/res/ios/icon/icon@2x.png" width="114" height="114"/>
+    <icon src="/res/ios/icon/icon-72.png" width="72" height="72"/>
+    <icon src="/res/ios/icon/icon-72@2x.png" width="144" height="144"/>
+    <icon src="/res/ios/icon/icon-60.png" width="60" height="60"/>
+    <icon src="/res/ios/icon/icon-60@2x.png" width="120" height="120"/>
+    <icon src="/res/ios/icon/icon-60@3x.png" width="180" height="180"/>
+    <icon src="/res/ios/icon/icon-76.png" width="76" height="76"/>
+    <icon src="/res/ios/icon/icon-76@2x.png" width="152" height="152"/>
     <icon src="/res/ios/icon/icon-40.png" width="40" height="40"/>
     <icon src="/res/ios/icon/icon-40@2x.png" width="80" height="80"/>
     <icon src="/res/ios/icon/icon-50.png" width="50" height="50"/>
@@ -35,35 +52,36 @@
     <icon src="/res/ios/icon/icon-small@2x.png" width="58" height="58"/>
     <icon src="/res/ios/icon/icon-small@3x.png" width="87" height="87"/>
     <icon src="/res/ios/icon/icon-83.5@2x~ipad.png" width="167" height="167"/>
+    <splash src="/res/ios/screen/Default~iphone.png" width="320" height="480"/>
+    <splash src="/res/ios/screen/Default@2x~iphone.png" width="640" height="960"/>
+    <splash src="/res/ios/screen/Default-568h@2x~iphone.png" width="640" height="1136"/>
+    <splash src="/res/ios/screen/Default-667h.png" width="750" height="1334"/>
+    <splash src="/res/ios/screen/Default-736h.png" width="1242" height="2208"/>
     <splash src="/res/ios/screen/Default-Landscape-736h.png" width="2208" height="1242"/>
+    <splash src="/res/ios/screen/Default-Portrait~ipad.png" width="768" height="1024"/>
     <splash src="/res/ios/screen/Default-Landscape~ipad.png" width="1024" height="768"/>
+    <splash src="/res/ios/screen/Default-Portrait@2x~ipad.png" width="1536" height="2048"/>
     <splash src="/res/ios/screen/Default-Landscape@2x~ipad.png" width="2048" height="1536"/>
-    <config-file platform="ios" target="*-Info.plist" parent="UIFileSharingEnabled">
+    <!--  アプリケーションの対応言語(日本語のみ)をしていする -->
+    <!--  アプリ/Documents/にファイルを保存可能にする -->
+    <config-file target="*-Info.plist" parent="UIFileSharingEnabled">
       <true/>
     </config-file>
-    <config-file platform="ios" target="*-Info.plist" parent="NSCameraUsageDescription" overwrite="true">
-      <string>Allow the app to use your camera</string>
+    <!--　デバイスのカメラの使用を宣言し、メッセージを定義する -->
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription" overwrite="true">
+      <string>本アプリを使用する場合は、必ずカメラの使用を許可して下さい</string>
+    </config-file>
+    <!--　デバイスのカメラロールの使用を宣言し、メッセージを定義する -->
+    <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription" overwrite="true">
+      <string>本アプリを使用する場合は、必ずカメラロールの使用を許可して下さい</string>
+    </config-file>
+    <!--　デバイスのGPS機能の使用を宣言し、メッセージを定義する -->
+    <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription" overwrite="true">
+      <string>写真に位置情報を付加する場合に使用します。</string>
     </config-file>
     <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
-    <splash src="/res/ios/screen/Default-568h@2x~iphone.png" width="640" height="1136"/>
-    <icon src="/res/ios/icon/icon-76@2x.png" width="152" height="152"/>
-    <splash src="/res/ios/screen/Default-Portrait@2x~ipad.png" width="1536" height="2048"/>
-    <icon src="/res/ios/icon/icon-60@3x.png" width="180" height="180"/>
-    <icon src="/res/ios/icon/icon.png" width="57" height="57"/>
-    <icon src="/res/ios/icon/icon@2x.png" width="114" height="114"/>
-    <icon src="/res/ios/icon/icon-72.png" width="72" height="72"/>
-    <icon src="/res/ios/icon/icon-60.png" width="60" height="60"/>
-    <icon src="/res/ios/icon/icon-60@2x.png" width="120" height="120"/>
-    <icon src="/res/ios/icon/icon-76.png" width="76" height="76"/>
-    <icon src="/res/ios/icon/icon-72@2x.png" width="144" height="144"/>
-    <splash src="/res/ios/screen/Default~iphone.png" width="320" height="480"/>
-    <splash src="/res/ios/screen/Default-667h.png" width="750" height="1334"/>
-    <splash src="/res/ios/screen/Default-Portrait~ipad.png" width="768" height="1024"/>
-    <splash src="/res/ios/screen/Default-736h.png" width="1242" height="2208"/>
-    <splash src="/res/ios/screen/Default@2x~iphone.png" width="640" height="960"/>
     <config-file platform="ios" parent="CFBundleLocalizations" target="*-Info.plist">
       <array>
-        <string>en</string>
         <string>ja</string>
       </array>
     </config-file>
@@ -93,16 +111,11 @@
     <icon src="/platforms/chrome/icon.png" width="128" height="128"/>
   </platform>
   <preference name="WindowsStorePublisherName" value="My Name"/>
-  <preference name="WindowsStoreIdentityName" value="bc045902-ac99-3863-9f4f-5037f2746b4b"/>
-  <preference name="KeepRunning" value="true"/>
-  <preference name="monaca:AndroidIsPackageNameSeparate" value="false"/>
-  <preference name="Orientation" value="portrait"/>
-  <preference name="SplashScreenDelay" value="1000"/>
-  <preference name="Fullscreen" value="false"/>
+  <preference name="WindowsStoreIdentityName" value="79c09693-a3d1-b284-b3cb-341c547abf3a"/>
   <preference name="ios-XCBuildConfiguration-TARGETED_DEVICE_FAMILY" value="1,2"/>
   <preference name="AutoHideSplashScreen" value="true"/>
   <preference name="FadeSplashScreen" value="true"/>
-  <preference name="ShowSplashScreenSpinner" value="true"/>
+  <preference name="ShowSplashScreenSpinner" value="false"/>
   <access origin="*"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="EnableViewportScale" value="false"/>

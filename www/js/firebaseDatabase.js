@@ -187,6 +187,22 @@ function setFirebaseShootinglistNo(koujiname, listNo) {
     });
 }
 
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// setFirebaseGeoLocation()
+// FirebaseDatabaseの位置情報を更新
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function setFirebaseGeoLocation(koujiname, location) {
+  _log(1,'function','setFirebaseGeoLocation('+location+')');
+  
+  // control.json からfirebaseDatabaseの工事情報を更新する
+  var folder = activeuser.uid+"/group00/koujiList/"+koujiname;
+  
+  // 工事の位置情報を更新
+  firebase.database().ref(folder).update({
+        geoLocation : location
+    });
+}
+
 /* functionsによってサーバーで作成する為に削除 2018/01/12
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // setFirebasePictureList()

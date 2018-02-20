@@ -1,0 +1,102 @@
+<ons-page id="koujiInfoListPage">
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" onclick="koujiInfoList.toPopPage()">
+      <ons-button id="pop-button" modifier="quiet" style='margin-top:0px;color: white'>
+        <ons-icon class="iconsize5" icon="fa-angle-double-left" fixed-width="true"></ons-icon>
+    </ons-button></div>
+  
+    <div class="center textsize5" style="color: white">工事情報一覧</div>
+    
+    <div class="right" onclick="koujiInfoList.toCamera()">
+      <ons-button class="toCamera" modifier="quiet">
+        <ons-icon class="iconsize5" icon="fa-camera" fixed-width="true" style="color: white"></ons-icon>
+      </ons-button>
+    </div>
+  </ons-toolbar>
+  
+  <ons-list id="koujiInfoList" class="content_back_color">
+  </ons-list>
+
+  <ons-modal id="KojiMainte">
+    <br />    
+    <ons-list modifier="inset" class="modal_back_color">
+      <ons-list-item modifier="nodivider">
+        <ons-row>
+          <ons-col style="font-size:50%">工事名＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <ons-col>
+            <textarea class="textarea textarea--transparent" id="KojiName"
+            style="width:100%;background-color:white;">大谷小地様・祐子様邸新築工事</textarea>
+          </ons-col>  
+        </ons-row>
+        <hr width="98%">
+        
+        <ons-row>
+          <ons-col style="font-size:50%">撮影グループ＞</ons-col>
+        </ons-row>
+        <ons-row height="10px">
+          <ons-select id="PhotoGroup" style="width:100%;background-color:white;" modifier="material">
+            <option value="GIR">GIR</option>
+            <option value="JHS">JHS</option>
+            <option value="在住ﾋﾞｼﾞﾈｽ">在住ﾋﾞｼﾞﾈｽ</option>
+          </ons-select>        
+        </ons-row>
+        
+        <ons-row>
+          <ons-col style="font-size:50%">場　所＞</ons-col>
+        </ons-row>
+        <ons-row height="10px">
+          <input type="text" class="text-input" id="KojiAdress" style="width:100%;background-color:white;"
+          value="鳥取県鳥取市大覚寺503-6"></input>
+        </ons-row>
+        
+        <ons-row>
+          <ons-col style="font-size:50%">会社名＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <input type="text" class="text-input" id="SekoKaisya" style="width:100%;background-color:white;"
+          value="株式会社田中建築"></input>
+        </ons-row>
+        
+        <ons-row>
+          <ons-col style="font-size:50%">担当者＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <input type="text" class="text-input" id="SekoKaisya" style="width:50%;background-color:white;"
+          value="田中"></input>
+        </ons-row>
+        
+        <ons-row>
+          <ons-col style="width:70%;font-size:50%">メ　モ＞</ons-col>
+        </ons-row>
+        <ons-row>
+          <ons-col>
+            <textarea class="textarea textarea--transparent" id="MemoArea"
+            style="width:100%;background-color:white;">**************************</textarea>
+          </ons-col>  
+        </ons-row>
+        
+        <hr width="98%">
+
+        <ons-row>
+          <ons-col width="60%"></ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="document.getElementById('KojiMainte').hide()">
+              <p align="center" style="position:absolute;margin-top:10px;font-size:70%;"><b>戻る</b></p>
+              <ons-icon icon="ion-ios-undo-outline" size="30px" fixed-width="true" style="color: darkorange"></ons-icon>
+            </ons-button>
+          </ons-col>
+          <ons-col width="20%">
+            <ons-button modifier="quiet" onclick="document.getElementById('KojiMainte').hide()">
+              <p align="center" style="position:absolute;margin-top:10px;font-size:70%;"><b>保存</b></p>
+              <ons-icon icon="ion-archive" size="30px" fixed-width="true" style="color: darkorange"></ons-icon>
+            </ons-button>
+          </ons-col>    
+        </ons-row>
+        
+      </ons-list-item>
+    </ons-list>
+  </ons-modal>
+  
+</ons-page>

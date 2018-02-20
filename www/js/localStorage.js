@@ -262,7 +262,7 @@ localStrage.setInformation = function(directory, filename) {
 localStrage.setInformationHeader = function(directory, filename) {
   _log(1,'function','localStrage.setInformationHeader()');
   
-  var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'' };
+  var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'',geoLocation:{} };
   var d = new Date();
   var yyyy = d.getFullYear();
   var mm   = d.getMonth()+1;
@@ -291,6 +291,8 @@ localStrage.setInformationHeader = function(directory, filename) {
     if(k.upload_count  === undefined) {k.upload_count  = 0;};
     json_text.picture_count = k.picture_count + 1;
     json_text.upload_count  = k.upload_count;
+    // 撮影場所の位置情報
+    json_text.geoLocation   = presentLocation;
     // jsonオブジェクトに変換
     var json_out  = JSON.stringify(json_text);
     blob = new Blob( [json_out], {type:"JSON\/javascript"} );
@@ -308,6 +310,8 @@ localStrage.setInformationHeader = function(directory, filename) {
     json_text.last_datetime = format_datetime;
     // 撮影枚数は１をセット
     json_text.picture_count  = 1;
+    // 撮影場所の位置情報
+    json_text.geoLocation   = presentLocation;
     // jsonオブジェクトに変換
     var json_out  = JSON.stringify(json_text);
     blob = new Blob( [json_out], {type:"JSON\/javascript"} );
@@ -316,6 +320,9 @@ localStrage.setInformationHeader = function(directory, filename) {
       _log(1,'localStrage.setInformationHeader','new normalend');
     });
   });
+
+  // localstoragの位置情報を更新
+  setFirebaseGeoLocation(koujiname, presentLocation);
 };
 
 // 2018/01/27 ADD -----↓

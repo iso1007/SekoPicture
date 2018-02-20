@@ -237,7 +237,7 @@ function _getLocation() {
       presentLocation = {lat : 0, lng : 0, alt : 0, tim : 0};
 
       var message = '写真に位置情報を付加する設定がされていますが、';
-      if(error.code === PositionError.PERMISSION_DENIED) {
+      if(error.code === '1') { //PositionError.PERMISSION_DENIED) {
         message = message + '端末の設定によって位置情報の取得が許可されていません。';
       }else{
         message = message + '位置情報の取得ができませんでした。 (' + error.code + ')';

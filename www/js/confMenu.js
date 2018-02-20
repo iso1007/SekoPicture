@@ -40,3 +40,23 @@ function confPictureClick() {
   setNavigator.pushPage('confPicture.html', options);
 };
 
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoListClick()
+// 工事情報一覧画面ボタンをクリック
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function koujiInfoListClick() {
+  _log(1,'function','koujiInfoListClick()');
+
+  var options = {
+    // アニメーションの種類
+    animation: 'slide',   //'slide', 'lift', 'fade'
+    // 画面遷移後に実行されるコールバック
+    callback: function() { 
+      // 工事情報一覧画面の初期設定
+      koujiInfoList.koujiListDisplay();
+    }
+  };
+  
+  // 工事情報一覧画面を表示
+  setNavigator.pushPage('koujiInfoList.html', options);
+};
