@@ -388,3 +388,16 @@ function _confirm(message, callback) {
                   
   ons.notification.confirm(options);
 };
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// _preparationMessage()
+// 機能準備中メッセージのダイアログ表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function _preparationMessage() {
+  // ダイアログ画面で入力
+  var options = { title: '〔情報〕',
+                  buttonLabels: 'ＯＫ',
+                  messageHTML: '本機能は準備中です。<br>しばらくお待ちください。'
+                  };
+  ons.notification.alert(options);
+};

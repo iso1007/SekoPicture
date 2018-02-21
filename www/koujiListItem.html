@@ -43,7 +43,7 @@
       </label>
 
       <label class="tabbar__item">
-        <input type="radio" id="pictureListButton-display" onclick="koujiFilesToolMenu(this)" disabled="true">
+        <input type="radio" id="pictureListButton-display" onclick="_preparationMessage()" checked>
         <button class="tabbar__button">
           <i class="tabbar__icon fa fa-th-large iconsize3"></i>
           <div class="tabbar__label">表示切替</div>
@@ -122,7 +122,7 @@
           </ons-col>
           <ons-col width="30%"></ons-col>
           <ons-col width="20%">
-            <ons-button modifier="quiet" onclick="koujiPictureViewClose()">
+            <ons-button modifier="quiet" onclick="_preparationMessage()">
               <p class="iconbutton_text textsize5">編集</p>
               <ons-icon class="iconbutton_icon iconsize5" icon="fa-list-alt" fixed-width="true"></ons-icon>
             </ons-button>
