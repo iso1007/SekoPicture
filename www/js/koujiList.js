@@ -108,8 +108,13 @@ function koujiListAddDate(fileEntrie, directoryEntry, callback) {
       reader.onloadend = function(e) {
         
         // 読み込んだテキストをJSON形式に変換
-        var koujiInfo = JSON.parse(reader.result);
-        
+        var koujiInfo = {};
+        try {
+          koujiInfo = JSON.parse(reader.result);
+        }catch(e){
+          koujiInfo.picture_count = 999;
+        }
+      
         // 写真枚数情報が無い場合は0で追加
         if(koujiInfo.picture_count === undefined) { koujiInfo.picture_count = 0; }
 
@@ -419,12 +424,13 @@ function koujiListAddInfo(directoryEntry, filename) {
             var text = reader.result;
             var k = {};
             try {
-              var k = JSON.parse(text);
+              k = JSON.parse(text);
             } catch(e) {
               _errorlog(1,'koujiListAddInfo()',e+'->'+infoFile);
             }
 
             // 撮影リストでのソートを可能にするためにclassにリストＩＤをセット
+            if(k.pictureId === undefined) {k.pictureId ='';}
             $('#listItem'+filename).attr('class',k.pictureId);
             
             // 撮影日時をセット

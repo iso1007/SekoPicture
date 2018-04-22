@@ -279,7 +279,13 @@ localStrage.setInformationHeader = function(directory, filename) {
   localStrage.getPicture(directory, filename, function(result) {
     // 読み込んだテキストをJSON形式に変換
     var text = result;
-    var k = JSON.parse(text);
+    var k = {};
+    try {
+      k = JSON.parse(text);
+    }catch(e){
+      k.fast_datetime  = '';
+      k.shootinglistNo = '';
+    }  
     
     json_text.koujiname = koujiname;
     json_text.fast_datetime = k.fast_datetime;
