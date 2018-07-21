@@ -4,33 +4,30 @@ var localStrage = function() {};
 // localStrage.pictureSave()
 // 写真イメージのセーブ
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, directory, filename) {
+localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, directory, filename, callback) {
   _log(1,'function','localStrage.pictureSave('+img_width+','+img_height+','+img_rot+','+directory+','+filename+')');
 
-  // 縦向きの場合
-//if(img_rot>0) {  // 2018/01/23 DEL
+  try {
     // 横向きの場合はイメージを回転
     _imgB64Resize(img_url, img_width, img_height, img_rot, function(img64) {
 
-      // 撮影イメージ(Base64)にExif情報を付加            // 2018/02/07 ADD
+      // 撮影イメージ(Base64)にExif情報を付加
       // 撮影イメージ(Base64)形式をBlob形式に変換
-      var blob = _Base64toBlob( _setExifInfo(img64) );   // 2018/02/07 ADD
-//    var blob = _Base64toBlob(img64);                   // 2018/02/07 DEL
+      // サムネイル画像にはExif情報を付加しない
+      if(directory.indexOf('/thumbnail') > 0) {
+        var blob = _Base64toBlob( img64 );
+      }else{
+        var blob = _Base64toBlob( _setExifInfo(img64) );
+      }
       // デバイスローカル(documentsDirectory)に保存
       localStrage.saveBlobFile(directory, filename, blob, function(url){
         _log(1,'localStrage.pictureSave','normalend');
+        callback(null);
       });
     });
-//  // 2018/01/23 ↓ ----- DEL    
-//  }else{
-//    // 撮影イメージ(Base64)形式をそのままBlob形式に変換
-//    var blob = _Base64toBlob(img_url);
-//    // デバイスローカル(documentsDirectory)に保存
-//    localStrage.saveBlobFile(directory, filename, blob, function(url){
-//      _log(1,'localStrage.pictureSave','normalend');
-//    });
-//  };
-//  // 2018/01/23 ↑ ----- DEL    
+  } catch(e) {
+    _alert('撮影した写真データが正常に保存されませんでした。'+e.message);
+  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -44,38 +41,38 @@ localStrage.makeDirectory = function(localFolder, callback) {
 //  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
   var folderurl = cordova.file.documentsDirectory;
   _log(1,'function',folderurl+localFolder);
-  
+
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
   window.resolveLocalFileSystemURL(folderurl, function success1(directoryEntry) {
     // Android: "file:///data/data/io.cordova.myapp9ada90/files/
     // Windows: "ms-appdata:///local//"
-      
+
     directoryEntry.getDirectory(localFolder, { create: true }, function (subDirectoryEntry) {
-      
+
       // 写真情報ファイル保存フォルダの作成
       subDirectoryEntry.getDirectory('information', { create: true }, function (e) {
-          
+
         // サムネイル保存フォルダの作成
         subDirectoryEntry.getDirectory('thumbnail', { create: true }, function (e) {
-            
+
           // 黒板背景イメージ保存用フォルダの作成
           subDirectoryEntry.getDirectory('clipping', { create: true }, function (e) {
-            
+
             // ゴミ箱フォルダの作成
             subDirectoryEntry.getDirectory('dustbox', { create: true }, function (e) {
-              
+
               callback(null);
-              
+
             });
           });
-        });  
+        });
       });
     },
     // (resolveLocalFileSystemURL)呼び出し失敗
     function fail(error) {
       _errorlog(1,'localStrage.makeDirectory',"resolveLocalFileSystemURI Error: " + error.code);
     });
-  });      
+  });
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -108,7 +105,7 @@ localStrage.saveBlobFile = function(localFolder, localFileName, blob, callback) 
 
             // FileWriterオブジェクトを作成
             fileEntry.createWriter(
-              
+
               // (fileEntry.createWriter)の成功
               function success3(fileWriter) {
                 // Android: "cdvfile://localhost/files/settings.json"
@@ -158,7 +155,7 @@ localStrage.saveBlobFile = function(localFolder, localFileName, blob, callback) 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 localStrage.getPicture = function(localFolder, localFileName, normal_callback, error_callback) {
   _log(1,'function','localStrage.getPicture()');
-  
+
   // 設定ファイルへのパス
 //  var urlToFile = cordova.file.documentsDirectory + 'NoCloud/' + localFolder + '/' + localFileName;
   var urlToFile = cordova.file.documentsDirectory + localFolder + '/' + localFileName;
@@ -187,7 +184,7 @@ localStrage.getPicture = function(localFolder, localFileName, normal_callback, e
             reader.readAsDataURL(file);
           }else{
             reader.readAsText(file);
-          }  
+          }
         },
         // (fileEntry.file)呼び出し失敗
         function fail (error) {
@@ -208,16 +205,16 @@ localStrage.getPicture = function(localFolder, localFileName, normal_callback, e
 // localStrage.setInformation()
 // 黒板情報のセーブ (infomation/[id].json)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.setInformation = function(directory, filename) {
+localStrage.setInformation = function(directory, filename, callback) {
   _log(1,'function','localStrage.setInformation()');
-  
+
   // ローカルストレージから読み込み
   var str = localStrage.getItems('firebase:temp/kokuban');
   // 読み込んだテキストをJSON形式に変換
   var json_in = JSON.parse(str);
-  
+
   var json_text = { pictureId:'' ,kouji:'',kousyu:'',sokuten:'',hiduke:'',bikou:'',syamei:'',datetime:'',upload:'' };
-  
+
   json_text.pictureId= json_in.pictureId;
   json_text.kouji    = json_in.kouji;
 //  json_text.kouji    = json_in.directory;
@@ -237,21 +234,22 @@ localStrage.setInformation = function(directory, filename) {
   hh  = ('00' + hh).slice(-2);
   min = ('00' + min).slice(-2);
   json_text.datetime = yyyy+'/'+mm+'/'+dd+' '+hh+':'+min;
-  
+
   // 2018/02/07 ADD ----- ↓
   // 位置情報を付加
   json_text.latitude　= presentLocation.lat;
   json_text.longitude = presentLocation.lng;
   // 2018/02/07 ADD ----- ↑
-  
+
   json_text.upload   = 'Untreated'; // 未処理
   var json_out  = JSON.stringify(json_text);
-  
+
   blob = new Blob( [json_out], {type:"JSON\/javascript"} );
-  
+
   // デバイスローカル(documentsDirectory)に保存
   localStrage.saveBlobFile(directory, filename, blob, function(url){
     _log(1,'localStrage.setInformation','normalend');
+    callback(null);
   });
 };
 
@@ -259,9 +257,9 @@ localStrage.setInformation = function(directory, filename) {
 // localStrage.setInformationHeader()
 // 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.setInformationHeader = function(directory, filename) {
+localStrage.setInformationHeader = function(directory, filename, callback) {
   _log(1,'function','localStrage.setInformationHeader()');
-  
+
   var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'',geoLocation:{} };
   var d = new Date();
   var yyyy = d.getFullYear();
@@ -275,7 +273,7 @@ localStrage.setInformationHeader = function(directory, filename) {
   min = ('00' + min).slice(-2);
   var format_datetime = yyyy+'/'+mm+'/'+dd+' '+hh+':'+min;
   var koujiname = directory.replace('/information', '');
-  
+
   localStrage.getPicture(directory, filename, function(result) {
     // 読み込んだテキストをJSON形式に変換
     var text = result;
@@ -285,8 +283,8 @@ localStrage.setInformationHeader = function(directory, filename) {
     }catch(e){
       k.fast_datetime  = '';
       k.shootinglistNo = '';
-    }  
-    
+    }
+
     json_text.koujiname = koujiname;
     json_text.fast_datetime = k.fast_datetime;
     json_text.shootinglistNo = k.shootinglistNo;
@@ -305,6 +303,7 @@ localStrage.setInformationHeader = function(directory, filename) {
     // デバイスローカル(documentsDirectory)に保存
     localStrage.saveBlobFile(directory, filename, blob, function(url){
       _log(1,'localStrage.setInformationHeader','update normalend');
+      callback(null);
     });
   },
   function(e) {
@@ -324,6 +323,7 @@ localStrage.setInformationHeader = function(directory, filename) {
     // デバイスローカル(documentsDirectory)に保存
     localStrage.saveBlobFile(directory, filename, blob, function(url){
       _log(1,'localStrage.setInformationHeader','new normalend');
+      callback(null);
     });
   });
 
@@ -343,9 +343,9 @@ localStrage.removeDirectory = function(localFolder, callback) {
   // iosはDocuments配下のクラウド非同期フォルダに保存
 //  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
   var folderurl = cordova.file.documentsDirectory + localFolder;
-  
+
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl, 
+  window.resolveLocalFileSystemURL(folderurl,
     function(directoryEntry) {
       // 指定されたフォルダを削除する
       directoryEntry.removeRecursively(
@@ -363,7 +363,7 @@ localStrage.removeDirectory = function(localFolder, callback) {
       callback(null);
     }
   );
-};  
+};
 // 2018/01/27 ADD -----↑
 
 // 2018/01/27 ADD -----↓
@@ -375,12 +375,12 @@ localStrage.removeFile = function(localFolder, localFile, callback) {
   // iosはDocuments配下のクラウド非同期フォルダに保存
 //  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
   var fileurl = cordova.file.documentsDirectory + localFolder + localFile;
-  
+
   _log(1,'function','localStrage.removeFile('+fileurl+')');
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
   // 設定ファイルのFileEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(fileurl, 
+  window.resolveLocalFileSystemURL(fileurl,
     function(fileEntry) {
       // 指定したファイルを削除
       fileEntry.remove();
@@ -391,7 +391,7 @@ localStrage.removeFile = function(localFolder, localFile, callback) {
       callback(e.code);
     }
   );
-};  
+};
 // 2018/01/27 ADD -----↑
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -400,7 +400,7 @@ localStrage.removeFile = function(localFolder, localFile, callback) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 localStrage.setItems = function(key,val) {
   _log(1,'function','localStrage.setItems()');
-  
+
   try {
     // ローカルストレージに書き込み
     localStorage.setItem(key, val);
@@ -409,7 +409,7 @@ localStrage.setItems = function(key,val) {
     _alert(e+'\n'+'ローカルストレージへの書き込みが出来ませんでした。\n' + '(key:' + key + ',' + val + ')');
     return false;
   };
-};  
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // localStrage.getItems()
@@ -417,8 +417,8 @@ localStrage.setItems = function(key,val) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 localStrage.getItems = function(key) {
   _log(1,'function','localStrage.getItems()');
-  
-  var str = ''; 
+
+  var str = '';
 
   try {
     // ローカルストレージから読み込み
@@ -429,8 +429,8 @@ localStrage.getItems = function(key) {
   };
 
   if(str==null){
-    str = '{}'; 
+    str = '{}';
   };
-  
+
   return str;
-};  
+};

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
   <script src="components/loader.js"></script>
   <script src="components/monaca-onsenui/js/onsenui.min.js"></script>
@@ -21,19 +21,19 @@
   <!--機能メニュー画面 -->
   <ons-navigator id="setNavigator" var="setNavigator" page="confMenu.html" style="visibility:hidden">
   </ons-navigator>
-  
+
   <!--黒板入力メニュー画面 -->
   <ons-navigator id="topNavigator" var="topNavigator" page="setKokuban.html" style="visibility:hidden">
   </ons-navigator>
-  
+
   <!--工事写真リスト画面 -->
   <ons-navigator id="lstNavigator" var="lstNavigator" page="koujiList.html" style="visibility:hidden">
   </ons-navigator>
-  
+
   <!--撮影リスト画面 -->
   <ons-navigator id="chkNavigator" var="chkNavigator" page="checkPicture.html" style="visibility:hidden">
   </ons-navigator>
-  
+
   <!--起動時のスプラッシュ表示 -->
   <ons-modal id="splashModal">
     <div style="margin: auto 15%">
@@ -83,32 +83,32 @@
       <div id="pic-box-border">
         <div id="pic-box" style="height:100%; width:100%">
         </div>
-      </div> 
+      </div>
     </ons-gesture-detector>
     <!--グリッド表示-->
     <div id="grid-border">
       <div id="horizon-grid-border1"></div>
       <div id="horizon-grid-border2"></div>
-      <div id="vertical-grid-border1"></div> 
-      <div id="vertical-grid-border2"></div> 
-    </div> 
-    
+      <div id="vertical-grid-border1"></div>
+      <div id="vertical-grid-border2"></div>
+    </div>
+
     <!--黒板表示-->
     <ons-gesture-detector class="kokuban">
       <canvas id="kokuban" onclick="app.kokubanClick()"></canvas>
     </ons-gesture-detector>
-    
+
     <!--プレビュー縮小表示-->
     <div>
-      <img id="preview" onclick="app.takePicturePreviewhide()">
+      <img id="preview">
     </div>
-    <div id="previewMessage" onclick="app.takePicturePreviewhide()">
+    <div id="previewMessage">
       <p>プレビュー表示中</p>
     </div>
     <div id="selfTimerMessage">
       <p id="selfTimerCounter"></p>
     </div>
-  </div>  
+  </div>
 
   <script type="text/javascript" src="../plugins/cordova-plugin-camera-preview/www/CameraPreview.js"></script>
   <script type="text/javascript" src="js/function.js"></script>

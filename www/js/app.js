@@ -2,7 +2,7 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 0;  
+var logMessageLevel = 0;
 var errorlogMessageLevel = 5;
 _log(0,'===========================Pocess Start=================================');
 
@@ -44,7 +44,7 @@ ons.ready(function() {
 
   // 端末標準のステータスバーを非表示にする
   StatusBar.hide();
-  
+
   // 起動時の背景色
   $('html').css('background-color','#524e4d');
 
@@ -53,13 +53,13 @@ ons.ready(function() {
 
   $('#topNavigator').css('visibility','visible');
   $('#topNavigator').hide();
- 
+
   $('#lstNavigator').css('visibility','visible');
   $('#lstNavigator').hide();
-  
+
   $('#chkNavigator').css('visibility','visible');
   $('#chkNavigator').hide();
-  
+
   // Firebaseの初期化
   try {
     firebaseAuth.initialize(function() {
@@ -71,7 +71,7 @@ ons.ready(function() {
     function(e) {
       // オフライン時に実行する処理
       app.afterLoginInitialize1();
-    });  
+    });
   } catch(e) {alert(e);}
 });
 
@@ -87,12 +87,12 @@ app.afterLoginInitialize1 = function() {
     // FirebaseDatabaseからローカルストレージに書き込み
     setFirebaseToLocalStrage();
   }
-  
+
   // 黒板の日付を初期化
   try{
     kokuban.setDataInitialize();
   } catch(e) {alert(e);}
-  
+
   // 起動時のスプラッシュ画面
   $('#splashModal').show();
   // 3秒後に初期処理2を実行し、スプラッシュ画面を消す
@@ -112,28 +112,28 @@ app.afterLoginInitialize2 = function() {
   try{
     app.setElementPosition();
   } catch(e) {alert(e);}
-  
+
   // 画面の向きを検出
   orientWatch('start');
-  
+
   // セルフタイマーポップオーバーメニューの定義
   ons.createPopover('selftimer.html').then(function(popover) {
     menuSelfTimer = popover;
   });
-  
+
   // フラッシュ選択メニューの定義
   ons.createPopover('flashMode.html').then(function(popover) {
     menuFlashMode = popover;
   });
-  
+
   // カメラプレビュー画面位置の定義とビューの開始
   app.setPictureResize();
-  
+
   // 黒板移動イベントの定義
   try{
     kokuban.touchmove();
   } catch(e) {alert(e);}
-  
+
   // 黒板の初期表示
   try{
     kokuban.makeframe();
@@ -164,7 +164,7 @@ app.setSelfTimerClick = function() {
     $('#selfTimerMessage').hide();
     clearInterval(SelfTimerId);
   }
-  
+
   menuSelfTimer.show(event);
 };
 
@@ -184,9 +184,9 @@ app.setSelfTimer = function(waiteTime) {
     $('#selfTimerTime').text(waiteTime);
     $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
   }
-  
+
   // ポップオーバーメニューを消去
-  menuSelfTimer.hide(); 
+  menuSelfTimer.hide();
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -195,7 +195,7 @@ app.setSelfTimer = function(waiteTime) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.setFlashModeClick = function() {
   _log(1,'function','app.setFlashModeClick()');
-  
+
   menuFlashMode.show(event);
 };
 
@@ -217,14 +217,14 @@ app.setFlashMode = function(flashMode) {
     $('#setFlashType').show();
     $('#setFlashType').text('A');
     CameraPreview.setFlashMode('auto');
-  }else{  
+  }else{
     $('#setFlashType').hide();
     $('#setFlashType').text(flashMode);
-    CameraPreview.setFlashMode(flashMode);  
+    CameraPreview.setFlashMode(flashMode);
   }
 
   // ポップオーバーメニューを消去
-  menuFlashMode.hide(); 
+  menuFlashMode.hide();
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -233,18 +233,18 @@ app.setFlashMode = function(flashMode) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.setGridBroderClick = function() {
   _log(1,'function','app.setGridBroderClick()');
-  
+
   if(viewGridBorder) {
     $('#grid-border').hide();
     viewGridBorder = false;
-    
+
     // 非表示状態をローカルストレージに保存
     pictureItemSet('grid', false);
-    
+
   }else{
     $('#grid-border').show();
     viewGridBorder = true;
-    
+
     // 表示状態をローカルストレージに保存
     pictureItemSet('grid', true);
   }
@@ -262,7 +262,7 @@ app.switchCameraClick = function() {
     $('#selfTimerMessage').hide();
     clearInterval(SelfTimerId);
   }
-  
+
   CameraPreview.switchCamera();
 };
 
@@ -272,7 +272,7 @@ app.switchCameraClick = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.controlPanelClick = function() {
   _log(1,'function','app.controlPanelClick()');
-  
+
   // セルフタイマーが動作中の場合は中止する
   if(SelfTimerId !== null) {
     $('#selfTimerMessage').hide();
@@ -283,7 +283,7 @@ app.controlPanelClick = function() {
   $('#camera').hide();
   // ステータスバーの表示
   StatusBar.show();
-  
+
   // 設定メニュー画面の表示
   $('#setNavigator').show();
 };
@@ -305,7 +305,7 @@ app.koujiListDisplayClick = function() {
   $('#camera').hide();
   // ステータスバーの表示
   StatusBar.show();
-    
+
   // 設定メニュー画面の表示
   $('#lstNavigator').show();
   koujiListDisplay();
@@ -340,7 +340,7 @@ app.pictureCheckListClick = function() {
     $('#camera').hide();
     // ステータスバーの表示
     StatusBar.show();
-    
+
     // 撮影項目の設定
     // チェックリストhtmlが存在し、工事名称に変更がない場合は撮影枚数のみ更新
     if($("#pictureCheckKoujimei")[0] && k.directory === $("#pictureCheckKoujimei").text()){
@@ -362,21 +362,21 @@ app.pictureCheckListClick = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.pictureZoom = function() {
   _log(1,'function','app.pictureZoom()');
-  
+
   // ズームインイベントを定義
   $('#pic-box-border').on('pinchin', function(event) {
     CameraPreview.getZoom(function(currentZoom) {
       CameraPreview.setZoom(currentZoom-0.5);
     });
   });
-  
+
   // ズームアウトイベントを定義
   $('#pic-box-border').on('pinchout', function(event) {
     CameraPreview.getZoom(function(currentZoom) {
       CameraPreview.setZoom(currentZoom+0.05);
     });
   });
-  
+
   // 露出アップ テスト
 //  $('#pic-box-border').on('click', function(event) {
 //    console.log('#pic-box-border.on.click');
@@ -386,7 +386,7 @@ app.pictureZoom = function() {
 //      CameraPreview.setExposureCompensation(cmp);
 //    });
 //  });
-  
+
   // カメラ画像をタッチした時のイベントを定義
 //$('#pic-box-border').on('touch', function(event) {
 //  CameraPreview.setFocusMode('continuous');
@@ -396,7 +396,7 @@ app.pictureZoom = function() {
 //    }else{
 //      CameraPreview.setExposureMode('lock');
 //    }
-//  });  
+//  });
 //  CameraPreview.getFocusMode(function(currentFocusMode){
 //    console.log(currentFocusMode);
 //  });
@@ -428,20 +428,20 @@ app.cameraTakeButtonClick = function() {
   }else{
     $('#selfTimerMessage').show();
     $('#selfTimerCounter').text('');
-  
+
     var transform = getTransformParam($('#kokuban').css('transform'));
     var trns = 'rotate('+transform.rotate+')';
     $('#selfTimerCounter').css({'transform' : trns});
-    
+
     // タイマー開始
     SelfTimerId = setInterval(timerEvent, 1000);
-  }  
+  }
 
   // タイマーが設定されている場合は１秒毎にカウントダウン表示
   function timerEvent() {
     $('#selfTimerCounter').text(waitTime);
     waitTime--;
- 
+
     if(waitTime == -1 && SelfTimerId !== null) {
       // ターマーIDのクリア
       clearInterval(SelfTimerId);
@@ -464,7 +464,7 @@ app.kokubanClick = function() {
     $('#selfTimerMessage').hide();
     clearInterval(SelfTimerId);
   }
-      
+
   // カメラ画面の非表示
   $('#camera').hide();
   // ステータスバーの表示
@@ -473,7 +473,7 @@ app.kokubanClick = function() {
   $('#topNavigator').show();
   // 黒板項目の検索情報読み込みとイベントセット
   setKokuban.setItemInitialize();
-};  
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // app.cameraButtonClick()
@@ -489,10 +489,10 @@ app.cameraButtonClick = function() {
   $('#camera').show();
   // ステータスバーの非表示
   StatusBar.hide();
-  
+
   // 黒板イメージの再生成
   kokuban.makeframe();
-  
+
   // 設定メニュー画面の非表示
   $('#setNavigator').hide();
 };
@@ -503,7 +503,7 @@ app.cameraButtonClick = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.setElementPosition = function() {
   _log(1,'function','app.setElementPosition()');
-  
+
   // 画面の解像度を取得
   var MaxWidth  = window.innerWidth;
   var MaxHeight = window.innerHeight;
@@ -511,12 +511,12 @@ app.setElementPosition = function() {
   var picBoxBorderLeftRight = 5;
   // 写真エリアの上下のボーダー幅
   var picBoxBorderTopBottom = 5;
-  
+
   // 写真エリアの幅(window幅から枠幅を引いた寸法)
   var PicWidth  = MaxWidth - picBoxBorderLeftRight * 2;
   // 写真エリアの高さ(幅の3/4の寸法)
-  var PicHeight = PicWidth / 3 * 4; 
-  
+  var PicHeight = PicWidth / 3 * 4;
+
   // 写真エリアの上下のボーダー幅を画面サイズから再計算
   picBoxBorderTopBottom = Math.round((MaxHeight - PicHeight) / 2);
   PicHeight = MaxHeight - picBoxBorderTopBottom * 2;
@@ -554,10 +554,10 @@ app.setElementPosition = function() {
         btnName = 'ons-button#controlPanel';
         break;
     }
-    
+
     var pty = i - 1;
     var ltx = 5 - i;
-    
+
     $(btnName).css({
       opacity  : 0.8,
       padding  : Math.round((BtnHeight-35)/2-2)+'px',  // 35はアイコンサイズ
@@ -605,7 +605,7 @@ app.setElementPosition = function() {
   // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
   if($('#selfTimerTime').text()==='') {
     $('#iconSelfTimer').removeClass('iconsize3').addClass('iconsize5');
-  }else{  
+  }else{
     $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
   }
 
@@ -624,7 +624,7 @@ app.setElementPosition = function() {
     'border-left-width'   : picBoxBorderLeftRight+'px',
     'border-right-width'  : picBoxBorderLeftRight+'px'
   });
-  
+
   // 縦グリッド１を表示
   $('#vertical-grid-border1').css({
     position : 'absolute',
@@ -633,7 +633,7 @@ app.setElementPosition = function() {
     height : $('#pic-box').height(),
     width  : 0
   });
-  
+
   // 縦グリッド２を表示
   $('#vertical-grid-border2').css({
     position : 'absolute',
@@ -642,16 +642,16 @@ app.setElementPosition = function() {
     height : $('#pic-box').height(),
     width  : 0
   });
-  
+
   // 横グリッド１を表示
   $('#horizon-grid-border1').css({
     position : 'absolute',
     top    : $('#pic-box').height() / 3 + $('#pic-box').offset().top,
     left   : $('#pic-box').offset().left,
     height : 0,
-    width  : $('#pic-box').width()    
+    width  : $('#pic-box').width()
   });
-  
+
   // 横グリッド２を表示
   $('#horizon-grid-border2').css({
     position : 'absolute',
@@ -692,7 +692,7 @@ app.setOrientationChange = function(acceleration) {
   // ==================================================
   // ==================================================
   var direction = pictureItemGet('direction');
-  
+
   // 縦・横固定の場合は画面の向き検出イベントを停止する
   if(direction !== 'device') {
     orientWatch('stop');
@@ -714,7 +714,7 @@ app.setOrientationChange = function(acceleration) {
   }
 
   // デバイスの向きが変わったかをチェック 縦向き:'portrait' 横向き:'landscape'
-  var nowOrientation = ''; 
+  var nowOrientation = '';
   if(accel_x > accel_y) {
     nowOrientation = 'landscape'; // 現在は横向き
   }else{
@@ -722,27 +722,27 @@ app.setOrientationChange = function(acceleration) {
   }
 
   if($('#pic-box').is(':hidden')) {
-    // 写真画面が非表示の場合は回転を無効にする 
+    // 写真画面が非表示の場合は回転を無効にする
     nowOrientation = devaiceOrientation;
   }
-  
+
   // デバイスの向きが変わった
   if(nowOrientation !== devaiceOrientation) {
-    
+
     var x = 0;
     var y = 0;
-    
-    // 黒板の位置設定 
-    if(devaiceOrientation === 'portrait') { 
-      x = $('#kokuban').offset().left; 
+
+    // 黒板の位置設定
+    if(devaiceOrientation === 'portrait') {
+      x = $('#kokuban').offset().left;
       y = $('#kokuban').offset().top;
     }
-    if(devaiceOrientation === 'landscape') { 
-      // 横向きから縦向きに変わる場合は調整 
+    if(devaiceOrientation === 'landscape') {
+      // 横向きから縦向きに変わる場合は調整
       x = $('#kokuban').offset().left - ($('#kokuban').width() / 2) + ($('#kokuban').height() / 2);
       y = $('#kokuban').offset().top  - ($('#kokuban').height() / 2) + ($('#kokuban').width() / 2);
     }
-    
+
     // デバイスが横向きになった場合は、黒板の縦横の差分だけ補正する為
     var TopHosei = 0;
     var LeftHosei = 0;
@@ -750,7 +750,7 @@ app.setOrientationChange = function(acceleration) {
       TopHosei = ($('#kokuban').height() / 2) - ($('#kokuban').width() / 2);
       LeftHosei = ($('#kokuban').width() / 2) - ($('#kokuban').height() / 2);
     }
-    
+
     // 黒板がプレビューウィンドウ外に出ないように補正
     // 最上
     if(x < $('#pic-box').offset().left - LeftHosei) {
@@ -768,13 +768,13 @@ app.setOrientationChange = function(acceleration) {
     if(y > $('#pic-box').offset().top+$('#pic-box').height()-$('#kokuban').height() + TopHosei) {
       y = $('#pic-box').offset().top+$('#pic-box').height()-$('#kokuban').height() + TopHosei;
     }
-    
+
     var rot = "0deg";
     // デバイスが横向きになった場合
     if(accel_x > accel_y) {
 //    if(acceleration.x>=0) {
         rot = "+90deg";  // 左回転
-//    }else{  
+//    }else{
 //      rot = "-90deg";  // 右回転
 //    }
     }
@@ -785,7 +785,7 @@ app.setOrientationChange = function(acceleration) {
     if(nowOrientation==='portrait') {
       $('#tool-button1 ons-icon').attr({'rotate':'0'});
       $('#tool-button2 ons-icon').attr({'rotate':'0'});
-    }  
+    }
     if(nowOrientation==='landscape') {
       $('#tool-button1 ons-icon').attr({'rotate':'90'});
       $('#tool-button2 ons-icon').attr({'rotate':'90'});
@@ -794,7 +794,7 @@ app.setOrientationChange = function(acceleration) {
     if($('#selfTimerTime').text()!=='') {
       $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
     }
-    
+
     devaiceOrientation = nowOrientation;
   }
 };
@@ -805,22 +805,22 @@ app.setOrientationChange = function(acceleration) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.startCamera = function(x, y, width, height, toBK) {
   _log(1,'function','app.startCamera()');
-  
+
   var param = {
     x: x,                // 仮位置
     y: y,                // 仮位置
     width: width,        // 仮幅
     height: height,      // 仮高さ
     camera: "back",      // 背面カメラ
-    tapPhoto: false,     // 
-    tapFocus: false,     // 
+    tapPhoto: false,     //
+    tapFocus: false,     //
     previewDrag: false,  // 撮影イメージのドラッグ移動を不可　　
     toBack: toBK         // カメラ画像をHTMLの背面:false、前面:true　
   };
   CameraPreview.startCamera(param);
 
   // 露出をリセットする
-//  CameraPreview.setExposureCompensation(0);  
+//  CameraPreview.setExposureCompensation(0);
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -839,8 +839,8 @@ app.setPictureResize = function() {
   };
   // カメラプレビュー表示
   app.startCamera(param.x, param.y, param.width, param.height, true);
-  
-  // 撮影後のプレビュー表示エリアの定義 
+
+  // 撮影後のプレビュー表示エリアの定義
   $('#preview').css({
     position : 'absolute',
     left     : $('#pic-box').offset().left,
@@ -872,7 +872,10 @@ app.setPictureResize = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.cameraTakePicture = function() {
   _log(1,'function','app.cameraTakePicture()');
-  
+
+  // 保存が完了するまでシャッターボタンを無効にする
+  $('#cameraTakeButton').attr('disabled', true);
+
   var str = '';
   var k = '';
   // 黒板設定情報の読み込み
@@ -899,18 +902,18 @@ app.cameraTakePicture = function() {
     _getLocation();
   }
   // 2018/02/07 ADD ----- ↑
-  
+
   // 写真サイズ指定
   str = k.size;
   if(str===undefined) {str = 'medium';}
   var takeOption = {width:768, height:1024, quality: 100};
   takeOption = getPictureSize(str);
-  
+
   // 写真の圧縮率
   str = k.compressionRatio;
   if(str===undefined) {str = 'normal';}
   takeOption.quality = getPictureQuality(str);
-  
+
   // フォルダ名として工事名称を取得する
   str = localStrage.getItems('firebase:temp/kokuban');
   // 読み込んだテキストをJSON形式に変換
@@ -925,17 +928,17 @@ app.cameraTakePicture = function() {
   // JSON形式をテキスト形式に変換
   str = JSON.stringify(k);
   // ローカルストレージに書き戻し
-  localStrage.setItems('firebase:temp/kokuban', str); 
+  localStrage.setItems('firebase:temp/kokuban', str);
 
   // 撮影
   CameraPreview.takePicture(takeOption, function(base64PictureData){
     imageSrcData = 'data:image/png;base64,' + base64PictureData;
-	
-    // 出力写真・黒板合成用canvasの作成 
+
+    // 出力写真・黒板合成用canvasの作成
     var out_cvs = document.createElement('canvas');
     var out_ctx = out_cvs.getContext('2d');
-    out_cvs.width  = takeOption.width; 
-    out_cvs.height = takeOption.height; 
+    out_cvs.width  = takeOption.width;
+    out_cvs.height = takeOption.height;
 
     // 写真イメージを出力用canvasに描画
     var pic_img = new Image();
@@ -960,18 +963,18 @@ app.cameraTakePicture = function() {
         imgHeight = imgHeight * winSizeBairitu;
         var imgTop  = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().top - $('#pic-box').offset().top);
         var imgLeft = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().left - $('#pic-box').offset().left);
-        
+
         // 黒板イメージを出力用canvasに出力
         // 現在の向き(rotate)を取得
         var transform = getTransformParam($('#kokuban').css('transform'));
         var rot = 0;
-        
+
         // 縦向き
         if(transform.rotate === '0deg') {
           // 黒板の表示時のみ黒板イメージを合成する
           if(kokubanShowFlag === true) {
             out_ctx.drawImage(kokuban_img, imgLeft, imgTop, imgWidth, imgHeight);
-          }  
+          }
         }else{
           if(transform.rotate === '+90deg') {
             // 横向き(左倒し)
@@ -989,7 +992,7 @@ app.cameraTakePicture = function() {
             out_ctx.drawImage(kokuban_img, 0, 0, imgWidth, imgHeight);
           }
         }
-        
+
         // カンバスの情報をコールバック関数に引き渡すため
         var picImage = out_cvs.toDataURL( "image/jpeg" , 1.0 );
         var picWidth = out_cvs.width;
@@ -998,36 +1001,41 @@ app.cameraTakePicture = function() {
         var file = (new Date()).getTime() + ' ';
         file = file.substr(0,10);
         var filename = '';
+
         // 必要なフォルダを作成
         localStrage.makeDirectory(directory, function(e) {
-          // 黒板情報をローカルストレージに保存
-          filename = file + '.json';
-          localStrage.setInformation(directory+'/information', filename);
-          // 撮影日時・枚数情報を更新
-          filename = 'control' + '.json';
-          localStrage.setInformationHeader(directory+'/information', filename);
-          // 撮影イメージをローカルストレージに保存
-          filename = file + '.jpg';
-          localStrage.pictureSave(picImage, picWidth, picHeight, rot, directory, filename);
-          // サムネイルをローカルストレージに保存
-          localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename);
-          
-          // 撮影後のプレビュー表示
-          app.takePicturePreview(picImage);
-         });  
 
-        //======================================================================
-        //======================================================================
-        // メモリリーク対策を行う事============================================= 
-        //======================================================================
-        //======================================================================
-        kokuban_cvs = null; kokuban_ctx = null; kokuban_img = null;
-        out_cvs = null; out_ctx = null; pic_img = null;
-        imageSrcData = null;
-        //======================================================================
-        //======================================================================
-        //======================================================================
-        //======================================================================
+          // 撮影した写真のプレビュー
+          app.takePicturePreview(picImage, function(e) {
+
+            // 黒板情報をローカルストレージに保存
+            filename = file + '.json';
+            localStrage.setInformation(directory+'/information', filename, function(e) {
+
+              // 撮影日時・枚数情報を更新
+              filename = 'control' + '.json';
+              localStrage.setInformationHeader(directory+'/information', filename, function(e) {
+
+                // 撮影イメージをローカルストレージに保存
+                filename = file + '.jpg';
+                localStrage.pictureSave(picImage, picWidth, picHeight, rot, directory, filename, function(e) {
+
+                  // サムネイルをローカルストレージに保存
+                  localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename, function(e) {
+//                  alert('正常に保存されました');
+                    // 使用した変数を初期化
+                    kokuban_cvs = null; kokuban_ctx = null; kokuban_img = null;
+                    out_cvs = null; out_ctx = null; pic_img = null;
+                    imageSrcData = null;
+
+                    // シャッターボタンを有効にする
+                    $('#cameraTakeButton').attr('disabled', false);
+                  });
+                });
+              });
+            });
+          });
+        });
       };
     };
   });
@@ -1037,11 +1045,11 @@ app.cameraTakePicture = function() {
 // app.takePicturePreview()
 // 撮影後のプレビュー表
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-app.takePicturePreview = function(img_url) {
+app.takePicturePreview = function(img_url, callback) {
   _log(1,'function','app.takePicturePreview()');
 
   takePicturePreviewID = null;
-  
+
   // ローカルストレージからプレビュー時間を読み込み
   var str = localStrage.getItems('firebase:group00/config/picture');
   // 読み込んだテキストをJSON形式に変換
@@ -1053,18 +1061,35 @@ app.takePicturePreview = function(img_url) {
     }
   } catch(e) {
   }
-  // 保存時間分を1秒加算
-  previewTime = previewTime + 1;
+
   // プレビュー表示設定に従ってプレビュー表示
-  if(previewTime > 0) {
-    $('#preview').attr('src', img_url); 
+  if(previewTime == 0) {
+    callback(null);
+  }else{
+    // 保存時間分を1秒加算
+    previewTime = previewTime + 1;
+
+    $('#preview').attr('src', img_url);
     $('#preview').show();
     app.previewMessageSetStyle();
     $('#previewMessage').show();
 
+    // 設定した秒数が経過したらプレビューを消去
     takePicturePreviewID = setTimeout(function() {
       app.takePicturePreviewhide();
+      $('#previewMessage').off('click');
+      callback(null);
     }, previewTime * 1000);
+
+    // プレビュー中に画面をタップしたらプレビューを消去
+    $('#previewMessage').on('click',function(){
+       previewClickEnd();
+    });
+    function previewClickEnd() {
+      app.takePicturePreviewhide();
+      $('#previewMessage').off('click');
+      callback(null);
+    }
   }
 };
 
@@ -1074,12 +1099,12 @@ app.takePicturePreview = function(img_url) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.previewMessageSetStyle = function() {
   _log(1,'function','app.previewMessageSetStyle()');
-  
+
   // 黒板の向きを取得し、メッセージを表示する向きを設定する
   var transform = getTransformParam($('#kokuban').css('transform'));
   var trns = 'rotate('+transform.rotate+')';
   $('#previewMessage p').css({'transform' : trns});
-};  
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // app.takePicturePreviewhide()
@@ -1103,5 +1128,5 @@ app.takePicturePreviewhide = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.clearElement = function() {
   _log(1,'function','app.clearElement()');
-  
+
 };
