@@ -2,7 +2,7 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 0;
+var logMessageLevel = 9;
 var errorlogMessageLevel = 5;
 _log(0,'===========================Pocess Start=================================');
 
@@ -875,6 +875,7 @@ app.cameraTakePicture = function() {
 
   // 保存が完了するまでシャッターボタンを無効にする
   $('#cameraTakeButton').attr('disabled', true);
+  $('#cameraTakeButton').addClass('disabled');
 
   var str = '';
   var k = '';
@@ -1022,7 +1023,6 @@ app.cameraTakePicture = function() {
 
                   // サムネイルをローカルストレージに保存
                   localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename, function(e) {
-//                  alert('正常に保存されました');
                     // 使用した変数を初期化
                     kokuban_cvs = null; kokuban_ctx = null; kokuban_img = null;
                     out_cvs = null; out_ctx = null; pic_img = null;
@@ -1030,6 +1030,7 @@ app.cameraTakePicture = function() {
 
                     // シャッターボタンを有効にする
                     $('#cameraTakeButton').attr('disabled', false);
+                    $('#cameraTakeButton').removeClass('disabled');
                   });
                 });
               });

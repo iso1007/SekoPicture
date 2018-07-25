@@ -74,6 +74,19 @@ function confPictureInitial() {
   $('input[name="picture-location"]').on('click', function() {
     pictureChangeLocation(this);
   });
+
+  // 改ざん防止情報の保存
+  var hashInformation = 'off';
+  try {
+    hashInformation = k.hashInformation;
+  } catch(e) {
+  };
+  $('#picture-hash-'+hashInformation).attr('checked',true);
+  pictureChangeHash(document.getElementById('picture-hash-'+hashInformation));
+  // 改ざん防止情報の付加切り替え
+  $('input[name="picture-hash"]').on('click', function() {
+    pictureChangeHash(this);
+  });
   
 };
   
@@ -210,7 +223,7 @@ function pictureChangeDirection(obj) {
 function pictureChangeLocation(obj) {
   _log(1,'function','pictureChangeLocation()');
   
-  // 写真の向き指定
+  // 位置情報の付加指定
   try {
     // 選択したボタン名から位置情報の付加を取得
     var id = $(obj).attr('id');
@@ -222,6 +235,28 @@ function pictureChangeLocation(obj) {
     };
   } catch(e) {
     _errorlog(1,'pictureChangeLocation()',e);
+  };  
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// pictureChangeHash()
+// 改ざん防止情報の付加切り替え
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function pictureChangeHash(obj) {
+  _log(1,'function','pictureChangeHash()');
+  
+  // 改ざん防止情報の付加指定
+  try {
+    // 選択したボタン名から改ざん防止情報の付加を取得
+    var id = $(obj).attr('id');
+    var hash = id.split('-');
+    
+    if(hash[2]==='on' || hash[2]==='off'){
+      // ローカルストレージに書き戻す
+      pictureItemSet('hashInformation', hash[2]);
+    };
+  } catch(e) {
+    _errorlog(1,'pictureChangeHash()',e);
   };  
 };
 

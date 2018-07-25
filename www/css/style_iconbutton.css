@@ -25,6 +25,10 @@ ons-button.cameraCtrl {
   -webkit-border-radius: 5px;
 }
 
+ons-button.cameraCtrl.disabled {
+  color: gray;
+}
+
 /*メインメニュー画面の機能ボタン*/
 ons-col.functionButton {
   padding-top: 5%;
@@ -70,5 +74,3 @@ ons-icon.menubutton_icon {
 .keybord-etc-button {
   padding: 13px;
 }
-
-

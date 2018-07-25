@@ -37,13 +37,13 @@ SOFTWARE.
         } else {
             throw ("Given data is not jpeg.");
         }
-        
+
         var segments = splitIntoSegments(jpeg);
         var newSegments = segments.filter(function(seg){
           return  !(seg.slice(0, 2) == "\xff\xe1" &&
-                   seg.slice(4, 10) == "Exif\x00\x00"); 
+                   seg.slice(4, 10) == "Exif\x00\x00");
         });
-        
+
         var new_data = newSegments.join("");
         if (b64) {
             new_data = "data:image/jpeg;base64," + btoa(new_data);
@@ -53,7 +53,7 @@ SOFTWARE.
     };
 
 
-    that.insert = function (exif, jpeg) {
+    that.insert = function (exif, jpeg, info, hashWriteFlg) {
         var b64 = false;
         if (exif.slice(0, 6) != "\x45\x78\x69\x66\x00\x00") {
             throw ("Given data is not exif.");
@@ -68,6 +68,15 @@ SOFTWARE.
 
         var exifStr = "\xff\xe1" + pack(">H", [exif.length + 2]) + exif;
         var segments = splitIntoSegments(jpeg);
+
+        // 改ざん検知情報を作成し追加
+        if (hashWriteFlg === 'on') {
+          segments = setApp5(segments, info.datetime);
+        }
+
+        // XMP情報を作成し追加
+        segments = setExifXMP(segments, info);
+
         var new_data = mergeSegments(segments, exifStr);
         if (b64) {
             new_data = "data:image/jpeg;base64," + btoa(new_data);
@@ -162,13 +171,13 @@ SOFTWARE.
             interop_ifd,
             gps_ifd,
             first_ifd;
-        
+
         if ("0th" in exif_dict) {
             zeroth_ifd = exif_dict["0th"];
         } else {
             zeroth_ifd = {};
         }
-        
+
         if ((("Exif" in exif_dict) && (Object.keys(exif_dict["Exif"]).length)) ||
             (("Interop" in exif_dict) && (Object.keys(exif_dict["Interop"]).length))) {
             zeroth_ifd[34665] = 1;
@@ -192,7 +201,7 @@ SOFTWARE.
         } else if (Object.keys(zeroth_ifd).indexOf(that.ImageIFD.GPSTag.toString()) > -1) {
             delete zeroth_ifd[that.ImageIFD.GPSTag];
         }
-        
+
         if (("1st" in exif_dict) &&
             ("thumbnail" in exif_dict) &&
             (exif_dict["thumbnail"] != null)) {
@@ -201,7 +210,7 @@ SOFTWARE.
             exif_dict["1st"][514] = 1;
             first_ifd = exif_dict["1st"];
         }
-        
+
         var zeroth_set = _dict_to_bytes(zeroth_ifd, "0th", 0);
         var zeroth_length = (zeroth_set[0].length + exif_is * 12 + gps_is * 12 + 4 +
             zeroth_set[1].length);
@@ -661,8 +670,8 @@ SOFTWARE.
             return output;
         };
     }
-    
-    
+
+
     if (typeof window !== "undefined" && typeof window.atob === "function") {
         var atob = window.atob;
     }
@@ -888,7 +897,19 @@ SOFTWARE.
         var segments = ["\xff\xd8"];
         while (true) {
             if (data.slice(head, head + 2) == "\xff\xda") {
-                segments.push(data.slice(head));
+/*SOS[ffda](スキャンヘッダ)以降で一つのオブジェクトになっていたが、
+  SOS-EOI[ffd9](圧縮データ終了)をオブジェクトとし、それ以降と分けるため ↓ */
+//              segments.push(data.slice(head));
+                var str = data.slice(head);
+                endPoint = data.indexOf("\xff\xd9");  // EOI[ffd9]
+                if(head < endPoint) {
+                  endPoint = endPoint + 2;
+                  segments.push(data.slice(head,endPoint));
+                  segments.push(data.slice(endPoint));
+                }else{
+                  segments.push(data.slice(head));
+                }
+/* ↑ */
                 break;
             } else {
                 var length = unpack(">H", data.slice(head + 2, head + 4))[0];
@@ -918,8 +939,237 @@ SOFTWARE.
     }
 
 
+/* app5の情報を作成 ↓ */
+    function setApp5(segments, dt) {
+        var app5 = [ "\xff\xe5",  // APP marker
+                     "\x0d\x78",  // APP size
+                     "\x52\x4d\x45\x54\x41\x00",  // indentifier
+                     "\x4d\x4d",  // Byte Order
+                     "\x01\x00",  // Meta version
+                     "\x00\x00",  // segment number
+                     "\x00\x00",  // Next segment
+                     "\x00\x0a",  // RMETA Data offset
+                     "\x00\x14",  // エントリー数(20個固定)
+                     "\x53\x2d\x4a\x49\x53\x00\x00\x00",  // 文字コード(S-JIS固定)
+                     "\x00\x01",  // 項目テキストID番号
+                     "\x02\xaa",  // 項目テキスト領域サイズ(682byte)
+                     "\x89\xfc\x82\xb4\x82\xf1\x83\x60\x83\x46\x83\x62\x83\x4e\x92\x6c\x81\x69\x89\xe6\x91\x9c\x81\x6a\x00",  // "改ざんチェック値（画像）"
+                     "\x89\xfc\x82\xb4\x82\xf1\x83\x60\x83\x46\x83\x62\x83\x4e\x92\x6c\x81\x69\x8e\x42\x89\x65\x93\xfa\x8e\x9e\x81\x6a\x00",  // "改ざんチェック値（撮影日付）"
+                     "",  // [14] パディング (0x00)を625バイト分
+                     "\x00\x12",  // 内容テキスト128のID番号
+                     "\x0a\x2a",  // 内容テキスト128領域サイズ
+                     "",  // [17] 画像データの64バイトハッシュ値
+                     "\x00",
+                     "",  // [19] 撮影日付の64バイトハッシュ値
+                     "\x00",
+                     "",  // [21] パディング (0x00)を2470バイト分
+                     "\x00\x03",  // 内容テキストリストのID番号
+                     "\x00\x2a",  // 内容テキストリスト領域サイズ
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 内容テキストリストナンバー1〜10
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 内容テキストリストナンバー11〜20
+                     "\x00\x10",  // 関連データのID番号
+                     "\x00\x52",  // 関連データの領域サイズ
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 関連データ開始セグメント番号とデータ個数
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 関連データ開始セグメント番号とデータ個数
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 関連データ開始セグメント番号とデータ個数
+                     "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",  // 関連データ開始セグメント番号とデータ個数
+                     "\x00\x00",  // 終端ID
+                     "\x00\x00"]; // 終端IDの領域サイズ
+
+        // パディング[14]に(0x00)をセット
+        for (var i = 0; i < 626; i++) {
+          app5[14] = app5[14] + "\x00";
+        }
+        // パディング[21]に(0x00)をセット
+        for (var i = 0; i < 2470; i++) {
+          app5[21] = app5[21] + "\x00";
+        }
+
+        // 画像(サムネイルを除く)データの64バイトハッシュ値を取得
+        for (var i = 0; i < segments.length; i++) {
+          var tag = segments[i][0]+segments[i][1];
+          if (tag == "\xff\xda") {
+            app5[17] = SHA256Hash(segments[i]);
+            break;
+          }
+        }
+        // 撮影日時項目の64バイトハッシュ値を取得
+        app5[19] = SHA256Hash(dt+"\x00");
+
+        // オブジェクトを結合した文字列を戻す
+        var app5str = app5.join("");
+
+        var updateFlg = false;
+        // 既にapp5(ffe5)タグが存在する場合は、情報を更新する
+        for (var i = 0; i < segments.length; i++) {
+          var tag = segments[i][0]+segments[i][1];
+          if (tag == "\xff\xe5") {
+            segments[i] = app5str;
+            updateFlg = true;
+            break;
+          }
+        }
+
+        // 既存のapp5(ffe5)タグが無い場合はSOF0(ffc0)タグの後ろに追加
+        if(!updateFlg) {
+          for (var i = 0; i < segments.length; i++) {
+            var tag = segments[i][0]+segments[i][1];
+            if (tag == "\xff\xc0") {
+              segments.splice(i, 0, app5str);
+              break;
+            }
+          }
+        }
+
+        return segments;
+    }
+/* ↑ */
+
+/* Exif XMPの情報を作成 ↓ */
+    function setExifXMP(segments,info) {
+        var xmp = [ '\xff\xe1',  // XMP marker
+                    '\x00\x00',  // XMP size
+                    'http://ns.adobe.com/xap/1.0/'+'\x00',
+                    '<?xpacket begin="'+'\xef\xbb\xbf'+'" id="W5M0MpCehiHzreSzNTczkc9d"?>',
+                      '<x:xmpmeta xmlns:x="adobe:ns:meta/">',
+                        '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">',
+                          '<rdf:Description rdf:about="" ',
+                            'xmlns:photo="http://dcpadv.org/schema/3.0/photoinfo" ',
+                            'xmlns:measurement="http://dcpadv.org/schema/3.0/measurement" ',
+                            'xmlns:item="http://dcpadv.org/schema/3.0/measurementitem">',
+                            '<photo:ConstructionName>',,'</photo:ConstructionName>',        // 工事件名
+                            '<photo:Constructor>',,'</photo:Constructor>',                  // 受注者名
+                            '<photo:LargeClassification>',,'</photo:LargeClassification>',  // 写真･大分類「工事」「測量」「調査」など
+                            '<photo:PhotoClassification>',,'</photo:PhotoClassification>',  // 写真区分「施工状況写真」「出来形管理写真」など
+                            '<photo:ConstructionType>',,'</photo:ConstructionType>',        // 工種
+                            '<photo:MiddleClassification>',,'</photo:MiddleClassification>',// 種別
+                            '<photo:SmallClassification>',,'</photo:SmallClassification>',  // 細目
+                            '<photo:Title>',,'</photo:Title>',                              // 写真タイトル
+                            '<photo:ShootingSpot>',,'</photo:ShootingSpot>',                // 撮影箇所「測点」など
+                            '<photo:ContractorRemarks>',,'</photo:ContractorRemarks>',      // 受注者説明文
+                            '<photo:IsRepresentative>','True','</photo:IsRepresentative>',
+                            '<photo:IsFrequencyOfSubmission>','True','</photo:IsFrequencyOfSubmission>',
+                            '<photo:ClassificationRemarks>','</photo:ClassificationRemarks>',
+                          '</rdf:Description>',
+                        '</rdf:RDF>',
+                      '</x:xmpmeta>',
+                    '<?xpacket end="w"?>'];
+
+        var idx = 0;
+        // '工事件名'
+        idx = xmp.indexOf( '<photo:ConstructionName>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.ConstructionName));
+        }
+        // '受注者名'
+        idx = xmp.indexOf( '<photo:Constructor>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.Constructor));
+        }
+        // '工事'
+        idx = xmp.indexOf( '<photo:LargeClassification>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.LargeClassification));
+        }
+        // '施工状況写真'
+        idx = xmp.indexOf( '<photo:PhotoClassification>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.PhotoClassification));
+        }
+        // '工種'
+        idx = xmp.indexOf( '<photo:ConstructionType>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.ConstructionType));
+        }
+        // '写真タイトル'
+        idx = xmp.indexOf( '<photo:Title>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.Title));
+        }
+        // '写真タイトル'
+        idx = xmp.indexOf( '<photo:Title>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.Title));
+        }
+        // '種別'
+        idx = xmp.indexOf( '<photo:MiddleClassification>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.MiddleClassification));
+        }
+        // '細目'
+        idx = xmp.indexOf( '<photo:SmallClassification>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.SmallClassification));
+        }
+        // '測点'
+        idx = xmp.indexOf( '<photo:ShootingSpot>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.ShootingSpot));
+        }
+        // '受注者説明文'
+        idx = xmp.indexOf( '<photo:ContractorRemarks>' );
+        if(idx>0) {
+          xmp[idx+1] = unescape(encodeURIComponent(info.ContractorRemarks));
+        }
+        // '工種区分予備1' 黒板日付で使用
+//       idx = xmp.indexOf( '<photo:ClassificationRemarks>' );
+//        if(idx>0) {
+//          var str = '<rdf:Seq><rdf:li>'+unescape(encodeURIComponent(info.ClassificationRemarks1))+'</rdf:li></rdf:Seq>'
+//          xmp[idx+1] = str;
+//        }
+        // XMPのサイズ情報を取得、セット
+        var xmpstr = xmp.join('');  // XMP配列を結合
+        var xmplen10 = xmpstr.length-2;  // XMPの文字サイズを取得し、タグの2バイトを引く
+        var xmplen16 = xmplen10.toString(16);  // 10進数->16進数 変換
+        var xmplenbyt = ('0000'+xmplen16).slice(-4);  // 4文字に桁を詰める
+        xmp[1] = pack(">H", ['0x'+xmplenbyt]);  // パッキングをしてタグの後にセット
+
+        // オブジェクトを結合した文字列を戻す
+        var exifXMPstr = xmp.join('');
+
+        var updateFlg = false;
+        // 既にapp1(XMP)タグが存在する場合は、情報を更新する
+        for (var i = 0; i < segments.length; i++) {
+          var tag = segments[i][0]+segments[i][1];
+          if (tag == "\xff\xe1" && segments[i].slice(4,8) === 'http') {
+            segments[i] = exifXMPstr;
+            updateFlg = true;
+            break;
+          }
+        }
+
+        // 既存のapp1(XMP)タグが無い場合はapp1(Exif)タグの後ろに追加
+        if(!updateFlg) {
+          for (var i = 0; i < segments.length; i++) {
+            var tag = segments[i][0]+segments[i][1];
+            if (tag == "\xff\xe1" &&
+              segments[i].slice(4,8) === 'Exif') {
+              segments.splice(i+1, 0, exifXMPstr);
+              updateFlg = true;
+              break;
+            }
+          }
+        }
+
+        // 既存のapp1(XMP)タグが無くapp1(Exif)タグも無い場合は(ffe0)の後ろに追加
+        if(!updateFlg) {
+          for (var i = 0; i < segments.length; i++) {
+            var tag = segments[i][0]+segments[i][1];
+            if (tag == "\xff\xe0" &&
+              segments[i].slice(4,8) === 'JFIF') {
+              segments.splice(i+1, 0, exifXMPstr);
+              break;
+            }
+          }
+        }
+
+        return segments;
+    }
+/* ↑ */
+
+
     function mergeSegments(segments, exif) {
-        
+
         if (segments[1].slice(0, 2) == "\xff\xe0" &&
             (segments[2].slice(0, 2) == "\xff\xe1" &&
              segments[2].slice(4, 10) == "Exif\x00\x00")) {
@@ -947,7 +1197,7 @@ SOFTWARE.
                 segments = [segments[0], exif].concat(segments.slice(1));
             }
         }
-        
+
         return segments.join("");
     }
 
@@ -2137,7 +2387,7 @@ SOFTWARE.
     TAGS["1st"] = TAGS["Image"];
     that.TAGS = TAGS;
 
-    
+
     that.ImageIFD = {
         ProcessingSoftware:11,
         NewSubfileType:254,
@@ -2326,7 +2576,7 @@ SOFTWARE.
         NoiseProfile:51041,
     };
 
-    
+
     that.ExifIFD = {
         ExposureTime:33434,
         FNumber:33437,
@@ -2461,8 +2711,8 @@ SOFTWARE.
           return deg;
         }
     };
-    
-    
+
+
     if (typeof exports !== 'undefined') {
         if (typeof module !== 'undefined' && module.exports) {
             exports = module.exports = that;

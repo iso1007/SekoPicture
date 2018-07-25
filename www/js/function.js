@@ -13,11 +13,11 @@ function getTransformParam(transform) {
   var rot = '0deg';
   if((params[1].trim()==='-1')||(params[2].trim()==='1')) {
     rot = '-90deg';
-  };  
+  };
   if((params[1].trim()==='1')||(params[2].trim()==='-1')) {
     rot = '+90deg';
-  };  
-  
+  };
+
   return {
     "rotate": rot,         // デバイスの向き
     "left"   : params[4],  // 左位置
@@ -32,7 +32,7 @@ function getTransformParam(transform) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function orientWatch(act) {
   _log(1,'function','orientWatch('+act+')');
-  
+
   // 画面の向きが変わった時点で黒板の向きを変更するイベントを登録
   if(act==='start') {
     // 1.0秒間隔で向きを検出
@@ -40,12 +40,12 @@ function orientWatch(act) {
     watchAccelerationID = navigator.accelerometer.watchAcceleration(
       // 画面の向きが変わった時点で黒板の向きを変更するイベントを登録
       function(acceleration) {
-        if(Math.round(acceleration.x) !== accelerationSave_x || 
+        if(Math.round(acceleration.x) !== accelerationSave_x ||
            Math.round(acceleration.y) !== accelerationSave_y) {
-             
+
           accelerationSave_x = Math.round(acceleration.x);
           accelerationSave_y = Math.round(acceleration.y);
-          
+
           app.setOrientationChange(acceleration);
         }
       },
@@ -54,13 +54,13 @@ function orientWatch(act) {
       },OrientOptions
     );
   };
-  
+
   // 画面の向きの監視を停止する
   if(act==='stop') {
     if(watchAccelerationID) {
       navigator.accelerometer.clearWatch(watchAccelerationID);
       watchAccelerationID = null;
-    }    
+    }
   };
 }
 
@@ -71,7 +71,7 @@ function orientWatch(act) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function displayDeviceSize() {
   _log(1,'function','displayDeviceSize()');
-  
+
   // 判定のしきい値
   var size = 600;
   if(window.innerWidth>size) {
@@ -87,7 +87,7 @@ function displayDeviceSize() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function _imgB64Resize(imgB64_src, width, height, rotate, callback) {
   _log(1,'function','_imgB64Resize');
-  
+
   // Image Type
   var img_type = imgB64_src.substring(5, imgB64_src.indexOf(";"));
   // Source Image
@@ -128,7 +128,7 @@ function _imgB64Resize(imgB64_src, width, height, rotate, callback) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function _Base64toBlob(base64) {
   _log(1,'function','_Base64toBlob()');
-  
+
   // カンマで分割して以下のようにデータを分ける
   // tmp[0] : データ形式（data:image/png;base64）
   // tmp[1] : base64データ（iVBORw0k～）
@@ -167,13 +167,14 @@ function _setExifInfo(imagesrc) {
 
   // 端末の型名
   var model = getDeviceName();
-  
+
   // exif data 初期化
   var zerothIfd = {};
   var exifIfd = {};
   var gpsIfd = {};
 
   // 0thデータ
+  zerothIfd[piexif.ImageIFD.ImageDescription] = 'DCP PHOTO';
   zerothIfd[piexif.ImageIFD.Make] = device.manufacturer;
   zerothIfd[piexif.ImageIFD.Model] = model;
   zerothIfd[piexif.ImageIFD.Software] = device.platform+' '+device.version;
@@ -211,14 +212,47 @@ function _setExifInfo(imagesrc) {
 
   // exifをバイナリ形式に変換
   var exifBytes = piexif.dump(exifObj);
+  // イメージとexif情報を合成
+  var info = { datetime: '', ConstructionName: '', Constructor: '', LargeClassification: '',
+               PhotoClassification: '', ConstructionType: '', MiddleClassification: '',
+               SmallClassification: '', Title: '', ShootingSpot: '', ContractorRemarks: '', ClassificationRemarks1: ''}
+
+  // ローカルストレージから読み込み
+  var str = localStrage.getItems('firebase:temp/kokuban');
+  // 読み込んだテキストをJSON形式に変換
+  var json_in = JSON.parse(str);
+
+  info.datetime = datetime; // 撮影日時
+  info.ConstructionName = json_in.kouji; // 工事件名
+  info.Constructor = json_in.syamei; // 受注者名
+  info.LargeClassification = '工事';
+  info.PhotoClassification = '施工状況写真';
+  info.ConstructionType = json_in.kousyu; // 工種
+  info.MiddleClassification = ''; // 種別
+  info.SmallClassification = ''; // 細目
+  info.ShootingSpot = json_in.sokuten; // 測点
+  info.ContractorRemarks = ''; // 受注者説明文
+  info.ClassificationRemarks1 = json_in.hiduke; // 黒板日付
+  var bikous = json_in.bikou.split('\n'); // 備考の先頭行を取得
+  info.Title = bikous[0]; // 写真タイトル
+
+  // ローカルストレージから読み込み
+  var str = localStrage.getItems('firebase:group00/config/picture');
+  // 読み込んだテキストをJSON形式に変換
+  var json_in = JSON.parse(str);
+  var hashWriteFlg = 'on';
+  try {
+    hashWriteFlg = json_in.hashInformation;
+  } catch(e) {
+  }
 
   // イメージとexif情報を合成
-  var picImage = piexif.insert(exifBytes, imagesrc);
+  var picImage = piexif.insert(exifBytes, imagesrc, info, hashWriteFlg);
 
   return picImage;
 };
 
-  
+
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // _getLocation()
 // 写真データにExif情報を書き込み
@@ -257,13 +291,13 @@ function _getLocation() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function _log(lebel,msg1,msg2) {
   // 'Strict'モードの設定（厳格モード）
-  // 全てのユーザー定義関数の先頭で本関数を使用する為にここで定義 
-  'use strict'; 
-  
+  // 全てのユーザー定義関数の先頭で本関数を使用する為にここで定義
+  'use strict';
+
   // ログを出力するレベル以上のメッセージのみ出力
   if(lebel <= logMessageLevel) {
 
-    var time = new Date(); 
+    var time = new Date();
     var hh = time.getHours();
     var mm = time.getMinutes();
     var ss = time.getSeconds();
@@ -294,7 +328,7 @@ function _errorlog(lebel,msg1,msg2) {
   // ログを出力するレベル以上のエラーメッセージのみ出力
   if(lebel <= errorlogMessageLevel) {
 
-    var time = new Date(); 
+    var time = new Date();
     var hh = time.getHours();
     var mm = time.getMinutes();
     var ss = time.getSeconds();
@@ -309,7 +343,7 @@ function _errorlog(lebel,msg1,msg2) {
       console.error(str + msg1);
     }else{
       console.error(str + msg1+':'+msg2);
-    }  
+    }
 //  _firebaselog(str, 'error', msg1, msg2);
   }
 };
@@ -378,14 +412,14 @@ function _confirm(message, callback) {
 //                cancelable:  true, // ダイアログがキャンセル可能かどうか(true or false)
 //                modifier:	// ダイアログのmodifier属性の値を指定します。
                   callback: function(idx) { //	ダイアログが閉じられた後に呼び出される関数オブジェクト(キャンセル時は-1)
-                    if(idx === 1) { 
+                    if(idx === 1) {
                       callback(0);     // [OK]ボタンくリック時は0を返す
                     }else{
                       callback(-1);    // [ｷｬﾝｾﾙ]ボタンくリック時は-1を返す
-                    }  
+                    }
                   }
                 };
-                  
+
   ons.notification.confirm(options);
 };
 
