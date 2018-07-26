@@ -4,17 +4,17 @@ var pictureCheckList = function() {};
 // pictureCheckList.getCheckListName()
 // 工事名称から撮影リスト番号と名称を取得
 //====================================================
-pictureCheckList.getCheckListName = function(koujiname) {  
+pictureCheckList.getCheckListName = function(koujiname) {
   _log(1,'function','pictureCheckList.getCheckListName()');
 
   // ローカルストレージから工事情報を読み込み
   var str = localStrage.getItems('firebase:group00/koujiList');
   // 読み込んだテキストをJSON形式に変換
   var json = JSON.parse(str);
-  
+
   var keyname = 'shootinglistNo';
   var listno  = '';
-  
+
   // ローカルストレージの工事情報から撮影リスト番号を取得する
   // 工事情報が無い場合はlistnoに空白をセット
   try {
@@ -31,7 +31,7 @@ pictureCheckList.getCheckListName = function(koujiname) {
   var listindex = '';
   var keyname   = 'name';
   var listname  = '';
-  
+
   // 撮影リストが１パターンしか定義されていない場合は、無条件に00を選択させる
   try {
     listindex = 'list01';
@@ -52,10 +52,10 @@ pictureCheckList.getCheckListName = function(koujiname) {
     }catch(e){
       listno   = '';
       listname = '';
-    }  
+    }
     if(listname === undefined) {listno = '';};
   };
-  
+
   // リストのhtmlヘッダーを生成
   pictureCheckList.htmlHeader(koujiname,listname);
 
@@ -73,7 +73,7 @@ pictureCheckList.getCheckListName = function(koujiname) {
 // pictureCheckList.checkListDisplay()
 // 撮影リストを作成・表示する
 //====================================================
-pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {  
+pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {
   _log(1,'function','pictureCheckList.checkListDisplay()');
 
   with (pictureCheckList) {
@@ -84,7 +84,7 @@ pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {
     // 撮影した写真を参照し、チェックリストの消込
     loopPictureList(koujiname);
   };
-};  
+};
 
 //====================================================
 // pictureCheckList.getPictureItem()
@@ -107,7 +107,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
     var list   = listindex;
     var display = 'display';
     var number = 'number';
-    
+
     var obj1 = Object.keys(json[field]);
     // 備考第1階層をループしリストを作成する
     $.each(obj1, function(i, key1) {     // 2018/01/30 ADD
@@ -120,18 +120,18 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
         try {
           dsp1 = json[field][key1][list][display];
           num1 = json[field][key1][list][number];
-        }catch(e){}; 
+        }catch(e){};
         // 検索リストに要素を追加
         if(dsp1 === true) {
           var str2 = json[field][key1][item01][name];  // 見出し判定
-          if(str2 !== undefined) { 
+          if(str2 !== undefined) {
             pictureCheckList.htmlItem(1, str1, fid1, 'header', num1);
           }else{
             pictureCheckList.htmlItem(1, str1, fid1, 'item', num1);
-          };  
-        };  
-      };  
-      
+          };
+        };
+      };
+
       // 備考第2階層をループしリストを作成する
       var obj2 = Object.keys(json[field][key1]);
       $.each(obj2, function(i, key2) {     // 2018/01/30 ADD
@@ -140,7 +140,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
         var fid2 = key1.slice(-2)+'-'+key2.slice(-2);
         if(key2.match(/item/) && str2 !== undefined) {
           var dsp2 = false;
-          var num2 = 0; 
+          var num2 = 0;
           try {
             dsp2 = json[field][key1][key2][list][display];
             num2 = json[field][key1][key2][list][number];
@@ -152,9 +152,9 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
               pictureCheckList.htmlItem(2, str2, fid2, 'header', num2);
             }catch(e){
               pictureCheckList.htmlItem(2, str2, fid2, 'item', num2);
-            };  
+            };
           };
-          
+
           // 備考第3階層をループしリストを作成する
           var obj3 = Object.keys(json[field][key1][key2]);
           $.each(obj3, function(i, key3) {     // 2018/01/30 ADD
@@ -163,7 +163,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
             var fid3 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2);
             if(key3.match(/item/) && str3 !== undefined) {
               var dsp3 = false;
-              var num3 = 0; 
+              var num3 = 0;
               try {
                 dsp3 = json[field][key1][key2][key3][list][display];
                 num3 = json[field][key1][key2][key3][list][number];
@@ -178,7 +178,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                   pictureCheckList.htmlItem(3, str3, fid3, 'item', num3);
                 };
               };
-              
+
               // 備考第4階層をループしリストを作成する
               var obj4 = Object.keys(json[field][key1][key2][key3]);
               $.each(obj4, function(i, key4) {     // 2018/01/30 ADD
@@ -187,7 +187,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                 var fid4 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2);
                 if(key4.match(/item/) && str4 !== undefined) {
                   var dsp4 = false;
-                  var num4 = 0; 
+                  var num4 = 0;
                   try {
                     dsp4 = json[field][key1][key2][key3][key4][list][display];
                     num4 = json[field][key1][key2][key3][key4][list][number];
@@ -201,8 +201,8 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                     }catch(e){
                       pictureCheckList.htmlItem(4, str4, fid4, 'item', num4);
                     };
-                  };  
-                  
+                  };
+
                   // 備考第5階層をループしリストを作成する
                   var obj5 = Object.keys(json[field][key1][key2][key3][key4]);
                   $.each(obj5, function(i, key5) {     // 2018/01/30 ADD
@@ -211,7 +211,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                     var fid5 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2)+'-'+key5.slice(-2);
                     if(key5.match(/item/) && str5 !== undefined) {
                       var dsp5 = false;
-                      var num5 = 0; 
+                      var num5 = 0;
                       try {
                         dsp5 = json[field][key1][key2][key3][key4][key5][list][display];
                         num5 = json[field][key1][key2][key3][key4][key5][list][number];
@@ -226,7 +226,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                           pictureCheckList.htmlItem(5, str5, fid5, 'item', num5);
                         };
                       };
-                      
+
                       // 備考第6階層をループしリストを作成する
                       var obj6 = Object.keys(json[field][key1][key2][key3][key4][key5]);
                       $.each(obj6, function(i, key6) {     // 2018/01/30 ADD
@@ -235,7 +235,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                         var fid6 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2)+'-'+key5.slice(-2)+'-'+key6.slice(-2);
                         if(key6.match(/item/) && str6 !== undefined) {
                           var dsp6 = false;
-                          var num6 = 0; 
+                          var num6 = 0;
                           try {
                             dsp6 = json[field][key1][key2][key3][key4][key5][key6][list][display];
                             num6 = json[field][key1][key2][key3][key4][key5][key6][list][number];
@@ -252,14 +252,14 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                           };
                         };
                       });
-                    };  
-                  });  
+                    };
+                  });
                 };
-              });  
+              });
             };
           });
-        };  
-      });  
+        };
+      });
     });
   } catch(e) {
     _errorlog(1,'pictureCheckList.getPictureItem()',e);
@@ -273,14 +273,14 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureCheckList.htmlHeader = function(koujiname,listname) {
   _log(1,'function','pictureCheckList.htmlHeader()');
-  
+
   // チェックリストのアイテムをクリアする
   $('#pictureCheckList').empty();
 
   // チェックリスト名称を表示
   $('#pictureCheckListName').text(listname);
   $('#pictureCheckListName').css({'text-decoration':'underline'});
-  
+
   // 工事名称を表示
   $('#pictureCheckKoujimei').text(koujiname);
 };
@@ -291,7 +291,7 @@ pictureCheckList.htmlHeader = function(koujiname,listname) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureCheckList.htmlItem = function(level, str, fid, flg, num) {
   _log(1,'function','pictureCheckList.htmlItem()');
-  
+
   var html = '<ons-list-item id="'+fid+'" tappable modifier="longdivider" style="padding-left:0px" onclick="pictureCheckList.takeItemClick(this)">'+
              '  <ons-row>'+
              '    <ons-col class="textsize5" width="'+((level-1)*4)+'%"></ons-col>'+
@@ -310,17 +310,17 @@ pictureCheckList.htmlItem = function(level, str, fid, flg, num) {
   var elm = $(html);
   elm.appendTo($("#pictureCheckList"));
   $('#'+fid).attr('class', fid + ' list-item list-item--longdivider');
-  
+
   if(flg==='header') {
     $('#icon1'+fid).attr('icon', 'fa-minus-square-o');
     $('#icon2'+fid).attr('icon', 'fa-star-o');
-  }else{  
+  }else{
     $('#icon1'+fid).attr('icon', 'fa-caret-right');
     $('#icon2'+fid).attr('icon', 'fa-camera');
   };
   $('#icon2'+fid).css('color', 'darkorange');
   $('#pmax'+fid).text(num);
-}; 
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // pictureCheckList.loopPictureList()
@@ -337,18 +337,18 @@ pictureCheckList.loopPictureList = function(koujiname) {
     // アイコンの色をクリア
     $('#icon2'+fid).css('color', 'darkorange');
     // ☆アイコンのクリア
-    if($('#icon2'+fid).attr('icon') === 'fa-star' || 
+    if($('#icon2'+fid).attr('icon') === 'fa-star' ||
        $('#icon2'+fid).attr('icon') === 'fa-star-half-o') {
       $('#icon2'+fid).attr('icon', 'fa-star-o');
-    }  
+    }
   });
-  
+
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
 //  var folderurl = cordova.file.documentsDirectory + 'NoCloud/' + koujiname;
   var folderurl = cordova.file.documentsDirectory + koujiname;
-  
+
   var pictureListArray = new Array();
-  
+
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
   window.resolveLocalFileSystemURL(folderurl,
     // (resolveLocalFileSystemURL)成功時のコールバック関数
@@ -374,7 +374,7 @@ pictureCheckList.loopPictureList = function(koujiname) {
               // 写真リストの配列を渡してループ
               pictureCheckList.getPictureInfo(directoryEntry, pictureListArray);
             };
-          });  
+          });
         },
         function fail(e) {
           _errorlog(1,'pictureCheckList.loopPictureList()[getFileName:]',e.code);
@@ -401,12 +401,12 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
   // 写真リストをループ
   var intervalLoop = function(){
     var filename = pictureListArray[i];
-    
+
     if(i < pictureListArray.length) {
       i++;
       // 撮影項目リストに写真情報を表示
       var infoFile = 'information/' + filename + '.json';
-      directoryEntry.getFile(infoFile, null, 
+      directoryEntry.getFile(infoFile, null,
         function getFile(fileEntry) {
           // Fileオブジェクトを取得
           fileEntry.file(
@@ -416,7 +416,7 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
               reader.onloadend = function(e) {
                 // 読み込んだテキストをJSON形式に変換
                 var text = reader.result;
-            
+
                 var k = JSON.parse(text);
                 // 写真リストＩＤをセット
                 if(k.pictureId === undefined) {k.pictureId = ''};
@@ -433,10 +433,10 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
           _errorlog(1,'pictureCheckList.getPictureInfo()[getFile:]',e.code+'->'+infoFile);
         }
       );
-    }else{  
+    }else{
       _log(1,'pictureCheckList.getPictureInfo()','pictureCount: '+i+'枚');
       clearInterval(getPictureInfoIntervalId);
-    }    
+    }
   };
   // 10ミリ秒毎に１件づつ繰りかえす
   getPictureInfoIntervalId = setInterval(intervalLoop, 10);
@@ -447,7 +447,7 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
     var fid = '';
     // 撮影リストIDを分割してループ
     for(var i = 0 ; i < str.length ; i++) {
-      
+
       if(fid==='') {
         fid = str[i];
       }else{
@@ -462,21 +462,21 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
       countUp(fid, childFlg);
     };
 
-//===========================================================================    
-//===========================================================================    
-//==規定枚数以上の撮影をしている場合、親階層のカウントをしないようにする=====    
-//===========================================================================    
-//===========================================================================    
+//===========================================================================
+//===========================================================================
+//==規定枚数以上の撮影をしている場合、親階層のカウントをしないようにする=====
+//===========================================================================
+//===========================================================================
 
     // 撮影リストＩＤに写真枚数をカウントアップ
     function countUp(fid, childFlg) {
       var icon1 = $('#icon1'+fid).attr('icon');
       var pcnt = Number($('#pcnt'+fid).text());  // 写真枚数
       var pmax = Number($('#pmax'+fid).text());  // 規定枚数
-      
+
       pcnt++;
       $('#pcnt'+fid).text(pcnt);
-      
+
       // 撮影枚数 ＜ 規定枚数
       if(pcnt < pmax) {
         // オレンジ色
@@ -498,10 +498,10 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
         if(icon1 !== 'fa-caret-right') {
           // 塗りつぶしの★アイコン
           $('#icon2'+fid).attr('icon', 'fa-star');
-        };  
-      };  
-      
-    };  
+        };
+      };
+
+    };
   };
 };
 
@@ -511,11 +511,11 @@ pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
 //====================================================
 pictureCheckList.treeOpen = function() {
   _log(1,'function','pictureCheckList.treeOpen()');
-  
+
   $('#pictureCheckList').children('ons-list-item').each(function(i) {
     // 選択されたアイテムのIDを取得
     var selectName = $(this).attr('id');
-  
+
     // 選択されたアイテムのアイコン[+][-]IDを取得
     var icon1 = $('#icon1'+selectName).attr('icon');
     // アイコンが[-](ツリーを開いている状態)の場合
@@ -533,11 +533,11 @@ pictureCheckList.treeOpen = function() {
 //====================================================
 pictureCheckList.treeClose = function() {
   _log(1,'function','pictureCheckList.treeOpen()');
-  
+
   $('#pictureCheckList').children('ons-list-item').each(function(i) {
     // 選択されたアイテムのIDを取得
     var selectName = $(this).attr('id');
-  
+
     // 選択されたアイテムのアイコン[+][-]IDを取得
     var icon1 = $('#icon1'+selectName).attr('icon');
     // アイコンが[-](ツリーを開いている状態)の場合
@@ -555,10 +555,10 @@ pictureCheckList.treeClose = function() {
 //====================================================
 pictureCheckList.takeItemClick = function(obj) {
   _log(1,'function','pictureCheckList.takeItemClick()');
-  
+
   // 選択されたアイテムのIDを取得
   var selectName = $(obj).attr('id');
-  
+
   // 選択されたアイテムのアイコン[+][-]IDを取得
   var icon1 = $('#icon1'+selectName).attr('icon');
   // アイコンが[-](ツリーを開いている状態)の場合
@@ -572,7 +572,7 @@ pictureCheckList.takeItemClick = function(obj) {
     takeItemSelect('hide');
     // アイコンツリーの閉じた状態をローカルストレージに保存
     pictureCheckList.saveCheckStrage(obj);
-  };  
+  };
   // アイコンが[+](ツリーを閉じている状態)の場合
   if(icon1 === 'fa-plus-square-o') {
     // アイコンを[-]に変更
@@ -602,25 +602,25 @@ pictureCheckList.takeItemClick = function(obj) {
         if(id.indexOf(selectName+'-') !== 0) {
           return false;
         };
-        
+
         // アイテムのclass名を取得
         var cl = $(this).attr('class');
         // 表示状態から非表示状態に変わったら先頭に'S'を付加する
         if(flg==='hide') {
           cl = 'S'+cl;
-        };  
+        };
         // 非表示状態から表示状態に変わったら先頭の'S'を削除する
         if(flg==='show') {
           if(cl.indexOf('S') === 0) {
             cl = cl.slice(1);
-          };  
+          };
         };
         // class名をセットする
         $(this).attr('class', cl);
-      };  
-    });  
+      };
+    });
   };
-};  
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // pictureCheckList.saveCheckStrage()
@@ -628,14 +628,14 @@ pictureCheckList.takeItemClick = function(obj) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureCheckList.saveCheckStrage = function(obj) {
   _log(1,'function','pictureCheckList.saveCheckStrage()');
-  
+
 //  // 選択されたアイテムのIDを取得
 //  var selectName = $(obj).attr('id');
 //  var val = {selectName:""};
 //  // 選択されたアイテムのアイコン[+]の状態を保存
 //  localStrage.setItems('firebase:temp/checklist', val);
-//  
-};  
+//
+};
 
 //====================================================
 // pictureCheckList.checkListSelectModal()
@@ -643,7 +643,7 @@ pictureCheckList.saveCheckStrage = function(obj) {
 //====================================================
 pictureCheckList.checkListSelectModal = function() {
   _log(1,'function','pictureCheckList.checkListSelectModal()');
-  
+
   $('#pictureCheckListSelected').empty();
 
   // 撮影リストの種類を取得
@@ -654,13 +654,13 @@ pictureCheckList.checkListSelectModal = function() {
     setCheckList(key, k[key]['name']);
   });
   $('#pictureCheckNameList').show();
-  
+
   function setCheckList(key, name) {
     // 撮影リストの名前リストを作成
     var html = '<ons-list-item class="textsize5" id="pictureCheckList-'+key+'" tappable modifier="chevron" onclick="pictureCheckList.listSelected(this)">'+name+'</ons-list-item>';
     var elm = $(html);
     elm.appendTo($("#pictureCheckListSelected"));
-  };  
+  };
 };
 
 //====================================================
@@ -672,7 +672,7 @@ pictureCheckList.listSelected = function(obj) {
 
   var koujiname = $('#pictureCheckKoujimei').text();
   var listname  = $(obj).text();
-  var selectId  = $(obj).attr('id'); 
+  var selectId  = $(obj).attr('id');
   var listno    = selectId.slice(-2);
   var listindex = selectId.split('-');
 
@@ -681,7 +681,7 @@ pictureCheckList.listSelected = function(obj) {
   var str = localStrage.getItems('firebase:group00/koujiList');
   // 読み込んだテキストをJSON形式に変換
   var json = JSON.parse(str);
-  
+
   // 該当の工事情報が無ければ作成する
   try {
     if(json[koujiname] === undefined){
@@ -690,11 +690,11 @@ pictureCheckList.listSelected = function(obj) {
   }catch(e){
     json = {};
     json[koujiname] = {};
-  };  
+  };
   // 値を変更する
   var keyname = 'shootinglistNo';
   json[koujiname][keyname] = listno;
-  
+
   // JSON形式をテキスト形式に変換
   str = JSON.stringify(json);
   // ローカルストレージに書き戻し
@@ -703,13 +703,13 @@ pictureCheckList.listSelected = function(obj) {
 
   // firebaseDatabaseの工事情報の撮影リスト番号を更新
   setFirebaseShootinglistNo(koujiname, listno);
-  
+
   // 撮影リストの情報を更新 (infomation/cotrol.json)
   pictureCheckList.setInformationHeader(koujiname, listno);
 
   // ダイアログを非表示にする
   pictureCheckNameList.hide();
-  
+
   // 撮影リストの選択された名前からリストを再作成
   pictureCheckList.checkListDisplay(koujiname,listindex[1],listname);
 };
@@ -723,8 +723,8 @@ pictureCheckList.setInformationHeader = function(koujiname, shootinglistNo) {
 
   var directory = koujiname+'/information';
   var filename = 'control.json';
-  
-  localStrage.getPicture(directory, filename, function(result) {
+
+  localStrage.getJsonFile(directory, filename, function(result) {
     // 読み込んだテキストをJSON形式に変換
     var text = result;
     var json_text = JSON.parse(text);
@@ -760,10 +760,10 @@ pictureCheckList.toCamera = function() {
   $('#camera').show();
   // ステータスバーの非表示
   StatusBar.hide();
-  
+
   // 黒板イメージの再生成
   kokuban.makeframe();
-  
+
   // 設定メニュー画面の非表示
   $('#chkNavigator').hide();
 };

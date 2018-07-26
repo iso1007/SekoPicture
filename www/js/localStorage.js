@@ -4,29 +4,37 @@ var localStrage = function() {};
 // localStrage.pictureSave()
 // 写真イメージのセーブ
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, directory, filename, callback) {
+localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, directory, filename, callback, error_callback) {
   _log(1,'function','localStrage.pictureSave('+img_width+','+img_height+','+img_rot+','+directory+','+filename+')');
 
   try {
     // 横向きの場合はイメージを回転
     _imgB64Resize(img_url, img_width, img_height, img_rot, function(img64) {
 
-      // 撮影イメージ(Base64)にExif情報を付加
       // 撮影イメージ(Base64)形式をBlob形式に変換
       // サムネイル画像にはExif情報を付加しない
+      var blob = '';
       if(directory.indexOf('/thumbnail') > 0) {
-        var blob = _Base64toBlob( img64 );
+        blob = _Base64toBlob( img64 );
       }else{
-        var blob = _Base64toBlob( _setExifInfo(img64) );
+        // 撮影イメージ(Base64)にExif情報を付加
+        blob = _Base64toBlob( _setExifInfo(img64) );
       }
+
       // デバイスローカル(documentsDirectory)に保存
       localStrage.saveBlobFile(directory, filename, blob, function(url){
         _log(1,'localStrage.pictureSave','normalend');
         callback(null);
+      },
+
+      function fail(message) {
+        _errorlog(1,'localStrage.pictureSave', message);
+        error_callback(message);
       });
     });
+
   } catch(e) {
-    _alert('撮影した写真データが正常に保存されませんでした。'+e.message);
+    error_callback(e.message);
   }
 };
 
@@ -34,7 +42,7 @@ localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, dire
 // localStrage.makeDirectory()
 // 工事名称フォルダ配下に必要なフォルダを確認し、ない場合は作成する
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.makeDirectory = function(localFolder, callback) {
+localStrage.makeDirectory = function(localFolder, callback, error_callback) {
   _log(1,'function','localStrage.makeDirectory()');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
@@ -43,35 +51,66 @@ localStrage.makeDirectory = function(localFolder, callback) {
   _log(1,'function',folderurl+localFolder);
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl, function success1(directoryEntry) {
+  window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
     // Android: "file:///data/data/io.cordova.myapp9ada90/files/
     // Windows: "ms-appdata:///local//"
 
-    directoryEntry.getDirectory(localFolder, { create: true }, function (subDirectoryEntry) {
+    directoryEntry.getDirectory(localFolder, { create: true }, function(subDirectoryEntry) {
 
       // 写真情報ファイル保存フォルダの作成
-      subDirectoryEntry.getDirectory('information', { create: true }, function (e) {
+      subDirectoryEntry.getDirectory('information', { create: true }, function() {
 
         // サムネイル保存フォルダの作成
-        subDirectoryEntry.getDirectory('thumbnail', { create: true }, function (e) {
+        subDirectoryEntry.getDirectory('thumbnail', { create: true }, function() {
 
           // 黒板背景イメージ保存用フォルダの作成
-          subDirectoryEntry.getDirectory('clipping', { create: true }, function (e) {
+          subDirectoryEntry.getDirectory('clipping', { create: true }, function() {
 
             // ゴミ箱フォルダの作成
-            subDirectoryEntry.getDirectory('dustbox', { create: true }, function (e) {
+            subDirectoryEntry.getDirectory('dustbox', { create: true }, function() {
 
               callback(null);
 
+            },
+            // (dustbox)フォルダの作成エラー
+            function fail(error) {
+              _errorlog(1,'localStrage.makeDirectory','getDirectory(dustbox) Error: ' + error.code);
+              error_callback('フォルダ(dustbox)作成エラー ('+error.code+')');
             });
+          },
+
+          // (clipping)フォルダの作成エラー
+          function fail(error) {
+            _errorlog(1,'localStrage.makeDirectory','getDirectory(clipping) Error: ' + error.code);
+            error_callback('フォルダ(clipping)作成エラー ('+error.code+')');
           });
+        },
+
+        // (thumbnail)フォルダの作成エラー
+        function fail(error) {
+          _errorlog(1,'localStrage.makeDirectory','getDirectory(thumbnail) Error: ' + error.code);
+          error_callback('フォルダ(thumbnail)作成エラー ('+error.code+')');
         });
+      },
+
+      // (information)フォルダの作成エラー
+      function fail(error) {
+        _errorlog(1,'localStrage.makeDirectory','getDirectory(information) Error: ' + error.code);
+        error_callback('フォルダ(information)作成エラー ('+error.code+')');
       });
     },
-    // (resolveLocalFileSystemURL)呼び出し失敗
+
+    // (工事名称)フォルダの作成エラー
     function fail(error) {
-      _errorlog(1,'localStrage.makeDirectory',"resolveLocalFileSystemURI Error: " + error.code);
+      _errorlog(1,'localStrage.makeDirectory','getDirectory('+localFolder+') Error: ' + error.code);
+      error_callback('フォルダ('+localFolder+')作成エラー ('+error.code+')');
     });
+  },
+
+  // directoryEntryの取得エラー
+  function fail(error) {
+    _errorlog(1,'localStrage.makeDirectory','resolveLocalFileSystemURI Error: ' + error.code);
+    error_callback('directoryEntry取得エラー ('+error.code+')');
   });
 };
 
@@ -79,133 +118,101 @@ localStrage.makeDirectory = function(localFolder, callback) {
 // localStrage.saveBlobFile()
 // ローカルストレージにBlobデータを保存する
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.saveBlobFile = function(localFolder, localFileName, blob, callback) {
+localStrage.saveBlobFile = function(localFolder, localFileName, blob, callback, error_callback) {
   _log(1,'function','localStrage.saveBlobFile()');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
 //  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var folderurl = cordova.file.documentsDirectory;
-  _log(1,'function',folderurl+localFolder);
+  var folderurl = cordova.file.documentsDirectory+localFolder;
+  _log(1,'function',folderurl);
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl,
-    // (resolveLocalFileSystemURL)が成功したら呼び出される関数
-    function success1(directoryEntry) {
-      // Android: "file:///data/data/io.cordova.myapp9ada90/files/
-      // Windows: "ms-appdata:///local//"
+  window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
 
-      directoryEntry.getDirectory(localFolder, { create: true }, function (subDirectoryEntry) {
+    // settingsFileNameファイルを取得（存在しないときは作成）
+    directoryEntry.getFile(localFileName, { create: true }, function(fileEntry) {
 
-        // settingsFileNameファイルを取得（存在しないときは作成）
-        subDirectoryEntry.getFile(localFileName, { create: true },
-          // （第3引数）成功したら呼び出される関数
-          function success2(fileEntry) {
-            // Android: "file:///data/data/io.cordova.myapp9ada90/files/settings.json"
-            // Windows: "ms-appdata:///local//settings.json"
-
-            // FileWriterオブジェクトを作成
-            fileEntry.createWriter(
-
-              // (fileEntry.createWriter)の成功
-              function success3(fileWriter) {
-                // Android: "cdvfile://localhost/files/settings.json"
-                // Windows: "cdvfile://localhost/persistent/settings.json"
-
-                // データ書き込み後のハンドラーをセット
-                fileWriter.onwriteend = function (e) {
-                  // for real-world usage, you might consider passing a success callback
-                  callback(null);
-                };
-                // データ書き込み失敗時のハンドラーをセット
-                fileWriter.onerror = function (e) {
-                  // you could hook this up with our global error handler, or pass in an error callback
-                  _errorlog(1,'localStrage.saveBlobFile','Write failed: ' + e.toString());
-                };
-                // イメージデータの書き込み処理
-                fileWriter.write(blob);
-              },
-              // (fileEntry.createWriter)呼び出しエラー
-              function fail(error) {
-                _errorlog(1,'localStrage.saveBlobFile',"fileEntry.createWriter Error: " + error.code);
-              }
-            );
-          },
-          // (subDirectoryEntry.getFile)呼び出し失敗
-          function fail(error) {
-            _errorlog(1,'localStrage.saveBlobFile',"subDirectoryEntry.getFile Error: " + error.code);
-          }
-        );
+      // FileWriterオブジェクトを作成
+      fileEntry.createWriter( function(fileWriter) {
+        // イメージデータの書き込み処理
+        fileWriter.write(blob);
+          // データ書き込み成功
+        callback(null);
       },
-        // (directoryEntry.getDirectory)呼び出し失敗
-        function fail(error) {
-          _errorlog(1,'localStrage.saveBlobFile',"directoryEntry.getDirectory Error: " + error.code);
-        }
-      );
+
+      // (fileEntry.createWriter)呼び出しエラー
+      function fail(error) {
+        _errorlog(1,'localStrage.saveBlobFile','fileEntry.createWriter Error: ' + error.code);
+        error_callback('localStrage.saveBlobFile > fileEntry.createWriter Error: ('+error.code+')');
+      });
     },
-    // (resolveLocalFileSystemURL)呼び出し失敗
+
+    // (directoryEntry.getFile)呼び出しエラー
     function fail(error) {
-      _errorlog(1,'localStrage.saveBlobFile',"resolveLocalFileSystemURI Error: " + error.code);
-    }
-  );
+      _errorlog(1,'localStrage.saveBlobFile','directoryEntry.getFile Error: ' + error.code);
+      error_callback('localStrage.saveBlobFile > directoryEntry.getFile Error: ('+error.code+')');
+    });
+  },
+
+  // (resolveLocalFileSystemURL)呼び出しエラー
+  function fail(error) {
+    _errorlog(1,'localStrage.saveBlobFile','resolveLocalFileSystemURL Error: ' + error.code);
+    error_callback('localStrage.saveBlobFile > resolveLocalFileSystemURL Error: ('+error.code+')');
+  });
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// localStrage.getPicture()
+// localStrage.getJsonFile()
 // ローカルデータフォルダから(写真・テキスト)データを取得
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.getPicture = function(localFolder, localFileName, normal_callback, error_callback) {
-  _log(1,'function','localStrage.getPicture()');
+localStrage.getJsonFile = function(localFolder, localFileName, callback, error_callback) {
+  _log(1,'function','localStrage.getJsonFile()');
 
   // 設定ファイルへのパス
 //  var urlToFile = cordova.file.documentsDirectory + 'NoCloud/' + localFolder + '/' + localFileName;
   var urlToFile = cordova.file.documentsDirectory + localFolder + '/' + localFileName;
-  _log(1,'localStrage.getPicture',urlToFile);
+  _log(1,'localStrage.getJsonFile',urlToFile);
 
   // 設定ファイルのFileEntryオブジェクトを取得（Rippleでは動作せず）
-  window.resolveLocalFileSystemURL(urlToFile,
-    //（第2引数）成功したら呼び出される関数
-    function success1 (fileEntry) {
-      _log(2,'localStrage.getPicture','resolveLocalFileSystemURL Success: ' + fileEntry.nativeURL);
+  window.resolveLocalFileSystemURL(urlToFile, function(fileEntry) {
 
-      // Fileオブジェクトを取得
-      fileEntry.file(
-        // (fileEntry.file)が成功したら呼び出される関数
-        function success2 (file) {
-          // FileReaderオブジェクトを作成
-          var reader = new FileReader();
-          // ファイル読み込み後の処理をセット
-          reader.onloadend = function(e) {
-            //console.log("read success: " + e.target.result);
-            // コールバックでイメージを戻す
-            normal_callback(e.target.result);
-          };
-          // ファイル読み込みを実行
-          if(localFileName.match(/.jpg/)) {
-            reader.readAsDataURL(file);
-          }else{
-            reader.readAsText(file);
-          }
-        },
-        // (fileEntry.file)呼び出し失敗
-        function fail (error) {
-          error_callback(error.code);
-          _errorlog(1,'localStrage.getPicture',"fileEntry.file Error: " + error.code);
-        }
-      );
+    // Fileオブジェクトを取得
+    fileEntry.file( function(file) {
+
+      // FileReaderオブジェクトを作成
+      var reader = new FileReader();
+      // ファイル読み込み後の処理をセット
+      reader.onloadend = function(e) {
+        // コールバックでイメージを戻す
+        callback(e.target.result);
+      };
+      // ファイル読み込みを実行
+      if(localFileName.match(/.jpg/)) {
+        reader.readAsDataURL(file);
+      }else{
+        reader.readAsText(file);
+      }
     },
-    // (resolveLocalFileSystemURL)呼び出し失敗
-    function fail (error) {
-      error_callback(error.code);
-      _errorlog(1,'localStrage.getPicture',"resolveLocalFileSystemURL Error: " + error.code);
-    }
-  );
+
+    // (fileEntry.file)呼び出し失敗
+    function fail(error) {
+      _errorlog(1,'localStrage.getJsonFile','fileEntry.file Error: ' + error.code);
+      error_callback('localStrage.getJsonFile > fileEntry.file Error: ('+error.code+')');
+    });
+  },
+
+  // (resolveLocalFileSystemURL)呼び出し失敗
+  function fail (error) {
+    _errorlog(1,'localStrage.getJsonFile','resolveLocalFileSystemURL Error: ' + error.code);
+    error_callback('localStrage.getJsonFile > resolveLocalFileSystemURL Error: ('+error.code+')');
+  });
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // localStrage.setInformation()
 // 黒板情報のセーブ (infomation/[id].json)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.setInformation = function(directory, filename, callback) {
+localStrage.setInformation = function(directory, filename, callback, error_callback) {
   _log(1,'function','localStrage.setInformation()');
 
   // ローカルストレージから読み込み
@@ -250,6 +257,9 @@ localStrage.setInformation = function(directory, filename, callback) {
   localStrage.saveBlobFile(directory, filename, blob, function(url){
     _log(1,'localStrage.setInformation','normalend');
     callback(null);
+  },
+  function fail(message) {
+    error_callback(message);
   });
 };
 
@@ -257,7 +267,7 @@ localStrage.setInformation = function(directory, filename, callback) {
 // localStrage.setInformationHeader()
 // 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.setInformationHeader = function(directory, filename, callback) {
+localStrage.setInformationHeader = function(directory, filename, callback, error_callback) {
   _log(1,'function','localStrage.setInformationHeader()');
 
   var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'',geoLocation:{} };
@@ -274,7 +284,7 @@ localStrage.setInformationHeader = function(directory, filename, callback) {
   var format_datetime = yyyy+'/'+mm+'/'+dd+' '+hh+':'+min;
   var koujiname = directory.replace('/information', '');
 
-  localStrage.getPicture(directory, filename, function(result) {
+  localStrage.getJsonFile(directory, filename, function(result) {
     // 読み込んだテキストをJSON形式に変換
     var text = result;
     var k = {};
@@ -304,6 +314,9 @@ localStrage.setInformationHeader = function(directory, filename, callback) {
     localStrage.saveBlobFile(directory, filename, blob, function(url){
       _log(1,'localStrage.setInformationHeader','update normalend');
       callback(null);
+    },
+    function fail(message) {
+      error_callback(message);
     });
   },
   function(e) {
@@ -324,6 +337,9 @@ localStrage.setInformationHeader = function(directory, filename, callback) {
     localStrage.saveBlobFile(directory, filename, blob, function(url){
       _log(1,'localStrage.setInformationHeader','new normalend');
       callback(null);
+    },
+    function fail(message) {
+      error_callback(message);
     });
   });
 
@@ -337,7 +353,7 @@ localStrage.setInformationHeader = function(directory, filename, callback) {
 // 指定したフォルダを削除する
 // 正常に削除ができた場合、削除するフォルダが無かった場合はnullをコールバック
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.removeDirectory = function(localFolder, callback) {
+localStrage.removeDirectory = function(localFolder, callback, error_callback) {
   _log(1,'function','localStrage.removeDirectory('+localFolder+')');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
@@ -345,24 +361,20 @@ localStrage.removeDirectory = function(localFolder, callback) {
   var folderurl = cordova.file.documentsDirectory + localFolder;
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl,
-    function(directoryEntry) {
-      // 指定されたフォルダを削除する
-      directoryEntry.removeRecursively(
-        function() {
-          callback(null);
-        },
-        function(e){
-          _errorlog(1,'localStrage.removeDirectory()', e.code+'-> '+folderurl);
-          callback(e.code);
-        }
-      );
-    },
-    function(e) {
-      _log(1,'localStrage.removeDirectory()', 'Folder Nothing -> '+folderurl);
+  window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
+    // 指定されたフォルダを削除する
+    directoryEntry.removeRecursively( function() {
       callback(null);
-    }
-  );
+    },
+    function(error){
+      _errorlog(1,'localStrage.removeDirectory()', error.code+'-> '+folderurl);
+      error_callback('localStrage.removeDirectory > directoryEntry.removeRecursively Error: ('+error.code+')');
+    });
+  },
+  function(error) {
+    _log(1,'localStrage.removeDirectory()', 'Folder Nothing -> '+folderurl);
+    error_callback('localStrage.removeDirectory > resolveLocalFileSystemURL Error: ('+error.code+')');
+  });
 };
 // 2018/01/27 ADD -----↑
 

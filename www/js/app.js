@@ -2,8 +2,8 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 9;
-var errorlogMessageLevel = 5;
+var logMessageLevel = 9; //0;
+var errorlogMessageLevel = 9; //5;
 _log(0,'===========================Pocess Start=================================');
 
 // グリッド表示・非表示
@@ -1009,37 +1009,75 @@ app.cameraTakePicture = function() {
           // 撮影した写真のプレビュー
           app.takePicturePreview(picImage, function(e) {
 
-            // 黒板情報をローカルストレージに保存
-            filename = file + '.json';
-            localStrage.setInformation(directory+'/information', filename, function(e) {
+            // 撮影イメージをローカルストレージに保存
+            filename = file + '.jpg';
+            localStrage.pictureSave(picImage, picWidth, picHeight, rot, directory, filename, function(e) {
 
-              // 撮影日時・枚数情報を更新
-              filename = 'control' + '.json';
-              localStrage.setInformationHeader(directory+'/information', filename, function(e) {
+              // サムネイルをローカルストレージに保存
+              localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename, function(e) {
 
-                // 撮影イメージをローカルストレージに保存
-                filename = file + '.jpg';
-                localStrage.pictureSave(picImage, picWidth, picHeight, rot, directory, filename, function(e) {
+                // 黒板情報をローカルストレージに保存
+                filename = file + '.json';
+                localStrage.setInformation(directory+'/information', filename, function(e) {
 
-                  // サムネイルをローカルストレージに保存
-                  localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename, function(e) {
-                    // 使用した変数を初期化
-                    kokuban_cvs = null; kokuban_ctx = null; kokuban_img = null;
-                    out_cvs = null; out_ctx = null; pic_img = null;
-                    imageSrcData = null;
+                  // 撮影日時・枚数情報を更新
+                  filename = 'control' + '.json';
+                  localStrage.setInformationHeader(directory+'/information', filename, function(e) {
+                    _log(1,'takePictureClose()','normal end');
+                    takePictureClose(null);
+                  },
 
-                    // シャッターボタンを有効にする
-                    $('#cameraTakeButton').attr('disabled', false);
-                    $('#cameraTakeButton').removeClass('disabled');
+                  // (control.json)の書き込みでエラー発生
+                  function fail(message) {
+                    takePictureClose(message);
                   });
+                },
+
+                // (infomation.json)の書き込みでエラー発生
+                function fail(message) {
+                  takePictureClose(message);
                 });
+              },
+
+              // (サムネイル写真.jpg)の書き込みでエラー発生
+              function fail(message) {
+                takePictureClose(message);
               });
+            },
+
+            // (写真.jpg)の書き込みでエラー発生
+            function fail(message) {
+              takePictureClose(message);
             });
           });
+
+        },
+        // (localStrage.makeDirectory)でエラー発生
+        function fail(message) {
+          takePictureClose(message);
         });
       };
     };
   });
+
+  function takePictureClose(message) {
+    // 使用した変数を初期化
+    imageSrcData = null;
+    kokuban_cvs = null;
+    kokuban_ctx = null;
+    kokuban_img = null;
+    out_cvs = null;
+    out_ctx = null;
+    pic_img = null;
+
+    // シャッターボタンを有効にする
+    $('#cameraTakeButton').attr('disabled', false);
+    $('#cameraTakeButton').removeClass('disabled');
+
+    if(message !== null) {
+      _alert('撮影した写真の保存時にエラーが発生しました。<br>'+message);
+    }
+  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
