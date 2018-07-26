@@ -555,7 +555,7 @@ setKokuban.bikouTextSupport = function() {
 setKokuban.numberKeyInput = function(obj) {
   _log(1,'function','setKokuban.numberKeyInput()');
   
-  var key = $(obj).text();
+  var key = obj.innerText;
   var beforeString = $('#numberInputText').text();
   if(beforeString[0]==='_') {
     beforeString = '';
