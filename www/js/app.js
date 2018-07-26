@@ -1116,17 +1116,17 @@ app.takePicturePreview = function(img_url, callback) {
     // 設定した秒数が経過したらプレビューを消去
     takePicturePreviewID = setTimeout(function() {
       app.takePicturePreviewhide();
-      $('#previewMessage').off('click');
+      $('#previewMessage').off('touchstart');
       callback(null);
     }, previewTime * 1000);
 
     // プレビュー中に画面をタップしたらプレビューを消去
-    $('#previewMessage').on('click',function(){
+    $('#previewMessage').on('touchstart',function(){
        previewClickEnd();
     });
     function previewClickEnd() {
       app.takePicturePreviewhide();
-      $('#previewMessage').off('click');
+      $('#previewMessage').off('touchstart');
       callback(null);
     }
   }
