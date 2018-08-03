@@ -2,8 +2,8 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 9; //0;
-var errorlogMessageLevel = 9; //5;
+var logMessageLevel = 0; //0;
+var errorlogMessageLevel = 0; //5;
 _log(0,'===========================Pocess Start=================================');
 
 // グリッド表示・非表示

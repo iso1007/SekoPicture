@@ -7,130 +7,125 @@ var koujiPictureListSortIndex = 0;
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function koujiListDisplay() {
   _log(1,'function','koujiListDisplay()');
-  
-  // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory+'NoCloud';
-  var folderurl = cordova.file.documentsDirectory;
 
   // 工事一覧ヘッダー作成
   koujiListHeader();
-  // 工事リスト作成用jsonテーブル
-  var koujiList = [];
-  
-  // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl,
-    // (resolveLocalFileSystemURL)成功時のコールバック関数
-    function getdirectoryEntry(directoryEntry) {
-      // DirectoryReaderを生成
-      var directoryReader = directoryEntry.createReader();
-      // ディレクトリ内のフォルダ一覧を取得
-      directoryReader.readEntries(
-        function getFileName(fileEntries) {
-            // ディレクトリ内をループ
-          var removeCount = 0;
-          
-          $.each( fileEntries, function() {
 
-            // 'NoCloud'フォルダは処理対象外とする
-//            if(this.name === 'NoCloud') {  // 2018/01/25 DEL
-            if(this.name === 'NoCloud' || this.name === 'CommonShape') {  // 2018/01/25 ADD
-              removeCount++;
-              return true;
-            }
-            
-            // ディレクトリ(工事)名から工事情報を取得
-            koujiListAddDate(this, directoryEntry, function(koujiInfo) {
-              // 工事情報をリストに追加(写真が１枚以上存在する工事のみ)
-              if(koujiInfo.picture_count === 0) {
-                removeCount++;
-              }else{  
-                koujiList.push(koujiInfo);
-              }
-
-              // 全てのディレクトリの処理が終わった時点で実行
-              if( koujiList.length + removeCount === fileEntries.length ) {
-                $('#koujiListCount').text(koujiList.length+'件');
-                // 工事情報リストを最終撮影日付順･降順にソート
-                // ================================================
-                // ================================================
-                // =========ソート条件は設定可能にする=============
-                // ================================================
-                // ================================================
-                koujiList.sort(function(a,b) {
-                  if( a.last_datetime > b.last_datetime ) return -1;
-                  if( a.last_datetime < b.last_datetime ) return 1;
-                  return 0;
-                });
-                // 工事情報リストからhtmlを作成
-                $.each( koujiList, function(i) {
-                  
-                  // 写真枚数が1枚以上存在する工事のみ表示
-                  if(this.picture_count === undefined) {this.picture_count = 0;}
-                  if(this.picture_count > 0) {
-                    // 工事リストに撮影日付と写真枚数情報を付加する
-                    koujiListHtml(this, i);
-                  }
-                });
-              }
-            });
-          });
-        },
-        function fail(e) {
-          _errorlog(1,'koujiListDisplay',"getFileName Error: " + e.code);
-        }
-      );
-    },
-    // (resolveLocalFileSystemURL)不成功時のコールバック関数
-    function fail(e) {
-      _errorlog(1,'koujiListDisplay',"getdirectoryEntry Error: " + e.code);
-    }
-  );
+  // ディレクトリ内のフォルダをループして工事リストを表示
+  koujiFileEntrysLoop();
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// koujiListAddDate()
-// 工事一覧に日付と枚数情報を表示
+// fileEntrysLoop()
+// ディレクトリ内のフォルダをループしてリストを表示する(同期処理)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiListAddDate(fileEntrie, directoryEntry, callback) {
-  _log(1,'function','koujiListAddDate('+fileEntrie.name+')');
+async function koujiFileEntrysLoop() {
+  _log(1,'function','koujiFileEntrysLoop()');
 
-  var koujiInfo = {picture_count:0};
-  var koujiname = fileEntrie.name;
-  var infoFile = koujiname + '/information/' + 'control' + '.json';
-  
-  directoryEntry.getFile(infoFile, null, function getFile(fileEntry) {
-    // Fileオブジェクトを取得
-    fileEntry.file(function addInfomation(file) {
-      
-      // Fileオブジェクトの読み込み
-      var reader = new FileReader();
-      reader.readAsText(file);
-      reader.onloadend = function(e) {
-        
-        // 読み込んだテキストをJSON形式に変換
-        var koujiInfo = {};
-        try {
-          koujiInfo = JSON.parse(reader.result);
-        }catch(e){
-          koujiInfo.picture_count = 999;
-        }
-      
-        // 写真枚数情報が無い場合は0で追加
-        if(koujiInfo.picture_count === undefined) { koujiInfo.picture_count = 0; }
+  // iosはDocuments配下のクラウド非同期フォルダに保存
+//  var folderurl = cordova.file.documentsDirectory+'NoCloud';
+  var folderurl = cordova.file.documentsDirectory;
+  try {
+    // directoryEntryオブジェクトを取得
+    var directoryEntry = await localFile.getFileSystemURL(folderurl);
+    // fileEntrysオブジェクトを取得
+    var fileEntrys = await localFile.getReadEntries(directoryEntry);
+  } catch(e) {
+    _alert('工事一覧情報が取得できませんでした。'+e.code);
+  }
 
-        // コールバックで工事情報を戻す
-        callback(koujiInfo);
-      };
-    },
-    function fail(e) {
-      _errorlog(1,'koujiListAddDate','fileEntry Error('+fileEntrie.name+'): ' + e.code);
-      callback(koujiInfo);
+  if(fileEntrys.length > 20) {
+    $('#splashModal').show();
+  }
+  var removeCount = 0;
+  var koujiList = [];
+  var errcode = '';
+
+  // 工事フォルダを同期処理ループして工事一覧を作成･表示する
+  for (var i=0; fileEntrys.length > i; i++) {
+    var koujiname = fileEntrys[i].name;
+    if(koujiname === 'NoCloud' || koujiname === 'CommonShape') {
+      continue;
+    }
+
+    var koujiInfo = {picture_count:0,koujiname:'',fast_datetime:'',last_datetime:''};
+    var infoFile = koujiname + '/information/' + 'control' + '.json';
+
+    try {
+      // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+      var fileEntry = await localFile.getFileEntry(directoryEntry, infoFile);
+      // ファイルエントリーオブジェクトからfileオブジェクトを取得
+      var file = await localFile.getFileObject(fileEntry);
+      // ファイルブジェクトからcontrol.jsonファイルを読み込む
+      var koujiInfo = await controlFileRead(file);
+    } catch(e) {
+      errcode = e.code;
+    }
+
+    // 工事情報をリストに追加(写真が１枚以上存在する工事のみ)
+    if(koujiInfo.picture_count === undefined) {koujiInfo.picture_count = 0;}
+    if(koujiInfo.picture_count > 0) {
+      koujiList.push(koujiInfo);
+    }
+  };
+  if(errcode!=='') {
+    _alert('全ての撮影済みの工事情報が取得できませんでした。'+errmessage);
+  }
+
+  $('#koujiListCount').text(koujiList.length+'件');
+  if(koujiList.length > 0) {
+    // 工事情報リストを最終撮影日付順･降順にソート
+    // ================================================
+    // ================================================
+    // =========ソート条件は設定可能にする=============
+    // ================================================
+    // ================================================
+    koujiList.sort(function(a,b) {
+      if( a.last_datetime > b.last_datetime ) return -1;
+      if( a.last_datetime < b.last_datetime ) return 1;
+      return 0;
     });
-  },
-  function fail(e) {
-    _errorlog(1,'koujiListAddDate','getFile Error('+fileEntrie.name+'): ' + e.code);
-    callback(koujiInfo);
-  });  
+
+    // 工事情報リストからhtmlを作成
+    for (var i=0; koujiList.length > i; i++) {
+      koujiListHtml(koujiList[i], i);
+    };
+  }
+
+  if(fileEntrys.length > 20) {
+    $('#splashModal').hide();
+  }
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// controlFileRead()
+// ファイルブジェクトからcontrol.jsonファイルを読み込む
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function controlFileRead(file) {
+  return new Promise(function(resolve, reject) {
+    // Fileオブジェクトの読み込み
+    var reader = new FileReader();
+    var koujiInfo = {};
+
+    reader.onload = function(e) {
+      // 読み込んだテキストをJSON形式に変換
+      try {
+        koujiInfo = JSON.parse(reader.result);
+      }catch(e){
+        koujiInfo.picture_count = 999;
+      }
+      // 写真枚数情報が無い場合は0で追加
+      if(koujiInfo.picture_count === undefined) { koujiInfo.picture_count = 0; }
+      // コールバックで工事情報を戻す
+      resolve(koujiInfo);
+    };
+
+    reader.onerror = function(e) {
+      reject(koujiInfo);
+    };
+
+    reader.readAsText(file);
+  });
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
