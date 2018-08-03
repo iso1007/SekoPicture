@@ -4,37 +4,40 @@ var firebaseStorage = function() {};
 // firebaseStorage.fileUpload()
 // firebaseStorageへファイルをアップロード
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-firebaseStorage.fileUpload = function(directory, fileName, src, normal_callback) {
-  _log(1,'function','firebaseStorage.fileUpload('+directory+'/'+fileName+')');
+firebaseStorage.fileUpload = function(directory, filename, src) {
+  return new Promise(function(resolve, reject) {
+    // ローカルファイルをfirebaseStrageにコピー
+    // firebaseStrageにUID付きで保存
+    var uid = firebase.auth().currentUser.uid;
+    var filepath = uid + '/' + directory + '/' + filename;
 
-  // ローカルファイルをfirebaseStrageにコピー
-  // firebaseStrageにUID付きで保存   
-  var uid = firebase.auth().currentUser.uid;
-  fileName = uid + '/' + directory + '/' + fileName;
+    // ストレージオブジェクト作成
+    var storageRef = firebase.storage().ref();
+    var mountainsRef = storageRef.child(filepath);
 
-  // ストレージオブジェクト作成
-  var storageRef = firebase.storage().ref();
-  var mountainsRef = storageRef.child(fileName);
+    var text = filename.split('.');
+    if(text[1] === 'jpg') {
+      // 拡張子がjpgの場合はblob型に変換
+      var blob = _Base64toBlob(src);
+      var uploadTask = mountainsRef.put(blob);
+    }else{
+      var uploadTask = mountainsRef.putString(src);
+    };
 
-  var text = fileName.split('.');
-  if(text[1] === 'jpg') {
-    // 拡張子がjpgの場合はblob型に変換
-    var blob = _Base64toBlob(src);
-    var uploadTask = mountainsRef.put(blob);
-  }else{
-    var uploadTask = mountainsRef.putString(src);
-  };
-
-  // ステータスを監視
-  uploadTask.on('state_changed', function(snapshot) 
-  {
-  }, function(err) {
-       alert(err);
-  }, function() {
-       // 正常にアップロードを完了した場合はコールバックを返す
-       normal_callback(null);
+    // ステータスを監視
+    uploadTask.on('state_changed', function(snapshot) {
+      // アップロード処理中
+    },
+    function(e) {
+      // エラーが発生した場合はrejectに戻す
+      reject(e);
+    },
+    function() {
+      // 正常にアップロードを完了した場合はresolveにnullを返す
+      resolve(null);
+    });
   });
-};    
+};
 
 // 2018/01/30 ADD ----- ↓
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_

@@ -13,7 +13,7 @@ localFile.getFileSystemURL = function(url) {
       reject(e);
     });
   });
-}
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // getReadEntrys(directoryEntry)
@@ -29,7 +29,7 @@ localFile.getReadEntries = function(directoryEntry) {
       reject(e);
     });
   });
-}
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // getFileEntry(directoryEntry, filePath)
@@ -44,7 +44,7 @@ localFile.getFileEntry = function(directoryEntry, filePath) {
       reject(e);
     });
   });
-}
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // getFileObject(fileEntry)
@@ -59,4 +59,58 @@ localFile.getFileObject = function(fileEntry) {
       reject(e);
     });
   });
-}
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// getTextFile(file)
+// fileオブジェクトからtextファイルを読み込み
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+localFile.getTextFile = function(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = function(e) {
+      resolve(e.target.result);
+    };
+
+    reader.onerror = function(e) {
+      reject(e);
+    };
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// getBlobFile(file)
+// fileオブジェクトからblobファイルを読み込み
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+localFile.getBlobFile = function(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = function(e) {
+      resolve(e.target.result);
+    };
+
+    reader.onerror = function(e) {
+      reject(e);
+    };
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// getFileWriter(fileEntry)
+// fileEntryオブジェクトからfileWriterオブジェクトを取得する
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+localFile.getFileWriter = function(fileEntry) {
+  return new Promise(function(resolve, reject) {
+    fileEntry.createWriter(function(fileWriter) {
+      resolve(fileWriter);
+    },
+    function(e) {
+      reject(e);
+    });
+  });
+};
+

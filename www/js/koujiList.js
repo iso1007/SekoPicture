@@ -16,7 +16,7 @@ function koujiListDisplay() {
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// fileEntrysLoop()
+// koujiFileEntrysLoop()
 // ディレクトリ内のフォルダをループしてリストを表示する(同期処理)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 async function koujiFileEntrysLoop() {
