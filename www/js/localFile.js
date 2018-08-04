@@ -114,3 +114,17 @@ localFile.getFileWriter = function(fileEntry) {
   });
 };
 
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// fileMoveTo(moveToDirectoryEntry, fileEntry)
+// fileEntryオブジェクトを移動先ディレクトリ(moveToDirectoryEntry)に移動する
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+localFile.fileMoveTo = function(moveToDirectoryEntry, fileEntry) {
+  return new Promise(function(resolve, reject) {
+    fileEntry.moveTo(moveToDirectoryEntry, fileEntry.name, function() {
+      resolve(null);
+    },
+    function(e) {
+      reject(e);
+    });
+  });
+};

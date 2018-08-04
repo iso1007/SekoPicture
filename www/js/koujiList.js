@@ -806,76 +806,73 @@ function koujiPictureViewClose() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 function koujiPictureDelete() {
   _log(1,'function','koujiPictureDelete()');
-  
+
   var filename = $('#koujiviewName').text();
   var koujiname = $('#koujiListItemName').text();
   var uploadFlg = $('#koujiviewUpload').text();
-  
+
   if(uploadFlg === 'Already') {
     _alert('既にサーバーにアップロード済みの写真を削除する事は出来ません');
     exit;
   }
-  
+
   _confirm('この写真をごみ箱に移動します。<br>よろしいですか？', function(idx) {
     // [OK]ボタンクリック時
     if(idx === 0 ) {
-
-      // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-//      var folderurl = cordova.file.documentsDirectory+'NoCloud/'+koujiname;
-      var folderurl = cordova.file.documentsDirectory + koujiname;
-
-      // 移動先フォルダのDirectoryEntryを取得
-      window.resolveLocalFileSystemURL(folderurl+'/dustbox',
-        function getdirectoryEntry(moveToDirectoryEntry) {
-
-          // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-          window.resolveLocalFileSystemURL(folderurl,
-  
-            // (resolveLocalFileSystemURL)成功時のコールバック関数
-            function getdirectoryEntry(directoryEntry) {
-              // DirectoryReaderを生成
-              var jpgfile = filename + '.jpg'; 
-              // 一覧からファイル名を取得
-              directoryEntry.getFile(jpgfile, null, 
-                function getFile(fileEntry) {
-            
-                  // 写真をごみ箱フォルダ(dustbox)に移動する
-                  fileEntry.moveTo( moveToDirectoryEntry, fileEntry.name,
-                    function success() {
-                  
-                      // 工事写真管理ファイルの写真枚数を-1する
-                      pictureUpload.controlUpdate(directoryEntry, -1);
-                  
-                      // 工事写真リストの再作成  
-//                    koujiListItemSet( $('#koujiListItemName').text(), $('#koujiListCountId').text() );
-                      // 工事写真リストからアイテムを削除
-                      $('#listItem'+filename).remove();
-                      
-                    },
-                    function fail(e) {
-                      _errorlog(1,'koujiPictureDelete()',e.code+'->'+jpgfile);
-                    }
-                  );
-                },
-                function fail(e) {
-                  _errorlog(1,'koujiPictureDelete()',e.code+'->'+jpgfile);
-                }
-              );
-            },
-            function fail(e) {
-              _errorlog(1,'koujiPictureDelete()',e.code+'->'+folderurl);
-            }
-          );
-        },
-        function fail(e) {
-          _errorlog(1,'koujiPictureDelete()',e.code+'->'+folderurl);
-        }
-      );
-  
-      $('#koujiviewModal').hide();
+      pictureDelete(koujiname, filename);
     }
   });
 };
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// async pictureDelete()
+// 選択した工事写真を削除する(同期処理)
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+async function pictureDelete(koujiname, filename) {
+  // iosはDocuments配下のクラウド非同期フォルダに保存
+  //  var folderurl = cordova.file.documentsDirectory+'NoCloud/'+koujiname;
+  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var jpgfile = filename + '.jpg';
+  try {
+    // 移動先directoryEntryオブジェクトを取得
+    var moveToDirectoryEntry = await localFile.getFileSystemURL(folderurl+'/dustbox');
+    // 移動元directoryEntryオブジェクトを取得
+    var directoryEntry = await localFile.getFileSystemURL(folderurl);
+    // 移動元directoryEntryから対象jpegファイルのfileEntryオブジェクトを取得
+    var fileEntry = await localFile.getFileEntry(directoryEntry, jpgfile);
+    // fileEntryオブジェクトを移動先デヂレクトリ(moveToDirectoryEntry)に移動する
+    var ret = await localFile.fileMoveTo(moveToDirectoryEntry, fileEntry);
+  } catch(e) {
+    var msg = '';
+    if(e.code !== undefined) {msg = e.code;}
+    if(e.message !== undefined) {msg = e.message;}
+    _alert('写真がゴミ箱に移動出来ませんでした。('+jpgfile+' : '+msg+')');
+  }
+
+  // 工事写真の管理ファイルを更新
+  var infofile = 'control' + '.json';
+  try {
+    // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+    var fileEntry = await localFile.getFileEntry(directoryEntry, 'information/'+infofile);
+    // 写真情報ファイル更新の為にfileWriterを取得
+    var fileWriter = await localFile.getFileWriter(fileEntry);
+    // ファイルエントリーオブジェクトからfileオブジェクトを取得
+    var file = await localFile.getFileObject(fileEntry);
+    // 写真情報管理ファイルの読み込み
+    var src = await localFile.getTextFile(file);
+    // 工事写真管理ファイルの写真枚数を-1する
+    var ret = await pictureUpload.controlFileUpdate(fileWriter, src, -1);
+  } catch(e) {
+    var msg = '';
+    if(e.code !== undefined) {msg = e.code;}
+    if(e.message !== undefined) {msg = e.message;}
+    _alert('写真管理ファイルが更新出来ませんでした。('+infofile+' : '+msg+')');
+  }
+
+  // 工事写真リストからアイテムを削除
+  $('#listItem'+filename).remove();
+  $('#koujiviewModal').hide();
+}
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // koujiPictureListTokoujiList()

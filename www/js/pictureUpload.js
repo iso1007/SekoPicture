@@ -182,7 +182,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
 // pictureUpload.infomationFileUpdate()
 // 写真情報ファイルのアップロード済みフラグを更新
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureUpload.infomationFileUpdate = function(createWriter, src) {
+pictureUpload.infomationFileUpdate = function(fileWriter, src) {
   return new Promise(function(resolve, reject) {
     var json_text = JSON.parse(src);
     json_text.upload = 'Already'; // 処理済み
@@ -205,7 +205,7 @@ pictureUpload.infomationFileUpdate = function(createWriter, src) {
 // pictureUpload.controlFileUpdate()
 // 写真管理情報(control.json)ファイルをアップロード
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureUpload.controlFileUpdate = function(createWriter, src, count) {
+pictureUpload.controlFileUpdate = function(fileWriter, src, count) {
   return new Promise(function(resolve, reject) {
     // 工事写真の管理ファイルを読み込み
     var json_text = JSON.parse(src);
@@ -412,7 +412,7 @@ pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, n
 // 工事写真の管理ファイルのアップデート写真枚数情報をリセット
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureUpload.controlReset = function(directoryEntry, count) {
-  _log(1,'function','controlReset.controlUpdate()');
+  _log(1,'function','pictureUpload.controlReset()');
   
   // 工事写真の管理ファイルを更新
   var filename = 'control' + '.json';
