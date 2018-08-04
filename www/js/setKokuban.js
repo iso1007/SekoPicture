@@ -58,7 +58,6 @@ setKokuban.setItemInitialize = function() {
   // 項目毎の検索イベントを定義する
   $('#setHelpKouji').off('touchstart');
   $('#setHelpKouji').on('touchstart',function() {
-//  $("#setHelpKouji").on("click",function() {
     setKokuban.setHelpKouji(json_koji);
   });
 
@@ -68,59 +67,48 @@ setKokuban.setItemInitialize = function() {
   var json = JSON.parse(str);
   $('#setHelpKousyu').off('touchstart');
   $('#setHelpKousyu').on('touchstart',function() {
-//  $("#setHelpKousyu").on("click", function() {
     setKokuban.setHelpKousyu(json);
   });
   $('#setHelpSokuten').off('touchstart');
   $('#setHelpSokuten').on('touchstart',function() {
-//  $("#setHelpSokuten").on("click", function() {
     setKokuban.setHelpSokuten(json);
   });
   $('#setHelpHiduke').off('touchstart');
   $('#setHelpHiduke').on('touchstart',function() {
-//  $("#setHelpHiduke").on("click", function() {
     setKokuban.setHelpHiduke();
   });
   $('#setHelpBikou').off('touchstart');
   $('#setHelpBikou').on('touchstart',function() {
-//  $("#setHelpBikou").on("click", function() {
     setKokuban.setHelpBikou(json);
   });
   $('#setHelpSyamei').off('touchstart');
   $('#setHelpSyamei').on('touchstart',function() {
-//  $("#setHelpSyamei").on("click", function() {
     setKokuban.setHelpSyamei(json);
   });
   
   // 項目毎の入力項目クリック時に発生する検索を停止する
   $('#setInputKouji').off('touchstart');
   $('#setInputKouji').on('touchstart', function(e) {
-//  $("#setInputKouji").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   $('#setInputKousyu').off('touchstart');
   $('#setInputKousyu').on('touchstart', function(e) {
-//  $("#setInputKousyu").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   $('#setInputSokuten').off('touchstart');
   $('#setInputSokuten').on('touchstart', function(e) {
-//  $("#setInputSokuten").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   $('#setInputHiduke').off('touchstart');
   $('#setInputHiduke').on('touchstart', function(e) {
-//  $("#setInputHiduke").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   $('#setInputBikou').off('touchstart');
   $('#setInputBikou').on('touchstart', function(e) {
-//  $("#setInputBikou").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   $('#setInputSyamei').off('touchstart');
   $('#setInputSyamei').on('touchstart', function(e) {
-//  $("#setInputSyamei").on("click", function(e) {
     e.stopImmediatePropagation(); 
   });
   
