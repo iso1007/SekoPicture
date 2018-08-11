@@ -441,6 +441,10 @@ function koujiListAddInfo(directoryEntry, filename) {
               $('#upload-icon'+filename).attr('icon', 'ion-android-cloud-done');
               $('#upload-icon'+filename).css('color', 'Blue');
             }
+            if(k.upload === 'Untreated') {
+              $('#upload-icon'+filename).attr('icon', 'ion-android-more-horizontal');
+              $('#upload-icon'+filename).css('color', 'darkorange');
+            }
             // 工種をセット
             if(k.kousyu === undefined) {k.kousyu = '';}
             if(k.kousyu !== '') {
@@ -874,10 +878,10 @@ function koujiPictureKokubanEdit() {
         }else{
           // 写真が縦置きの場合
           clp_top  = kokubanY;
-          clp_left = kokubanX;
+          clp_left = kokubanX - 1;
         }
         // 編集元写真に撮影時の黒板背景写真を合成する
-        ctx.drawImage(kokubanClip, clp_top-1, clp_left-1);
+        ctx.drawImage(kokubanClip, clp_top, clp_left);
 
         $('#pic-edit').attr('src', canvas.toDataURL());
       }

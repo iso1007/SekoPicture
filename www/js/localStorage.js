@@ -307,10 +307,11 @@ localStrage.setInformationHeader = function(directory, filename, updtflg, callba
     if(k.upload_count  === undefined) {k.upload_count  = 0;};
     if(updtflg) {
       json_text.picture_count = k.picture_count;
+      json_text.upload_count  = k.upload_count - 1;
     }else{
       json_text.picture_count = k.picture_count + 1;
+      json_text.upload_count  = k.upload_count;
     }
-    json_text.upload_count  = k.upload_count;
     // 撮影場所の位置情報
     json_text.geoLocation   = presentLocation;
     // jsonオブジェクトに変換
