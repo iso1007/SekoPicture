@@ -230,6 +230,8 @@ localStrage.setInformation = function(directory, filename, callback, error_callb
   json_text.hiduke   = json_in.hiduke;
   json_text.bikou    = json_in.bikou;
   json_text.syamei   = json_in.syamei;
+  json_text.kokubanX = json_in.kokubanX;
+  json_text.kokubanY = json_in.kokubanY;
   var d = new Date();
   var yyyy = d.getFullYear();
   var mm   = d.getMonth()+1;
@@ -267,7 +269,7 @@ localStrage.setInformation = function(directory, filename, callback, error_callb
 // localStrage.setInformationHeader()
 // 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localStrage.setInformationHeader = function(directory, filename, callback, error_callback) {
+localStrage.setInformationHeader = function(directory, filename, updtflg, callback, error_callback) {
   _log(1,'function','localStrage.setInformationHeader()');
 
   var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'',geoLocation:{} };
@@ -303,7 +305,11 @@ localStrage.setInformationHeader = function(directory, filename, callback, error
     // 撮影枚数をカウントアップ
     if(k.picture_count === undefined) {k.picture_count = 0;};
     if(k.upload_count  === undefined) {k.upload_count  = 0;};
-    json_text.picture_count = k.picture_count + 1;
+    if(updtflg) {
+      json_text.picture_count = k.picture_count;
+    }else{
+      json_text.picture_count = k.picture_count + 1;
+    }
     json_text.upload_count  = k.upload_count;
     // 撮影場所の位置情報
     json_text.geoLocation   = presentLocation;

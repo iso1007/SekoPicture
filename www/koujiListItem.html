@@ -60,11 +60,18 @@
           <ons-col class="textsize4" width="45%" align="left" id="koujiviewDatetime" style="color:blue;"></ons-col>
           <ons-col class="textsize1" width="30%" align="right" id="koujiviewName" style="color:darkgray"></ons-col>
           <ons-col width="0%" id="koujiviewUpload" style="visibility:hidden"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewWidth" style="display:none"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewHeight" style="display:none"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewPictureId" style="display:none"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewBikou" style="display:none"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewKokubanX" style="display:none"></ons-col>
+          <ons-col width="0%" align="right" id="koujiviewKokubanY" style="display:none"></ons-col>
         </ons-row>
         <ons-row>
           <div align="center" style="width:98%">
             <!--<img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;">-->    
             <img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;" onclick="picturePreview()">
+            <img id="koujiviewKokubanClip" src="" style="display:none">
           </div>
         </ons-row>
         <ons-row class="textsize5" style="border-bottom:dotted 1px white;">
@@ -122,7 +129,7 @@
           </ons-col>
           <ons-col width="30%"></ons-col>
           <ons-col width="20%">
-            <ons-button modifier="quiet" onclick="_preparationMessage()">
+            <ons-button modifier="quiet" onclick="koujiPictureKokubanEdit()">
               <p class="iconbutton_text textsize5">編集</p>
               <ons-icon class="iconbutton_icon iconsize5" icon="fa-list-alt" fixed-width="true"></ons-icon>
             </ons-button>

@@ -306,9 +306,19 @@ app.koujiListDisplayClick = function() {
   // ステータスバーの表示
   StatusBar.show();
 
-  // 設定メニュー画面の表示
-  $('#lstNavigator').show();
-  koujiListDisplay();
+  // 既存写真の黒板編集操作を行った場合
+  if($('#pic-edit').attr('name') !== '') {
+    // 編集元写真を非表示
+    $('#pic-edit').hide();
+    // 工事写真の詳細表示ウィンドウを閉じる
+    koujiPictureViewClose();
+    // 設定メニュー画面の表示
+    $('#lstNavigator').show();
+  }else{
+    // 通常の撮影時、設定メニュー画面の表示
+    $('#lstNavigator').show();
+    koujiListDisplay();
+  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -864,6 +874,15 @@ app.setPictureResize = function() {
     height   : $('#pic-box').height()
   });
   $('#selfTimerMessage').hide();
+
+  // 撮影済み写真の黒板編集用表示エリアの定義
+  $('#pic-edit').css({
+    position : 'absolute',
+    left     : param.x,
+    top      : param.y,
+    width    : param.width,
+    height   : param.height
+  });
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -926,6 +945,9 @@ app.cameraTakePicture = function() {
   // 黒板の場所を保存
   k.top  = $('#kokuban').offset().top;
   k.left = $('#kokuban').offset().left;
+  // 写真エリアの黒板位置を保存
+  k.kokubanX = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().top - $('#pic-box').offset().top);
+  k.kokubanY = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().left - $('#pic-box').offset().left);
   // JSON形式をテキスト形式に変換
   str = JSON.stringify(k);
   // ローカルストレージに書き戻し
@@ -943,7 +965,13 @@ app.cameraTakePicture = function() {
 
     // 写真イメージを出力用canvasに描画
     var pic_img = new Image();
-    pic_img.src = imageSrcData;
+    // 既存写真の黒板編集操作を行った場合は写真イメージに編集元の写真を表示する
+    if($('#pic-edit').attr('name') !== '') {
+      pic_img.src = $('#pic-edit').attr('src');
+    }else{
+      // 通常の撮影時はCameraPreviewで取得したイメージを表示
+      pic_img.src = imageSrcData;
+    }
     pic_img.onload = function() {
 
       out_ctx.drawImage(pic_img, 0, 0, out_cvs.width, out_cvs.height);
@@ -969,6 +997,14 @@ app.cameraTakePicture = function() {
         // 現在の向き(rotate)を取得
         var transform = getTransformParam($('#kokuban').css('transform'));
         var rot = 0;
+
+        // 黒板の背景画像を切り取る(幅と高さは余幅として+2する)
+        var clp_left = imgLeft, clp_top = imgTop;
+        var clp_height = imgHeight+2, clp_width = imgWidth+2;
+        if(transform.rotate !== '0deg') {
+          clp_height = imgWidth+2, clp_width = imgHeight+2;
+        }
+        var clp_img = getClippingImage(out_ctx, clp_left, clp_top, clp_width, clp_height);
 
         // 縦向き
         if(transform.rotate === '0deg') {
@@ -998,10 +1034,19 @@ app.cameraTakePicture = function() {
         var picImage = out_cvs.toDataURL( "image/jpeg" , 1.0 );
         var picWidth = out_cvs.width;
         var picHeight = out_cvs.height;
+				// 黒板編集用の更新フラグ
+        var updtflg = false;
         // ファイルのパスを設定 (現在時刻でファイル名を作成)
         var file = (new Date()).getTime() + ' ';
         file = file.substr(0,10);
         var filename = '';
+
+        // 既存写真の黒板編集操作を行った場合は編集元のファイル名をセットする
+        // ただし工事名称の編集を行った場合を除く
+        if($('#pic-edit').attr('name') !== '' &&  $('#pic-edit').attr('alt') === directory) {
+          file = $('#pic-edit').attr('name');
+          updtflg = true;
+        }
 
         // 必要なフォルダを作成
         localStrage.makeDirectory(directory, function(e) {
@@ -1016,13 +1061,17 @@ app.cameraTakePicture = function() {
               // サムネイルをローカルストレージに保存
               localStrage.pictureSave(picImage, 240, 320, rot, directory+'/thumbnail', filename, function(e) {
 
+                // 黒板の背景を切り取って保存する
+                localStrage.pictureSave(clp_img, clp_width, clp_height, rot, directory+'/clipping', filename, function(e) {
+                });
+
                 // 黒板情報をローカルストレージに保存
                 filename = file + '.json';
                 localStrage.setInformation(directory+'/information', filename, function(e) {
 
                   // 撮影日時・枚数情報を更新
                   filename = 'control' + '.json';
-                  localStrage.setInformationHeader(directory+'/information', filename, function(e) {
+                  localStrage.setInformationHeader(directory+'/information', filename, updtflg, function(e) {
                     _log(1,'takePictureClose()','normal end');
                     takePictureClose(null);
                   },
@@ -1060,6 +1109,7 @@ app.cameraTakePicture = function() {
     };
   });
 
+  // 写真撮影後の処理(正常・異常)
   function takePictureClose(message) {
     // 使用した変数を初期化
     imageSrcData = null;
@@ -1077,6 +1127,34 @@ app.cameraTakePicture = function() {
     if(message !== null) {
       _alert('撮影した写真の保存時にエラーが発生しました。<br>'+message);
     }
+
+    // 既存写真の黒板編集操作でシャッターを押した場合
+    if($('#pic-edit').attr('name') !== '') {
+      // 編集元写真を非表示
+      $('#pic-edit').hide();
+      // 工事写真の詳細表示ウィンドウを閉じる
+      koujiPictureViewClose();
+      // カメラ画面の表示
+      $('#camera').hide();
+      // 工事一覧ナビゲータを再表示
+      $('#lstNavigator').show();
+      // ステータスバーの非表示
+      StatusBar.show();
+    }
+  }
+
+  // 黒板の背景画像を切り取る処理
+  function getClippingImage(inp_ctx, imgTop, imgLeft, imgWidth, imgHeight) {
+    var clp_cvs = document.createElement('canvas');
+    var clp_ctx = clp_cvs.getContext('2d');
+    clp_cvs.width = imgWidth;
+    clp_cvs.height = imgHeight;
+    // 黒板の位置・幅・高さのイメージデータを切り取る
+    var clp_img = inp_ctx.getImageData(imgTop, imgLeft, imgWidth, imgHeight);
+    // 切り取ったイメージデータをカンバスに貼り付ける
+    clp_ctx.putImageData(clp_img, 0, 0);
+    // イメージデータとして戻す
+    return clp_cvs.toDataURL( "image/jpeg" , 1.0 );
   }
 };
 
