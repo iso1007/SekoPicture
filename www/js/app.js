@@ -2,8 +2,8 @@
 // グローバル変数定義
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // ログに出力するメッセージレベルを(0～9)で指定
-var logMessageLevel = 0; //0;
-var errorlogMessageLevel = 0; //5;
+var logMessageLevel = 0;
+var errorlogMessageLevel = 5;
 _log(0,'===========================Pocess Start=================================');
 
 // グリッド表示・非表示
@@ -312,11 +312,11 @@ app.koujiListDisplayClick = function() {
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// app.pictureCheckListClick()
+// app.pictureCheckButtonClick()
 // 撮影項目リスト画面へ切替え
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-app.pictureCheckListClick = function() {
-  _log(1,'function','app.pictureCheckListClick()');
+app.pictureCheckButtonClick = function() {
+  _log(1,'function','app.pictureCheckButtonClick()');
 
   // セルフタイマーが動作中の場合は中止する
   if(SelfTimerId !== null) {
@@ -592,7 +592,7 @@ app.setElementPosition = function() {
   });
 
   // 撮影リストボタンの位置設定
-  $('ons-button#pictureCheckList').css({
+  $('ons-button#pictureCheckButton').css({
     opacity  : 0.8,
     position : 'absolute',
     padding  : Math.round((BtnHeight-30)/2-2)+'px',  // 30はアイコンサイズ
