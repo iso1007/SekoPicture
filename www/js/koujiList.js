@@ -1,5 +1,6 @@
 var koujiPictureListViewIntervalId = -1;
 var koujiPictureListSortIndex = 0;
+var koujiPictureListViewStyle = 'list';
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // koujiListDisplay()
@@ -308,6 +309,11 @@ function koujiPictureListView(directoryEntry, pictureListArray, pictureUriArray)
     $('#splashModal').show();
   };  
 
+  if(koujiPictureListViewStyle !== 'list') {
+    var elm = $('<ul style="margin: 0;padding: 0;">');
+    elm.appendTo($('#koujiPictureList'));
+  }
+
   // 写真リストをループ
   koujiPictureListViewIntervalId = -1;
   var i = 0;
@@ -328,6 +334,11 @@ function koujiPictureListView(directoryEntry, pictureListArray, pictureUriArray)
     // 写真枚数に達したらループを抜ける
     if(i === pictureListArray.length) {
       clearInterval(koujiPictureListViewIntervalId);
+
+      if(koujiPictureListViewStyle !== 'list') {
+        var elm = $('</ul>');
+        elm.appendTo($('#koujiPictureList'));
+      }
       
       if(koujiPictureListSortIndex<0 && koujiPictureListSortIndex>3){
         koujiPictureListSortIndex = 0;
@@ -363,7 +374,20 @@ function koujiListAddElement(filename, uri) {  // 2018/01/25 ADD
   thumbnailuri = thumbnailuri + '?1';
 
   // 工事毎の行を作成
-  var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" onclick="koujiPictureView(this)">'+
+  // タイル表示
+  if(koujiPictureListViewStyle.substr(0,4) === 'tile') {
+    var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" onclick="koujiPictureView(this)" style="margin: 1px; float: left; list-style: none; position: relative;">'+
+                  '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
+                  '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
+                  '<p id="upload'+filename+'" style="display:none"></p>'+
+                  '<p id="date'+filename+'" style="display:none">'+filename+'</p>'+
+                  '<p id="kousyu'+filename+'" style="display:none"></p>'+
+                  '<p id="sokuten'+filename+'" style="display:none"></p>'+
+                  '<p id="bikou'+filename+'" style="display:none"></p>'+
+                '</li>');
+  }else{
+  // 詳細表示
+    var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" onclick="koujiPictureView(this)">'+
                 '<ons-col align="top" width="40%">'+
 //                  '<img id="imag'+filename+'" class="thumbnail-s">'+  // 2018/01/25 DEL
                   '<img id="imag'+filename+'" class="thumbnail-s" src="'+thumbnailuri+'">'+  // 2018/01/25 ADD
@@ -397,6 +421,7 @@ function koujiListAddElement(filename, uri) {  // 2018/01/25 ADD
                   '</ons-row>'+
                 '</ons-col>'+
               '</ons-list-item>');
+	}
   elm.appendTo($('#koujiPictureList'));
 } 
 
@@ -534,7 +559,16 @@ function koujiFilesToolMenu(obj) {
       '撮影項目リストの逆順に表示',
       'キャンセル'
     ];
-  }}
+  }else{
+  if(tabMenuButtonId==='pictureListButton-display'){
+    options = [
+      '詳細リスト表示',
+      'タイル表示(小)',
+      'タイル表示(中)',
+      'タイル表示(大)',
+      'キャンセル'
+    ];
+  }}}
   
   ons.openActionSheet({
     cancelable: true,
@@ -553,7 +587,35 @@ function koujiFilesToolMenu(obj) {
     if(tabMenuButtonId==='pictureListButton-sort'){
       koujiPictureListSortIndex = index;
       koujiPictureSort(index);
-    }}
+    }else{
+    // ソートボタンをクリック
+    if(tabMenuButtonId==='pictureListButton-display'){
+      var beforeStyle = koujiPictureListViewStyle;
+      switch (index) {
+        case 0:
+          koujiPictureListViewStyle = 'list';
+          if(beforeStyle !== 'list') {
+            koujiListItemSet($('#koujiListItemName').text(), $('#koujiListCountId').text());
+          }
+          break;
+        case 1:
+          koujiPictureListViewStyle = 'tile-s';
+          break;
+        case 2:
+          koujiPictureListViewStyle = 'tile-m';
+          break;
+        case 3:
+          koujiPictureListViewStyle = 'tile-l';
+          break;
+      }
+      if(index > 0 && index < 4 && beforeStyle !== koujiPictureListViewStyle) {
+        if(beforeStyle === 'list') {
+          koujiListItemSet($('#koujiListItemName').text(), $('#koujiListCountId').text());
+        }
+        $('img.thumbnail').addClass(koujiPictureListViewStyle);
+        $('img.thumbnail').removeClass(beforeStyle);
+      }
+    }}}
   });
 } 
 
@@ -566,6 +628,9 @@ function koujiPictureSort(index) {
 
   var items_wrapper = $('#koujiPictureList');
   var items = $('#koujiPictureList ons-list-item');
+  if(items.length == 0) {
+    items = $('#koujiPictureList li');
+  }
   switch(index) {
     // 撮影日時が新しい写真から表示
     case 0:

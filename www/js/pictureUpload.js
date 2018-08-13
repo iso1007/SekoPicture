@@ -15,6 +15,9 @@ pictureUpload.checkPicture = function() {
   // 工事写真一覧からアイテムを取得
   var koujiname = $('#koujiListItemName').text();
   var listItem = $('#koujiPictureList').children('ons-list-item');
+  if(listItem.length == 0) {
+    listItem = $('#koujiPictureList').children('li');
+  }
   var pictureAllCount = listItem.length;
 
   _log(2,'pictureUpload.checkPicture','listItem.length: '+pictureAllCount);
@@ -243,6 +246,9 @@ pictureUpload.reset = function() {
   
   var koujiname = $('#koujiListItemName').text();
   var listItem = $('#koujiPictureList').children('ons-list-item');
+  if(listItem.length == 0) {
+    listItem = $('#koujiPictureList').children('li');
+  }
   var pictureAllCount = listItem.length;
 
   var pictureListArray = new Array();

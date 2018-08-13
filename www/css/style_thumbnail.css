@@ -12,14 +12,47 @@
   -webkit-border-radius: 5px;
 }
 
-/* サムネイル(中) */
-/*.thumbnail-m {
-  padding: 0px 0px 0px 0px;
-  width: 95%;
-  height: auto;
-  height: 150px;
+/* タイル形式のサムネイル表示 */
+img.thumbnail {
+  width: auto;
+  border: 1px #000 double;
   border-radius: 2px;
   -webkit-border-radius: 2px;
 }
-/**/
+
+/* 画面サイズの横幅が374px以下の場合に適用 */
+@media (max-width: 767px) {
+  /* サムネイル(小) */
+  img.thumbnail.tile-s {
+    height: 67px;
+  }
+
+  /* サムネイル(中) */
+  img.thumbnail.tile-m {
+    height: 90px;
+  }
+
+  /* サムネイル(大) */
+  img.thumbnail.tile-l {
+    height: 137px;
+  }
+}
+
+/* 画面サイズの横幅が768px以上の場合に適用 */
+@media (min-width: 768px) {
+  /* サムネイル(小) */
+  img.thumbnail.tile-s {
+    height: 112px;
+  }
+
+  /* サムネイル(中) */
+  img.thumbnail.tile-m {
+    height: 141px;
+  }
+
+  /* サムネイル(大) */
+  img.thumbnail.tile-l {
+    height: 188px;
+  }
+}
 
