@@ -383,8 +383,10 @@ pictureCheckList.loopPictureList = async function(koujiname) {
       _alert('撮影済み工事写真のカウント処理が正常に行えませんでした。<br>('+errcode+')');
     }
   } catch(e) {
-    errcode = folderurl + '->' + e.code;
-    _alert('撮影済み工事写真のフォルダ情報が正常に取得できませんでした。<br>('+errcode+')');
+		if(e.code !== 1) {
+      errcode = folderurl + '->' + e.code;
+      _alert('撮影済み工事写真のフォルダ情報が正常に取得できませんでした。<br>('+errcode+')');
+		}
   }
 //  $('#pictureCheckList').show();
 //  $('#splashModal').hide();
