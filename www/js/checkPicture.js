@@ -77,8 +77,6 @@ pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {
   _log(1,'function','pictureCheckList.checkListDisplay()');
 
   with (pictureCheckList) {
-    // リストのhtmlヘッダーを生成
-    htmlHeader(koujiname,listname);
     // 撮影項目リストを取得し、リストのhtmlを生成
     getPictureItem(listindex,listname);
     // 撮影した写真を参照し、チェックリストの消込
@@ -326,9 +324,11 @@ pictureCheckList.htmlItem = function(level, str, fid, flg, num) {
 // pictureCheckList.loopPictureList()
 // 撮影写真の情報を取得
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.loopPictureList = function(koujiname) {
+pictureCheckList.loopPictureList = async function(koujiname) {
   _log(1,'function','pictureCheckList.loopPictureList()');
 
+//  $('#splashModal').show();
+//  $('#pictureCheckList').hide();
   $('#pictureCheckList').children('ons-list-item').each(function(i) {
     // 選択されたアイテムのIDを取得
     var fid = $(this).attr('id');
@@ -344,163 +344,106 @@ pictureCheckList.loopPictureList = function(koujiname) {
   });
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/' + koujiname;
   var folderurl = cordova.file.documentsDirectory + koujiname;
+  try {
+    // directoryEntryオブジェクトを取得
+    var directoryEntry = await localFile.getFileSystemURL(folderurl);
+    // directoryReaderを生成してフォルダ内のファイル情報の配列を取得
+    var fileEntrys = await localFile.getReadEntries(directoryEntry);
 
-  var pictureListArray = new Array();
-
-  // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl,
-    // (resolveLocalFileSystemURL)成功時のコールバック関数
-    function getdirectoryEntry(directoryEntry) {
-      // DirectoryReaderを生成
-      var directoryReader = directoryEntry.createReader();
-      // ディレクトリ内のフォルダ一覧を取得
-      directoryReader.readEntries(
-        function getFileName(fileEntries) {
-          // ディレクトリ内をループ
-          $.each( fileEntries, function(i) {
-
-            // 写真ファイルのリストを作成
-            var fname = this.name.split('.');
-            var filename = fname[0];
-            // .jpegファイルのみを処理対象とする
-            if(fname[1]==='jpg') {
-              pictureListArray.push(filename);
-            }
-
-            // リストの作成が完了した時点で実行
-            if( i == fileEntries.length - 1 ) {
-              // 写真リストの配列を渡してループ
-              pictureCheckList.getPictureInfo(directoryEntry, pictureListArray);
-            };
-          });
-        },
-        function fail(e) {
-          _errorlog(1,'pictureCheckList.loopPictureList()[getFileName:]',e.code);
+    var errcode = '';
+    // ファイル情報の配列をループして、写真の詳細情報を取得する
+    for(var i=0; i < fileEntrys.length; i++) {
+      // 写真ファイルのリストを作成
+      var fname = fileEntrys[i].name.split('.');
+      var filename = fname[0];
+      // .jpegファイルのみを処理対象とする
+      if(fname[1]==='jpg') {
+        try {
+          // 撮影項目リストに写真情報を表示
+          var infoFile = 'information/' + filename + '.json';
+          // 写真情報ファイルのfileEntryオブジェクトを取得
+          var fileEntry = await localFile.getFileEntry(directoryEntry, infoFile);
+          // fileEntryオブジェクトからfileオブジェクトを取得
+          var file = await localFile.getFileObject(fileEntry);
+          // fileオブジェクトを読み込み
+          var text = await localFile.getTextFile(file);
+          // 読み込んだテキストをJSON形式に変換
+          var json = JSON.parse(text);
+          // 写真リストＩＤをセット
+          if(json.pictureId === undefined) {json.pictureId = ''};
+          // 写真枚数をセット
+          setPictureCount(json.pictureId);
+        } catch(e) {
+          errcode = infoFile + '->' + e.code;
         }
-      );
-    },
-    // (resolveLocalFileSystemURL)不成功時のコールバック関数
-    function fail(e) {
-      _errorlog(1,'pictureCheckList.loopPictureList()[resolveLocalFileSystemURL:]',e.code);
+      }
     }
-  );
-};
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// pictureCheckList.getPictureInfo()
-// 撮影リストに黒板情報から撮影枚数を取得・表示
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.getPictureInfo = function(directoryEntry, pictureListArray) {
-  _log(1,'function','pictureCheckList.getPictureInfo()');
-
-  var getPictureInfoIntervalId = -1;
-  var i = 0;
-
-  // 写真リストをループ
-  var intervalLoop = function(){
-    var filename = pictureListArray[i];
-
-    if(i < pictureListArray.length) {
-      i++;
-      // 撮影項目リストに写真情報を表示
-      var infoFile = 'information/' + filename + '.json';
-      directoryEntry.getFile(infoFile, null,
-        function getFile(fileEntry) {
-          // Fileオブジェクトを取得
-          fileEntry.file(
-            function addInfomation(file) {
-              var reader = new FileReader();
-              reader.readAsText(file);
-              reader.onloadend = function(e) {
-                // 読み込んだテキストをJSON形式に変換
-                var text = reader.result;
-
-                var k = JSON.parse(text);
-                // 写真リストＩＤをセット
-                if(k.pictureId === undefined) {k.pictureId = ''};
-                // 写真枚数をセット
-                setPictureCount(k.pictureId);
-              };
-            },
-            function fail(e) {
-              _errorlog(1,'pictureCheckList.getPictureInfo()[file:]',e.code+'->'+infoFile);
-            }
-          );
-        },
-        function fail(e) {
-          _errorlog(1,'pictureCheckList.getPictureInfo()[getFile:]',e.code+'->'+infoFile);
-        }
-      );
-    }else{
-      _log(1,'pictureCheckList.getPictureInfo()','pictureCount: '+i+'枚');
-      clearInterval(getPictureInfoIntervalId);
+    if(errcode !== '') {
+      _alert('撮影済み工事写真のカウント処理が正常に行えませんでした。<br>('+errcode+')');
     }
-  };
-  // 10ミリ秒毎に１件づつ繰りかえす
-  getPictureInfoIntervalId = setInterval(intervalLoop, 10);
+  } catch(e) {
+    errcode = folderurl + '->' + e.code;
+    _alert('撮影済み工事写真のフォルダ情報が正常に取得できませんでした。<br>('+errcode+')');
+  }
+//  $('#pictureCheckList').show();
+//  $('#splashModal').hide();
 
   // 撮影済みの写真枚数をカウント
   function setPictureCount(pictureId) {
-    var str = pictureId.split('-');
+    // 管理コードを"-"区切りで配列に取得
+    var ary = pictureId.split('-');
     var fid = '';
     // 撮影リストIDを分割してループ
-    for(var i = 0 ; i < str.length ; i++) {
+    for(var i = 0 ; i < ary.length ; i++) {
 
-      if(fid==='') {
-        fid = str[i];
+      if(fid === '') {
+        fid = ary[i];
       }else{
-        fid = fid + '-' + str[i];
-      };
-
-      // 親階層か子階層かの判定(子階層=true)
-      var childFlg = false;
-      if(pictureId===fid) {
-        childFlg = true;
+        fid = fid + '-' + ary[i];
       }
-      countUp(fid, childFlg);
-    };
 
+      // 写真枚数をカウントアップ
+      countUp(fid);
+    };
+  }
 //===========================================================================
 //===========================================================================
 //==規定枚数以上の撮影をしている場合、親階層のカウントをしないようにする=====
 //===========================================================================
 //===========================================================================
 
-    // 撮影リストＩＤに写真枚数をカウントアップ
-    function countUp(fid, childFlg) {
-      var icon1 = $('#icon1'+fid).attr('icon');
-      var pcnt = Number($('#pcnt'+fid).text());  // 写真枚数
-      var pmax = Number($('#pmax'+fid).text());  // 規定枚数
+  // 撮影リストＩＤに写真枚数をカウントアップ
+  function countUp(fid) {
+    var icon1 = $('#icon1'+fid).attr('icon');
+    var pcnt = Number($('#pcnt'+fid).text());  // 写真枚数
+    var pmax = Number($('#pmax'+fid).text());  // 規定枚数
 
-      pcnt++;
-      $('#pcnt'+fid).text(pcnt);
+    pcnt++;
+    $('#pcnt'+fid).text(pcnt);
 
-      // 撮影枚数 ＜ 規定枚数
-      if(pcnt < pmax) {
-        // オレンジ色
-        $('#icon2'+fid).css('color', 'darkorange');
-        // 親階層
-        if(icon1 !== 'fa-caret-right') {
-          // １枚も撮影していない場合は、中抜きの✩アイコン
-          if(pcnt === '0') {
-            $('#icon2'+fid).attr('icon', 'fa-star-o');
-          }else{
-          // 規定枚数に達していない場合は、半分中抜きのアイコン
-            $('#icon2'+fid).attr('icon', 'fa-star-half-o');
-          };
-        };
-      }else{
-        // アイコンを青色にする
-        $('#icon2'+fid).css('color', 'royalblue');
-        // 親階層
-        if(icon1 !== 'fa-caret-right') {
-          // 塗りつぶしの★アイコン
-          $('#icon2'+fid).attr('icon', 'fa-star');
+    // 撮影枚数 ＜ 規定枚数
+    if(pcnt < pmax) {
+      // オレンジ色
+      $('#icon2'+fid).css('color', 'darkorange');
+      // 親階層
+      if(icon1 !== 'fa-caret-right') {
+        // １枚も撮影していない場合は、中抜きの✩アイコン
+        if(pcnt === '0') {
+          $('#icon2'+fid).attr('icon', 'fa-star-o');
+        }else{
+        // 規定枚数に達していない場合は、半分中抜きのアイコン
+          $('#icon2'+fid).attr('icon', 'fa-star-half-o');
         };
       };
-
+    }else{
+      // アイコンを青色にする
+      $('#icon2'+fid).css('color', 'royalblue');
+      // 親階層
+      if(icon1 !== 'fa-caret-right') {
+        // 塗りつぶしの★アイコン
+        $('#icon2'+fid).attr('icon', 'fa-star');
+      };
     };
   };
 };
