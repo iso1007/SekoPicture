@@ -13,90 +13,92 @@
       </ons-button>
     </div>
   </ons-toolbar>
+
+  <ons-list id="koujiListBoxHeader" style="width:100%;height:100%" class="content_back_color">
+    <ons-list-header modifier="longdivider">
+      <ons-row>
+        <ons-col class="textsize5" align="right" id="koujiInfoListCount"></ons-col>
+      </ons-row>
+    </ons-list-header>
   
-  <ons-list id="koujiInfoList" class="content_back_color">
+    <ons-list id="koujiInfoList" style="width:100%;height:95%;overflow:scroll" class="content_back_color">
+    </ons-list>
+ 
   </ons-list>
 
-  <ons-modal id="KojiMainte">
-    <br />    
+  <div class="tabbar tabbar--bottom">
+    <label class="tabbar__item">
+    </label>
+
+    <label class="tabbar__item">
+      <input type="radio" id="koujiInfoButton-sort" onclick="koujiInfoList.toolMenuSelect(this)" checked>
+      <button class="tabbar__button">
+        <i class="tabbar__icon fa fa-sort-alpha-asc iconsize3"></i>
+        <div class="tabbar__label">並べ替え</div>
+      </button>
+    </label>
+
+    <label class="tabbar__item">
+      <input type="radio" id="koujiInfoButton-search" onclick="koujiInfoList.searchWindows()" checked>
+      <button class="tabbar__button">
+        <i class="tabbar__icon fa fa-search iconsize3"></i>
+        <div class="tabbar__label">検索</div>
+      </button>
+    </label>
+  </div>
+
+  <ons-modal id="koujiInfoSearchModal">
     <ons-list modifier="inset" class="modal_back_color">
       <ons-list-item modifier="nodivider">
         <ons-row>
-          <ons-col style="font-size:50%">工事名＞</ons-col>
+          <ons-col class="textsize4" style="color:blue;">工事名称(部分一致):</ons-col>
         </ons-row>
         <ons-row>
-          <ons-col>
-            <textarea class="textarea textarea--transparent" id="KojiName"
-            style="width:100%;background-color:white;">大谷小地様・祐子様邸新築工事</textarea>
-          </ons-col>  
-        </ons-row>
-        <hr width="98%">
-        
-        <ons-row>
-          <ons-col style="font-size:50%">撮影グループ＞</ons-col>
-        </ons-row>
-        <ons-row height="10px">
-          <ons-select id="PhotoGroup" style="width:100%;background-color:white;" modifier="material">
-            <option value="GIR">GIR</option>
-            <option value="JHS">JHS</option>
-            <option value="在住ﾋﾞｼﾞﾈｽ">在住ﾋﾞｼﾞﾈｽ</option>
-          </ons-select>        
-        </ons-row>
-        
-        <ons-row>
-          <ons-col style="font-size:50%">場　所＞</ons-col>
-        </ons-row>
-        <ons-row height="10px">
-          <input type="text" class="text-input" id="KojiAdress" style="width:100%;background-color:white;"
-          value="鳥取県鳥取市大覚寺503-6"></input>
-        </ons-row>
-        
-        <ons-row>
-          <ons-col style="font-size:50%">会社名＞</ons-col>
+          <input type="text" class="textsize4 content_back_color" id="koujiInfoSearchKoujiname" style="width:100%">
         </ons-row>
         <ons-row>
-          <input type="text" class="text-input" id="SekoKaisya" style="width:100%;background-color:white;"
-          value="株式会社田中建築"></input>
-        </ons-row>
-        
-        <ons-row>
-          <ons-col style="font-size:50%">担当者＞</ons-col>
+          <ons-col style="color: lightgray">_</ons-col>
         </ons-row>
         <ons-row>
-          <input type="text" class="text-input" id="SekoKaisya" style="width:50%;background-color:white;"
-          value="田中"></input>
-        </ons-row>
-        
-        <ons-row>
-          <ons-col style="width:70%;font-size:50%">メ　モ＞</ons-col>
+          <ons-col class="textsize4" style="color:blue;">施工場所(部分一致):</ons-col>
         </ons-row>
         <ons-row>
-          <ons-col>
-            <textarea class="textarea textarea--transparent" id="MemoArea"
-            style="width:100%;background-color:white;">**************************</textarea>
-          </ons-col>  
+          <input type="text" class="textsize4 content_back_color" id="koujiInfoSearchAddress" style="width:100%">
         </ons-row>
-        
-        <hr width="98%">
+        <ons-row>
+          <ons-col style="color: lightgray">_</ons-col>
+        </ons-row>
+        <ons-row>
+          <ons-col class="textsize4" style="color:blue;">元請会社:</ons-col>
+        <ons-row>
+        </ons-row>
+          <ons-select>
+            <select id="koujiInfoSearchBuilder" class="textsize4 content_back_color" style="border: 1px solid;border-radius:5px;">
+            </select>
+          </ons-select>
+        </ons-row>
 
         <ons-row>
-          <ons-col width="60%"></ons-col>
+          <ons-col style="color: lightgray">_</ons-col>
+        </ons-row>
+
+        <ons-row>
           <ons-col width="20%">
-            <ons-button modifier="quiet" onclick="document.getElementById('KojiMainte').hide()">
-              <p align="center" style="position:absolute;margin-top:10px;font-size:70%;"><b>戻る</b></p>
-              <ons-icon icon="ion-ios-undo-outline" size="30px" fixed-width="true" style="color: darkorange"></ons-icon>
+            <ons-button modifier="quiet" onclick="koujiInfoList.listSearch()">
+              <p class="iconbutton_text textsize5">検索</p>
+              <ons-icon class="iconbutton_icon iconsize5" icon="fa-search" fixed-width="true"></ons-icon>
             </ons-button>
           </ons-col>
+          <ons-col width="60%"></ons-col>
           <ons-col width="20%">
-            <ons-button modifier="quiet" onclick="document.getElementById('KojiMainte').hide()">
-              <p align="center" style="position:absolute;margin-top:10px;font-size:70%;"><b>保存</b></p>
-              <ons-icon icon="ion-archive" size="30px" fixed-width="true" style="color: darkorange"></ons-icon>
+            <ons-button modifier="quiet" onclick="$('#koujiInfoSearchModal').hide()">
+              <p class="iconbutton_text textsize5">戻る</p>
+              <ons-icon class="iconbutton_icon iconsize5" icon="ion-reply" fixed-width="true"></ons-icon>
             </ons-button>
-          </ons-col>    
+          </ons-col>
         </ons-row>
-        
       </ons-list-item>
     </ons-list>
   </ons-modal>
-  
+
 </ons-page>
