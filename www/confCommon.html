@@ -1,0 +1,54 @@
+<ons-page id="confcommon">
+  <ons-toolbar class='toolbar_back_color'>
+    <div class="left" onclick="setNavigator.popPage()">
+      <ons-button id="pop-button" modifier="quiet" style='margin-top:0px;color: white'>
+        <ons-icon class="iconsize5" icon="fa-angle-double-left" fixed-width="true"></ons-icon>
+    </ons-button></div>
+    
+    <div class="center textsize5" style="color: white">その他の設定</div>
+    
+    <div class="right" onclick="app.cameraButtonClick()">
+      <ons-button class="toCamera" modifier="quiet">
+        <ons-icon class="iconsize5" icon="fa-camera" fixed-width="true" style="color: white"></ons-icon>
+      </ons-button>
+    </div>
+  </ons-toolbar>
+  
+  <div>
+    <ons-list id='confCommon' modifier="inset" class="content_back_color">
+    
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <ons-col width="50%" class="textsize5">
+            <a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>黒板の撮影項目
+          </ons-col>    
+        </ons-row>
+        
+        <ons-row>
+          <ons-col>
+            <p class="textsize4">黒板の撮影項目として検索に表示する文字列を保守する場合は、ブラウザにて行ってください。<br></p>
+            <a class="textsize4" href="http://yatama.co.jp/sekosyashin">http://yatama.co.jp/sekosyashin</a>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+      
+      <ons-list-item modifier="longdivider">
+        <ons-row>
+          <ons-col width="50%" class="textsize5">
+            <a class="fa fa-angle-double-right" style="color: cornflowerblue"></a>撮影項目リスト
+          </ons-col>    
+        </ons-row>
+        
+        <ons-row>
+          <ons-col>
+            <p class="textsize4">撮影項目リストの作成･保守を行う場合は、ブラウザにて行ってください。<br></p>
+            <a class="textsize4" href="http://yatama.co.jp/sekosyashin">http://yatama.co.jp/sekosyashin</a>
+          </ons-col>
+        </ons-row>
+      </ons-list-item>
+      
+    </ons-list>
+  　<br/>
+  　
+  </div>
+</ons-page>

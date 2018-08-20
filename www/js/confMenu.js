@@ -60,3 +60,24 @@ function koujiInfoListClick() {
   // 工事情報一覧画面を表示
   setNavigator.pushPage('koujiInfoList.html', options);
 };
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// confCommonClick()
+// その他の設定ボタンをクリック
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function confCommonClick() {
+  _log(1,'function','confCommonClick()');
+
+  var options = {
+    // アニメーションの種類
+    animation: 'slide',   //'slide', 'lift', 'fade'
+    // 画面遷移後に実行されるコールバック
+    callback: function() {
+      // その他の設定画面の初期設定
+      confCommonInitial();
+    }
+  };
+
+  // その他の設定画面を表示
+  setNavigator.pushPage('confCommon.html', options);
+};
