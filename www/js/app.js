@@ -1130,6 +1130,10 @@ app.cameraTakePicture = function() {
 
     // 既存写真の黒板編集操作でシャッターを押した場合
     if($('#pic-edit').attr('name') !== '') {
+      // 工事写真一覧の表示項目を更新(工事名称の変更をしなかった場合のみ)
+      if($('#pic-edit').attr('alt') === directory) {
+        pictureListUpdate();
+      }
       // 編集元写真を非表示
       $('#pic-edit').hide();
       // 工事写真の詳細表示ウィンドウを閉じる
@@ -1155,6 +1159,56 @@ app.cameraTakePicture = function() {
     clp_ctx.putImageData(clp_img, 0, 0);
     // イメージデータとして戻す
     return clp_cvs.toDataURL( "image/jpeg" , 1.0 );
+  }
+
+  // 工事写真一覧の表示項目を更新
+  function pictureListUpdate() {
+    var file = $('#pic-edit').attr('name');
+
+    // ローカルストレージから黒板の内容を読み込み
+    var str = localStrage.getItems('firebase:temp/kokuban');
+    // 読み込んだテキストをJSON形式に変換
+    var k = JSON.parse(str);
+
+    // 写真管理コードをセット
+    if(k.pictureId   === undefined) {k.pictureId   = '';}
+    $('#listItem'+file).attr('class',k.pictureId);
+
+    // サーバーへのアップロード状況を未処理に変更
+    $('#upload-icon'+file).attr('icon', 'ion-android-more-horizontal');
+    $('#upload-icon'+file).css('color', 'darkorange');
+
+    // 工種をセット
+    if(k.kousyu  === undefined) {k.kousyu  = '';}
+    if(k.kousyu !== '') {
+      $('#kousyu'+file).text('工種:'+k.kousyu);
+    }
+
+    // 測点をセット
+    if(k.sokuten === undefined) {k.sokuten = '';}
+    if(k.sokuten !== '') {
+      $('#sokuten'+file).text('測点:'+k.sokuten);
+    }
+
+    // 備考をセット
+    if(k.bikou   === undefined) {k.bikou   = '';}
+    if(k.bikou === undefined) {k.bikou = '';}
+    // 改行コードをhtml形式に変換
+    k.bikou = k.bikou.replace( /\n/g , '<br>' );
+    $('#bikou'+file).html(k.bikou);
+
+    // 撮影日時をセット
+    var d = new Date();
+    var yyyy = d.getFullYear();
+    var mm   = d.getMonth()+1;
+    var dd   = d.getDate();
+    var hh   = d.getHours();
+    var min  = d.getMinutes();
+    mm  = ('00' + mm).slice(-2);
+    dd  = ('00' + dd).slice(-2);
+    hh  = ('00' + hh).slice(-2);
+    min = ('00' + min).slice(-2);
+    $('#date'+file).text('撮影:'+yyyy+'/'+mm+'/'+dd+' '+hh+':'+min);
   }
 };
 
