@@ -77,6 +77,8 @@ pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {
   _log(1,'function','pictureCheckList.checkListDisplay()');
 
   with (pictureCheckList) {
+    // リストのhtmlヘッダーを生成
+    htmlHeader(koujiname,listname);
     // 撮影項目リストを取得し、リストのhtmlを生成
     getPictureItem(listindex,listname);
     // 撮影した写真を参照し、チェックリストの消込
