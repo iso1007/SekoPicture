@@ -1,14 +1,15 @@
 <ons-page id="koujiListItem">
   <ons-toolbar class='toolbar_back_color'>
-    <div class="left" onclick="koujiPictureListTokoujiList()">
-      <ons-button id="pop-button" modifier="quiet" style='color: white'>
-      <ons-icon class="iconsize5" icon="fa-angle-double-left" fixed-width="true"></ons-icon>
-    </ons-button></div>
+    <div class="left">
+      <ons-button id="koujiPictureBackButton" modifier="quiet" style='color: white'>
+        <ons-icon class="iconsize5" icon="fa-angle-double-left" fixed-width="true"></ons-icon>
+      </ons-button>
+		</div>
     
-    <div class="center textsize5" style="color: white">工事写真一覧</div>
+    <div class="center textsize5" id="koujiListItemTitle" style="color: white">工事写真一覧</div>
     
-    <div class="right" onclick="koujiListToCamera()">
-      <ons-button class="toCamera" modifier="quiet">
+    <div class="right">
+      <ons-button id="koujiPictureToCameraButton" class="toCamera" modifier="quiet">
         <ons-icon class="iconsize5" icon="fa-camera" fixed-width="true" style="color: white"></ons-icon>
       </ons-button>
     </div>
@@ -27,7 +28,7 @@
     
     <div class="tabbar">
       <label class="tabbar__item">
-        <input type="radio" id="pictureListButton-cloud" onclick="koujiFilesToolMenu(this)" checked>
+        <input type="radio" id="pictureListButton-cloud" checked>
         <button class="tabbar__button">
           <i class="tabbar__icon fa fa-cloud iconsize3"></i>
           <div class="tabbar__label">クラウド</div>
@@ -35,7 +36,7 @@
       </label>
 
       <label class="tabbar__item">
-        <input type="radio" id="pictureListButton-sort" onclick="koujiFilesToolMenu(this)" checked>
+        <input type="radio" id="pictureListButton-sort" checked>
         <button class="tabbar__button">
           <i class="tabbar__icon fa fa-sort-alpha-asc iconsize3"></i>
           <div class="tabbar__label">並べ替え</div>
@@ -43,7 +44,7 @@
       </label>
 
       <label class="tabbar__item">
-        <input type="radio" id="pictureListButton-display" onclick="koujiFilesToolMenu(this)" checked>
+        <input type="radio" id="pictureListButton-display" checked>
         <button class="tabbar__button">
           <i class="tabbar__icon fa fa-th-large iconsize3"></i>
           <div class="tabbar__label">表示切替</div>
@@ -69,7 +70,6 @@
         </ons-row>
         <ons-row>
           <div align="center" style="width:98%">
-            <!--<img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;">-->    
             <img id="koujiviewPicture" src="" border="2" style="width:100%;height:auto;" onclick="picturePreview()">
             <img id="koujiviewKokubanClip" src="" style="display:none">
           </div>
@@ -146,7 +146,6 @@
     </ons-list>
   </ons-modal>
   
-  <!-- 2018/02/09 ADD ↓------->
   <!--写真閲覧用ダイアログ-->
   <ons-modal id="picturePreviewModal">
     <ons-list style="background-color:gray;width:100%;height:100%">
@@ -160,7 +159,6 @@
       </ons-gesture-detector>
     </ons-list>  
   </ons-modal>
-  <!-- 2018/02/09 ADD ↑------->
 
   <ons-alert-dialog id="upload-dlg" animation="default" cancelable>
     <div class="alert-dialog-title textsize4">クラウドへアップロード</div>
@@ -171,7 +169,6 @@
     </div>
     
     <div class="alert-dialog-footer textsize4" id="upload-dlg-footer">
-      <!--<button class="alert-dialog-button" id="upload-dlg-button" onclick="$('#upload-dlg').hide()">OK</button>-->
       <button class="alert-dialog-button" id="upload-dlg-button" onclick="pictureUpload.uploadDlgHide()">OK</button>
     </div>
   </ons-alert-dialog>
