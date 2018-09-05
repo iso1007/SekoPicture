@@ -297,7 +297,7 @@ koujiInfoList.koujiListItemClick = function(obj) {
   };
 
   // ネットワークの接続確認
-  firebase.database().ref(".info/connected").on("value", function(snap) {
+  firebase.database().ref(".info/connected").once("value", function(snap) {
     if(snap.val() === true) {
       // 選択された工事の写真一覧を表示
       setNavigator.pushPage('koujiListItem.html', options);
@@ -355,6 +355,9 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
   // 工事写真リストのアイテムをクリアする
   $('#koujiPictureList').empty();
 
+  // タブバーのクラウドアイコンを非表示にする
+  $('#tabbar_cloud').attr('style','visibility:hidden');
+
   // 工事写真リストのヘッダーの工事名をセット
   $('#koujiListItemName').text(koujiname);
   $('#koujiListItemTitle').text('工事写真一覧(クラウド)');
@@ -364,11 +367,15 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
     elm.appendTo($('#koujiPictureList'));
   }
 
-  // firebaseStorageの略図ファイルの追加をリッスン、追加があればローカルドライブにダウンロード
+  // firebaseStorageの工事情報をjson形式で取得
   var json = await koujiInfoList.getCloudPictureList(koujiname);
 
+  loopBreakflg = false;
   var errcode = '';
   for(key in json) {
+    // ループ中にカメラ画面や戻るを選択された場合に、ループを中止する
+    if(loopBreakflg) return;
+
     var filename = key;
 
     try {
@@ -451,8 +458,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
     // 工事毎の行を作成
     if(koujiPictureListViewStyle === 'list') {
       // 詳細リスト表示
-//      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" onclick="koujiPictureView(this)">'+
-      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px">'+
+      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<ons-col align="top" width="40%">'+
                       '<img id="imag'+filename+'" class="thumbnail-s" src="'+thumbnailuri+'">'+
                     '</ons-col>'+
@@ -487,8 +493,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
                   '</ons-list-item>');
     }else{
       // タイル表示
-//      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" onclick="koujiPictureView(this)" style="margin: 1px; float: left; list-style: none; position: relative;">'+
-      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;">'+
+      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
 //                    '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                     '<p id="upload'+filename+'" style="display:none"></p>'+
@@ -569,7 +574,7 @@ koujiInfoList.koujiFilesToolMenu = function(obj) {
   if(tabMenuButtonId==='pictureListButton-cloud'){
     options = [
 //      '写真をサーバーからダウンロード',
-      'キャンセル'
+//      'キャンセル'
       ];
   }else{
   if(tabMenuButtonId==='pictureListButton-sort'){
@@ -691,11 +696,199 @@ koujiInfoList.koujiPictureSort = function(index) {
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.koujiPictureView()
+// 選択した工事写真の詳細を表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.koujiPictureView = async function(obj) {
+  _log(1,'function','koujiInfoList.koujiPictureView()');
+
+  // 削除･編集 のボタンを非表示にする
+  $('ons-button[onclick="koujiPictureDelete()"]').attr('style','display:none');
+  $('ons-button[onclick="koujiPictureKokubanEdit()"]').attr('style','display:none');
+
+  var itemname = $(obj).attr('id');
+  var filename = itemname.replace( 'listItem' , '');
+  $('#koujiviewName').text(filename);
+  var koujiname = $('#koujiListItemName').text();
+
+  try {
+    // 縮小写真のリンクをセット
+    var url = await koujiInfoList.getPicturelUrl(koujiname, filename);
+
+    // 工事写真を読み取り表示
+    $('#koujiviewPicture').attr('src', url);
+    // イメージが縦型の場合は表示幅を80%にする
+    var img = new Image();
+    img.src = url;
+    img.onload = function() {
+      $('#koujiviewPicture').css({'width':'100%','height':'auto'});
+      // 写真が縦の場合は、横幅を80%にして全体が画面に収まるようにする
+      if(img.height>img.width) {
+        $('#koujiviewPicture').css({'width':'75%','height':'auto'});
+      };
+    };
+  } catch(e) {
+    _alert('工事写真が取得できませんでした。'+e.code);
+  }
+  // 写真ビューの表示項目をクリアする
+  $('#koujiviewDatetime').text('');
+  $('#koujiviewKousyu').text('');
+  $('#koujiviewSokuten').text('');
+  $('#koujiviewHiduke').text('');
+  $('#koujiviewPictureId').text('');
+  $('#koujiviewBikou').text('');
+  $('#koujiviewKokubanX').text('');
+  $('#koujiviewKokubanY').text('');
+  for(var i=0 ; i<6 ; i++) {
+    $('#koujiviewBikou'+i).text('');
+  }
+  $('#koujiviewUpload').text('');
+
+  try {
+    // ローカルストレージの工事写真一覧を取得
+    var json = await koujiInfoList.getCloudPictureList(koujiname);
+    // 読み込んだ工事写真一覧JSONから指定したファイル名の情報を取得する
+    var k = json[filename];
+    if(typeof(k.datetime) === 'string') {
+      $('#koujiviewDatetime').text(k.datetime);
+    };
+    if(typeof(k.kousyu) === 'string') {
+      $('#koujiviewKousyu').text(k.kousyu);
+    };
+    if(typeof(k.sokuten) === 'string') {
+      $('#koujiviewSokuten').text(k.sokuten);
+    };
+    if(typeof(k.hiduke) === 'string') {
+      $('#koujiviewHiduke').text(k.hiduke);
+    };
+    if(typeof(k.pictureId) === 'string') {
+      $('#koujiviewPictureId').text(k.pictureId);
+    };
+    if(typeof(k.bikou) === 'string') {
+      $('#koujiviewBikou').text(k.bikou);
+    };
+    if(typeof(k.kokubanX) === 'number') {
+      $('#koujiviewKokubanX').text(k.kokubanX);
+    };
+    if(typeof(k.kokubanY) === 'number') {
+      $('#koujiviewKokubanY').text(k.kokubanY);
+    };
+    if(typeof(k.bikou) === 'string') {
+      var bikou = k.bikou.split('\n');
+      for(var i=0 ; i<6 ; i++) {
+        $('#koujiviewBikou'+i).text('　');
+        if(i<bikou.length) {
+          $('#koujiviewBikou'+i).text(bikou[i]);
+        }
+      }
+    };
+    // 写真のアップロード済みフラグ
+    if(typeof(k.upload) === 'string') {
+      $('#koujiviewUpload').text(k.upload);
+    };
+  } catch(e) {
+    _alert('写真の詳細情報の読み込みに失敗しました。'+e.code);
+  }
+
+  // 詳細画面を表示する
+  $("#koujiviewModal").show();
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.getPicturelUrl()
+// firebaseStorageにある選択した写真のURLを取得
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.getPicturelUrl = function(koujiname, filename) {
+  return new Promise(function(resolve, reject) {
+    _log(1,'function','koujiInfoList.getPicturelUrl('+koujiname+' : '+filename+')');
+
+    // firebaseStorage上にあるサムネイルのリンクをセット
+    var thumbnailPath = firebase.storage().ref().child(activeuser.uid+'/'+koujiname+'/'+filename+'.jpg');
+    thumbnailPath.getDownloadURL().then(function(url) {
+      resolve(url);
+
+    }).catch(function(e) {
+      reject(e);
+
+    });
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// picturePreview()
+// 選択した工事写真の拡大・縮小表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.picturePreview = function() {
+  _log(1,'function','picturePreview()');
+
+  $('#koujiviewModal').hide();
+  $('#picturePreviewModal').show();
+
+  var scale = 0.9;
+  var prevScale = 0.9;
+  var dragFlg = false;
+
+  var marginPosX = 0;
+  var marginPosY = 0;
+  var adjustY = 0;
+  var adjustX = 0;
+
+  $("#pictureView").attr({"src":$("#koujiviewPicture").attr("src")});
+  $('#pictureView').css({'transform': 'scale(' + scale + ',' + scale +')'});
+
+  resizeLeft = $('#pictureView').offset().left;
+  resizeTop  = $('#pictureView').offset().top;
+
+  // 2本指でピンチ動作を行なった場合は拡大・縮小
+  $('#pictureView').on('transform', function(event) {
+    scale = Math.max(0.9, Math.min(prevScale * event.originalEvent.gesture.scale, 4));
+    $('#pictureView').css({'transform': 'translate(' + resizeLeft + 'px, ' + resizeTop + 'px) scale(' + scale + ',' + scale +')'});
+  });
+
+  // 画面から指を離した時に、スケール値を退避
+  $('#pictureView').on('release', function(event) {
+    prevScale = scale;
+  });
+
+  // 画面にタッチを開始した時
+  $('#pictureView').on('touchstart', function(event) {
+    // transformが1倍のサイズ位置を設定するための補正
+    adjustY = ($('#pictureView').height() - ($('#pictureView').height() * scale)) / 2 + $('#pictureViewDiv').offset().top;
+    adjustX = ($('#pictureView').width()  - ($('#pictureView').width()  * scale)) / 2;
+
+    if(event.originalEvent.touches.length > 1) {
+      dragFlg = false;
+      // タッチの位置と画像の位置から画像のタッチ位置を取得
+      resizeLeft = $('#pictureView').offset().left - adjustX;
+      resizeTop  = $('#pictureView').offset().top  - adjustY;
+    }else{
+      dragFlg = true;
+      // タッチの位置と画像の位置から画像のタッチ位置を取得
+      marginPosX = event.originalEvent.touches[0].pageX - $('#pictureView').offset().left + adjustX;
+      marginPosY = event.originalEvent.touches[0].pageY - $('#pictureView').offset().top  + adjustY;
+    }
+  });
+
+  // 1本指でドラッグをした時は、イメージを移動
+  $('#pictureView').on('drag', function(event) {
+    if(dragFlg) {
+      var x = event.originalEvent.gesture.touches[0].pageX - marginPosX;
+      var y = event.originalEvent.gesture.touches[0].pageY - marginPosY;
+
+      $('#pictureView').css({'transform': 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ',' + scale +')'});
+    }
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // koujiInfoList.toKoujiInfoList()
 // 工事写真一覧から工事一覧画面に戻る
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 koujiInfoList.toKoujiInfoList = function() {
   _log(1,'function','koujiInfoList.toKoujiInfoList()');
+
+  // 写真一覧表示ループを中断する
+  loopBreakflg = true;
 
   // リストを初期化
   $("#koujiPictureList").empty();
@@ -710,6 +903,9 @@ koujiInfoList.toKoujiInfoList = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 koujiInfoList.toCamera = function() { 
   _log(1,'function','koujiInfoList.toCamera()');
+
+  // 写真一覧表示ループを中断する
+  loopBreakflg = true;
 
   // 工事情報のリストを初期化
   $("#koujiInfoList").empty();

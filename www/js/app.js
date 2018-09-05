@@ -33,6 +33,9 @@ var kokubanShowFlag = true;
 var presentLocation = {lat : 0, lng : 0, alt : 0, tim : 0};
 // 2018/02/07 ADD ----- ↑
 
+// 同期処理のループを途中で中断する場合に使用するフラグ
+var loopBreakFlag = false;
+
 var app = function() {};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
