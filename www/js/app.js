@@ -150,6 +150,7 @@ app.afterLoginInitialize2 = function() {
   $('#camera').css('visibility','visible');
   $('#preview').hide();
   $('#previewMessage').hide();
+  $('#pic-edit').hide();
 
   // 背景を透過にする
   $('html').css('background-color','transparent');
