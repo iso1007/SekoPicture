@@ -160,7 +160,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
       // 写真情報管理ファイルの読み込み
       src = await localFile.getTextFile(file);
       // 写真情報ファイルのアップロード済みフラグを更新
-      ret = await pictureUpload.controlFileUpdate(fileWriter, src, pictureAllCount);
+      ret = await pictureUpload.controlFileUpdate(fileWriter, src, pictureAllCount, '0');
     } catch(e) {
       var msg = '';
       if(e.code !== undefined) {msg = e.code;}
@@ -208,15 +208,19 @@ pictureUpload.infomationFileUpdate = function(fileWriter, src) {
 // pictureUpload.controlFileUpdate()
 // 写真管理情報(control.json)ファイルをアップロード
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureUpload.controlFileUpdate = function(fileWriter, src, count) {
+pictureUpload.controlFileUpdate = function(fileWriter, src, count, flg) {
   return new Promise(function(resolve, reject) {
     // 工事写真の管理ファイルを読み込み
     var json_text = JSON.parse(src);
-    if(count === -1) {
-      json_text.picture_count--;
-    }else{
+    if(flg === '0') {
       json_text.picture_count = count;
       json_text.upload_count  = count;
+    }
+    if(flg === '-1') {
+      json_text.picture_count--;
+    }
+    if(flg === '+1') {
+      json_text.picture_count++;
     }
 
     var json = JSON.stringify(json_text);

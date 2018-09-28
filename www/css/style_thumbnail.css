@@ -56,3 +56,26 @@ img.thumbnail {
   }
 }
 
+ons-button.itemRecycl {
+  position: absolute;
+  top: 10px;
+  left: 100%;
+  height: calc(100% - 10px);
+}
+
+ons-button.itemDelete {
+  position: absolute;
+  top: 0px;
+  left: 100%;
+  height: 100%;
+  background-color: red;
+}
+
+ons-icon.itemRecyclIcon,ons-icon.itemDeleteIcon {
+	position: absolute;
+	top: 50%; /* 上から半分 */
+	/* 要素の大きさの半分引く（CSS3） */
+	-webkit-transform: translate(0,-50%);
+	-moz-transform: translate(0,-50%);
+	transform: translate(0,-50%);
+}
