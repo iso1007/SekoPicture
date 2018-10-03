@@ -1,4 +1,5 @@
 var pictureCheckList = function() {};
+var saveTreeStyle = [];
 
 //====================================================
 // pictureCheckList.getCheckListName()
@@ -80,9 +81,9 @@ pictureCheckList.checkListDisplay = function(koujiname,listindex,listname) {
     // リストのhtmlヘッダーを生成
     htmlHeader(koujiname,listname);
     // 撮影項目リストを取得し、リストのhtmlを生成
-    getPictureItem(listindex,listname);
+    var ary = getPictureItem(listindex,listname);
     // 撮影した写真を参照し、チェックリストの消込
-    loopPictureList(koujiname);
+    loopPictureList(koujiname, ary);
   };
 };
 
@@ -98,6 +99,8 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
   // 読み込んだテキストをJSON形式に変換
   var json = JSON.parse(str);
 
+  var pictureCheckListArray = [];
+
   // ローカルストレージのアイテム設定をループして検索リストにセット
   try {
     // 備考を配列で取得する
@@ -110,8 +113,7 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
 
     var obj1 = Object.keys(json[field]);
     // 備考第1階層をループしリストを作成する
-    $.each(obj1, function(i, key1) {     // 2018/01/30 ADD
-//  obj1.forEach(function(key1) {        // 2018/01/30 DEL
+    $.each(obj1, function(i, key1) {
       var str1 = json[field][key1][name];
       var fid1 = key1.slice(-2);
       if(key1.match(/item/) && str1 !== undefined) {
@@ -125,17 +127,16 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
         if(dsp1 === true) {
           var str2 = json[field][key1][item01][name];  // 見出し判定
           if(str2 !== undefined) {
-            pictureCheckList.htmlItem(1, str1, fid1, 'header', num1);
+            pictureCheckListArray[fid1] = {level: 1, item: str1, id: fid1, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num1, cnt: 0, prm: true};
           }else{
-            pictureCheckList.htmlItem(1, str1, fid1, 'item', num1);
+            pictureCheckListArray[fid1] = {level: 1, item: str1, id: fid1, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num1, cnt: 0, prm: true};
           };
         };
       };
 
       // 備考第2階層をループしリストを作成する
       var obj2 = Object.keys(json[field][key1]);
-      $.each(obj2, function(i, key2) {     // 2018/01/30 ADD
-//    obj2.forEach(function(key2) {        // 2018/01/30 DEL
+      $.each(obj2, function(i, key2) {
         var str2 = json[field][key1][key2][name];
         var fid2 = key1.slice(-2)+'-'+key2.slice(-2);
         if(key2.match(/item/) && str2 !== undefined) {
@@ -149,16 +150,15 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
           if(dsp2 === true) {
             try {
               var str3 = json[field][key1][key2][item01][name];  // 見出し判定
-              pictureCheckList.htmlItem(2, str2, fid2, 'header', num2);
+              pictureCheckListArray[fid2] = {level: 2, item: str2, id: fid2, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num2, cnt: 0, prm: true};
             }catch(e){
-              pictureCheckList.htmlItem(2, str2, fid2, 'item', num2);
+              pictureCheckListArray[fid2] = {level: 2, item: str2, id: fid2, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num2, cnt: 0, prm: true};
             };
           };
 
           // 備考第3階層をループしリストを作成する
           var obj3 = Object.keys(json[field][key1][key2]);
-          $.each(obj3, function(i, key3) {     // 2018/01/30 ADD
-//        obj3.forEach(function(key3) {        // 2018/01/30 DEL
+          $.each(obj3, function(i, key3) {
             var str3 = json[field][key1][key2][key3][name];
             var fid3 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2);
             if(key3.match(/item/) && str3 !== undefined) {
@@ -173,16 +173,15 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                 // 検索リストに要素を追加
                 try {
                   var str4 = json[field][key1][key2][key3][item01][name];  // 見出し判定
-                  pictureCheckList.htmlItem(3, str3, fid3, 'header', num3);
+                  pictureCheckListArray[fid3] = {level: 3, item: str3, id: fid3, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num3, cnt: 0, prm: true};
                 }catch(e){
-                  pictureCheckList.htmlItem(3, str3, fid3, 'item', num3);
+                  pictureCheckListArray[fid3] = {level: 3, item: str3, id: fid3, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num3, cnt: 0, prm: true};
                 };
               };
 
               // 備考第4階層をループしリストを作成する
               var obj4 = Object.keys(json[field][key1][key2][key3]);
-              $.each(obj4, function(i, key4) {     // 2018/01/30 ADD
-//            obj4.forEach(function(key4) {        // 2018/01/30 DEL
+              $.each(obj4, function(i, key4) {
                 var str4 = json[field][key1][key2][key3][key4][name];
                 var fid4 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2);
                 if(key4.match(/item/) && str4 !== undefined) {
@@ -197,16 +196,15 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                     // 検索リストに要素を追加
                     try {
                       var str5 = json[field][key1][key2][key3][key4][item01][name];  // 見出し判定
-                      pictureCheckList.htmlItem(4, str4, fid4, 'header', num4);
+                      pictureCheckListArray[fid4] = {level: 4, item: str4, id: fid4, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num4, cnt: 0, prm: true};
                     }catch(e){
-                      pictureCheckList.htmlItem(4, str4, fid4, 'item', num4);
+                      pictureCheckListArray[fid4] = {level: 4, item: str4, id: fid4, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num4, cnt: 0, prm: true};
                     };
                   };
 
                   // 備考第5階層をループしリストを作成する
                   var obj5 = Object.keys(json[field][key1][key2][key3][key4]);
-                  $.each(obj5, function(i, key5) {     // 2018/01/30 ADD
-//                obj5.forEach(function(key5) {        // 2018/01/30 DEL
+                  $.each(obj5, function(i, key5) {
                     var str5 = json[field][key1][key2][key3][key4][key5][name];
                     var fid5 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2)+'-'+key5.slice(-2);
                     if(key5.match(/item/) && str5 !== undefined) {
@@ -221,16 +219,15 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                         // 検索リストに要素を追加
                         try {
                           var str6 = json[field][key1][key2][key3][key4][key5][item01][name];  // 見出し判定
-                          pictureCheckList.htmlItem(5, str5, fid5, 'header', num5);
+                          pictureCheckListArray[fid5] = {level: 5, item: str5, id: fid5, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num5, cnt: 0, prm: true};
                         }catch(e){
-                          pictureCheckList.htmlItem(5, str5, fid5, 'item', num5);
+                          pictureCheckListArray[fid5] = {level: 5, item: str5, id: fid5, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num5, cnt: 0, prm: true};
                         };
                       };
 
                       // 備考第6階層をループしリストを作成する
                       var obj6 = Object.keys(json[field][key1][key2][key3][key4][key5]);
-                      $.each(obj6, function(i, key6) {     // 2018/01/30 ADD
-//                    obj6.forEach(function(key6) {        // 2018/01/30 DEL
+                      $.each(obj6, function(i, key6) {
                         var str6 = json[field][key1][key2][key3][key4][key5][key6][name];
                         var fid6 = key1.slice(-2)+'-'+key2.slice(-2)+'-'+key3.slice(-2)+'-'+key4.slice(-2)+'-'+key5.slice(-2)+'-'+key6.slice(-2);
                         if(key6.match(/item/) && str6 !== undefined) {
@@ -245,9 +242,9 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
                             // 検索リストに要素を追加
                             try {
                               var str7 = json[field][key1][key2][key3][key4][key5][key6][item01][name];  // 見出し判定
-                              pictureCheckList.htmlItem(6, str6, fid6, 'header', num6);
+                              pictureCheckListArray[fid6] = {level: 6, item: str6, id: fid6, kubun: 'header', ico1:'fa-minus-square-o', ico2:'', max: num6, cnt: 0, prm: true};
                             }catch(e){
-                              pictureCheckList.htmlItem(6, str6, fid6, 'item', num6);
+                              pictureCheckListArray[fid6] = {level: 6, item: str6, id: fid6, kubun: 'item', ico1:'fa-caret-right', ico2:'', max: num6, cnt: 0, prm: true};
                             };
                           };
                         };
@@ -264,86 +261,18 @@ pictureCheckList.getPictureItem = function(listindex,listname) {
   } catch(e) {
     _errorlog(1,'pictureCheckList.getPictureItem()',e);
   };
-};
 
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// pictureCheckList.htmlHeader()
-// 写真撮影チェックリストのHTMLヘッダーを作成
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.htmlHeader = function(koujiname,listname) {
-  _log(1,'function','pictureCheckList.htmlHeader()');
-
-  // チェックリストのアイテムをクリアする
-  $('#pictureCheckList').empty();
-
-  // チェックリスト名称を表示
-  $('#pictureCheckListName').text(listname);
-  $('#pictureCheckListName').css({'text-decoration':'underline'});
-
-  // 工事名称を表示
-  $('#pictureCheckKoujimei').text(koujiname);
-};
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// pictureCheckList.htmlItem()
-// 写真撮影チェックリストのHTMLアイテムリストを作成
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.htmlItem = function(level, str, fid, flg, num) {
-  _log(1,'function','pictureCheckList.htmlItem()');
-
-  var html = '<ons-list-item id="'+fid+'" tappable modifier="longdivider" style="padding-left:0px" onclick="pictureCheckList.takeItemClick(this)">'+
-             '  <ons-row>'+
-             '    <ons-col class="textsize5" width="'+((level-1)*4)+'%"></ons-col>'+
-             '    <ons-col class="textsize5" width="7%">'+
-             '      <ons-icon class="iconsize3" id="icon1'+fid+'" fixed-width="true" style="color: green"></ons-icon>'+
-             '    </ons-col>'+
-             '    <ons-col class="textsize5" id="biko'+fid+'" width="'+(69-((level-1)*4))+'%">'+str+'</ons-col>'+
-             '    <ons-col>'+
-             '      <ons-icon class="iconsize3" id="icon2'+fid+'" fixed-width="true"></ons-icon>'+
-             '    </ons-col>'+
-             '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pcnt'+fid+'"">0</ons-col>'+
-             '    <ons-col class="textsize5" width="2%" style="text-align:right">/</ons-col>'+
-             '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pmax'+fid+'""></ons-col>'+
-             '  </ons-row>'+
-             '</ons-list-item>';
-  var elm = $(html);
-  elm.appendTo($("#pictureCheckList"));
-  $('#'+fid).attr('class', fid + ' list-item list-item--longdivider');
-
-  if(flg==='header') {
-    $('#icon1'+fid).attr('icon', 'fa-minus-square-o');
-    $('#icon2'+fid).attr('icon', 'fa-star-o');
-  }else{
-    $('#icon1'+fid).attr('icon', 'fa-caret-right');
-    $('#icon2'+fid).attr('icon', 'fa-camera');
-  };
-  $('#icon2'+fid).css('color', 'darkorange');
-  $('#pmax'+fid).text(num);
+  return pictureCheckListArray;
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // pictureCheckList.loopPictureList()
 // 撮影写真の情報を取得
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.loopPictureList = async function(koujiname) {
+pictureCheckList.loopPictureList = async function(koujiname, ary) {
   _log(1,'function','pictureCheckList.loopPictureList()');
 
-//  $('#splashModal').show();
-//  $('#pictureCheckList').hide();
-  $('#pictureCheckList').children('ons-list-item').each(function(i) {
-    // 選択されたアイテムのIDを取得
-    var fid = $(this).attr('id');
-    // 写真枚数をクリア
-    $('#pcnt'+fid).text('0');
-    // アイコンの色をクリア
-    $('#icon2'+fid).css('color', 'darkorange');
-    // ☆アイコンのクリア
-    if($('#icon2'+fid).attr('icon') === 'fa-star' ||
-       $('#icon2'+fid).attr('icon') === 'fa-star-half-o') {
-      $('#icon2'+fid).attr('icon', 'fa-star-o');
-    }
-  });
+  var pictureCheckListArray = ary;
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
   var folderurl = cordova.file.documentsDirectory + koujiname;
@@ -385,71 +314,183 @@ pictureCheckList.loopPictureList = async function(koujiname) {
       _alert('撮影済み工事写真のカウント処理が正常に行えませんでした。<br>('+errcode+')');
     }
   } catch(e) {
-		if(e.code !== 1) {
+    if(e.code !== 1) {
       errcode = folderurl + '->' + e.code;
       _alert('撮影済み工事写真のフォルダ情報が正常に取得できませんでした。<br>('+errcode+')');
-		}
+    }
   }
-//  $('#pictureCheckList').show();
-//  $('#splashModal').hide();
+  // 規定の条件に到達しているかをチェック
+  promissPictureChecked();
+
+  // htmlを作成･表示
+  pictureCheckList.htmlItem(pictureCheckListArray);
 
   // 撮影済みの写真枚数をカウント
   function setPictureCount(pictureId) {
     // 管理コードを"-"区切りで配列に取得
-    var ary = pictureId.split('-');
+    var ids = pictureId.split('-');
     var fid = '';
     // 撮影リストIDを分割してループ
-    for(var i = 0 ; i < ary.length ; i++) {
+    for(var i = 0 ; i < ids.length ; i++) {
 
       if(fid === '') {
-        fid = ary[i];
+        fid = ids[i];
       }else{
-        fid = fid + '-' + ary[i];
+        fid = fid + '-' + ids[i];
       }
 
       // 写真枚数をカウントアップ
-      countUp(fid);
+      try {
+        var pcnt = pictureCheckListArray[fid].cnt;
+        pcnt++;
+        pictureCheckListArray[fid].cnt = pcnt;
+      } catch(e) {
+      }
     };
   }
-//===========================================================================
-//===========================================================================
-//==規定枚数以上の撮影をしている場合、親階層のカウントをしないようにする=====
-//===========================================================================
-//===========================================================================
 
-  // 撮影リストＩＤに写真枚数をカウントアップ
-  function countUp(fid) {
-    var icon1 = $('#icon1'+fid).attr('icon');
-    var pcnt = Number($('#pcnt'+fid).text());  // 写真枚数
-    var pmax = Number($('#pmax'+fid).text());  // 規定枚数
+  // 規定の条件に到達しているかをチェック
+  function promissPictureChecked() {
+    for(var key in pictureCheckListArray) {
+      var kubun = pictureCheckListArray[key].kubun;
 
-    pcnt++;
-    $('#pcnt'+fid).text(pcnt);
+      if(kubun === 'item') {
+        // 管理コードを"-"区切りで配列に取得
+        var fid = key;
+        var flg = true;
+        var len = fid.split('-').length;
+        var pcnt = 0; pmax = 0;
+        // 撮影リストIDを分割してループ
+        for(var i = len ; i > 0 ; i--) {
 
-    // 撮影枚数 ＜ 規定枚数
-    if(pcnt < pmax) {
-      // オレンジ色
-      $('#icon2'+fid).css('color', 'darkorange');
-      // 親階層
-      if(icon1 !== 'fa-caret-right') {
-        // １枚も撮影していない場合は、中抜きの✩アイコン
-        if(pcnt === '0') {
-          $('#icon2'+fid).attr('icon', 'fa-star-o');
+          fid = fid.substr(0, 2+(i-1)*3);
+          pcnt = pictureCheckListArray[fid].cnt;  // 写真枚数
+          pmax = pictureCheckListArray[fid].max;  // 規定枚数
+          if(pmax > 0 && pcnt < pmax) {
+            flg = false;
+          }
+
+          if(flg === false) {
+            pictureCheckListArray[fid].prm = false;
+          }
+
+          if(pmax == 0 && pcnt == 0) {
+            pictureCheckListArray[fid].prm = false;
+          }
+        }
+      }
+    }
+  }
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// pictureCheckList.htmlHeader()
+// 写真撮影チェックリストのHTMLヘッダーを作成
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+pictureCheckList.htmlHeader = function(koujiname,listname) {
+  _log(1,'function','pictureCheckList.htmlHeader()');
+
+  // チェックリストのアイテムをクリアする
+  $('#pictureCheckList').empty();
+
+  // チェックリスト名称を表示
+  $('#pictureCheckListName').text(listname);
+  $('#pictureCheckListName').css({'text-decoration':'underline'});
+
+  // 工事名称を表示
+  $('#pictureCheckKoujimei').text(koujiname);
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// pictureCheckList.htmlItem()
+// 写真撮影チェックリストのHTMLアイテムリストを作成
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+pictureCheckList.htmlItem = function(ary) {
+  _log(1,'function','pictureCheckList.htmlItem()');
+
+  var allCount = 0; untreatedCount = 0;
+  // アイコンの表示スタイルを指定
+  for(var key in ary) {
+    if(ary[key].max > 0) {
+      allCount++;
+      if(ary[key].prm === false) {
+        untreatedCount++;
+      }
+    }
+
+    // 親階層のアイコンスタイル
+    if(ary[key].kubun === 'header') {
+      // 撮影枚数=0の場合は中抜き
+      if(ary[key].cnt == 0) {
+        ary[key].ico2 = 'fa-star-o';
+      }else{
+        // 撮影枚数 ＜ 規定枚数
+        if(ary[key].prm === false || ary[key].cnt < ary[key].max) {
+          // 規定枚数に達していない場合は半分中抜き
+          ary[key].ico2 = 'fa-star-half-o';
         }else{
-        // 規定枚数に達していない場合は、半分中抜きのアイコン
-          $('#icon2'+fid).attr('icon', 'fa-star-half-o');
-        };
-      };
+          // 規定枚数に達している場合は塗りつぶし
+          ary[key].ico2 = 'fa-star';
+        }
+      }
     }else{
-      // アイコンを青色にする
-      $('#icon2'+fid).css('color', 'royalblue');
-      // 親階層
-      if(icon1 !== 'fa-caret-right') {
-        // 塗りつぶしの★アイコン
-        $('#icon2'+fid).attr('icon', 'fa-star');
-      };
-    };
-  };
+      // 子層のアイコンスタイル
+      if(ary[key].kubun === 'item') {
+        ary[key].ico2 = 'fa-camera';
+      }
+    }
+
+    // 規定枚数に到達していない場合はアイコンをオレンジ表示
+    var ico2Color = 'darkorange';
+    if(ary[key].prm) {ico2Color = 'royalblue';}
+
+    var html =
+      '<ons-list-item id="'+key+'" class="'+key+'" list-item list-item--longdivider tappable modifier="longdivider" style="padding-left:0px" onclick="pictureCheckList.takeItemClick(this)">'+
+      '  <ons-row>'+
+      '    <ons-col class="textsize5" width="'+((ary[key].level-1)*4)+'%"></ons-col>'+
+      '    <ons-col class="textsize5" width="7%">'+
+      '      <ons-icon class="iconsize3" id="icon1'+key+'" fixed-width="true" style="color: green" icon="'+ary[key].ico1+'"></ons-icon>'+
+      '    </ons-col>'+
+      '    <ons-col class="textsize5" id="biko'+key+'" width="'+(69-((ary[key].level-1)*4))+'%">'+ary[key].item+'</ons-col>'+
+      '    <ons-col>'+
+      '      <ons-icon class="iconsize3" id="icon2'+key+'" fixed-width="true" icon="'+ary[key].ico2+'" style="color:'+ico2Color+'"></ons-icon>'+
+      '    </ons-col>'+
+      '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pcnt'+key+'"">'+ary[key].cnt+'</ons-col>'+
+      '    <ons-col class="textsize5" width="2%" style="text-align:right">/</ons-col>'+
+      '    <ons-col class="textsize5" width="7%" style="color:blue;text-align:right" id="pmax'+key+'"">'+ary[key].max+'</ons-col>'+
+      '    <ons-col style="display:none" id="prms'+key+'"">'+ary[key].prm+'</ons-col>'+
+      '  </ons-row>'+
+      '</ons-list-item>';
+    var elm = $(html);
+    elm.appendTo($("#pictureCheckList"));
+  }
+
+  // ツリーの開閉状態を復元する
+  $('#pictureCheckList').children('ons-list-item').each(function(i) {
+    // 選択されたアイテムのIDを取得
+    var select = $(this).attr('id');
+    if(saveTreeStyle[select]　=== 'close') {
+      pictureCheckList.takeItemClick(this);
+    }
+  });
+
+  // 確認ボタンのインジケーターカラーを指定
+  if(untreatedCount === 0) {
+    $('#pictureCheckerIcon').attr('icon','fa-star');
+    $('#pictureCheckerIcon').css({'color':'royalblue'});
+  }else{
+    try {
+      if(allCount === untreatedCount) {
+        $('#pictureCheckerIcon').attr('icon','fa-star-o');
+      }else{
+        $('#pictureCheckerIcon').attr('icon','fa-star-half-o');
+      }
+      var wariai = Math.round((allCount - untreatedCount) / allCount * 100);
+      var rgbColor = 'rgb(255,'+(100+wariai)+',0)';
+      $('#pictureCheckerIcon').css({'color':rgbColor});
+    }catch(e){
+    }
+  }
 };
 
 //====================================================
@@ -468,6 +509,35 @@ pictureCheckList.treeOpen = function() {
     // アイコンが[-](ツリーを開いている状態)の場合
     if(icon1 === 'fa-plus-square-o') {
 
+      // 開いたツリーを閉じる
+      pictureCheckList.takeItemClick(this);
+    };
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// pictureCheckList.treeCheker()
+// 撮影必須項目の確認リストを表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+pictureCheckList.treeCheker = function() {
+  _log(1,'function','pictureCheckList.treeCheker()');
+
+
+  $('#pictureCheckList').children('ons-list-item').each(function(i) {
+    // 選択されたアイテムのIDを取得
+    var selectName = $(this).attr('id');
+
+    // 規定枚数に達しているかどうかのフラグ
+    var prms = $('#prms'+selectName).text();
+    // 選択されたアイテムのアイコン[+][-]IDを取得
+    var icon1 = $('#icon1'+selectName).attr('icon');
+    // 規定枚数に到達していて、ツリーが開いている場合
+    if(prms === 'true' && icon1 === 'fa-minus-square-o') {
+      // 開いたツリーを閉じる
+      pictureCheckList.takeItemClick(this);
+    };
+    // 規定枚数に到達していなくて、ツリーが閉じている場合
+    if(prms === 'false' && icon1 === 'fa-plus-square-o') {
       // 開いたツリーを閉じる
       pictureCheckList.takeItemClick(this);
     };
@@ -517,8 +587,8 @@ pictureCheckList.takeItemClick = function(obj) {
     // 配下のツリーアイテムのクラス名の先頭に'S'を付加
     // 閉じている状態を上位階層の開閉の影響を受けないように
     takeItemSelect('hide');
-    // アイコンツリーの閉じた状態をローカルストレージに保存
-    pictureCheckList.saveCheckStrage(obj);
+    // ツリーの開閉状態を保存
+    pictureCheckList.saveChecked(selectName, 'close');
   };
   // アイコンが[+](ツリーを閉じている状態)の場合
   if(icon1 === 'fa-plus-square-o') {
@@ -528,6 +598,8 @@ pictureCheckList.takeItemClick = function(obj) {
     takeItemSelect('show');
     // 配下のツリーアイテムを表示状態にする
     $('ons-list-item[class^="'+selectName+'-"]').show();
+    // ツリーの開閉状態を保存
+    pictureCheckList.saveChecked(selectName, 'open');
   };
   // アイコンが[▸]撮影項目の場合
   if(icon1 === 'fa-caret-right') {
@@ -570,19 +642,14 @@ pictureCheckList.takeItemClick = function(obj) {
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// pictureCheckList.saveCheckStrage()
-// アイコンツリーの閉じた状態をローカルストレージに保存
+// pictureCheckList.saveChecked()
+// アイコンツリーの開閉状態をローカルストレージに保存
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureCheckList.saveCheckStrage = function(obj) {
-  _log(1,'function','pictureCheckList.saveCheckStrage()');
+pictureCheckList.saveChecked = function(select, style) {
+  _log(1,'function','pictureCheckList.saveChecked()');
 
-//  // 選択されたアイテムのIDを取得
-//  var selectName = $(obj).attr('id');
-//  var val = {selectName:""};
-//  // 選択されたアイテムのアイコン[+]の状態を保存
-//  localStrage.setItems('firebase:temp/checklist', val);
-//
-};
+  saveTreeStyle[select] = style;
+}
 
 //====================================================
 // pictureCheckList.checkListSelectModal()
@@ -699,9 +766,9 @@ pictureCheckList.toCamera = function() {
   _log(1,'function','pictureCheckList.toCamera()');
 
   // リストを初期化
-//$('#pictureCheckList').empty();
+  $('#pictureCheckList').empty();
   // 設定メニューを初期メニューに戻す
-//chkNavigator.resetToPage('checkPicture.html');
+//  chkNavigator.resetToPage('checkPicture.html');
 
   // カメラ画面の表示
   $('#camera').show();

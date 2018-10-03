@@ -356,14 +356,14 @@ app.pictureCheckButtonClick = function() {
     StatusBar.show();
 
     // 撮影項目の設定
-    // チェックリストhtmlが存在し、工事名称に変更がない場合は撮影枚数のみ更新
+    // チェックリストhtmlが存在し工事名称に変更がない場合は、チェックツリーの開閉状態を復元
     if($("#pictureCheckKoujimei")[0] && k.directory === $("#pictureCheckKoujimei").text()){
-     // 撮影した写真を参照し、チェックリストの消込
-      pictureCheckList.loopPictureList(k.directory);
     }else{
-      // チェックリストを作成
-      pictureCheckList.getCheckListName(k.directory);
+      // 前回のツリー開閉状態をクリア
+      saveTreeStyle = [];
     }
+    // チェックリストを作成
+    pictureCheckList.getCheckListName(k.directory);
 
     // 撮影項目画面の表示
     $('#chkNavigator').show();
