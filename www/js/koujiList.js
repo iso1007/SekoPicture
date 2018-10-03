@@ -113,18 +113,33 @@ async function koujiListLoop() {
 function koujiListHtml(obj, cnt) {
   _log(1,'function','koujiListHtml()');
 
+  if(obj.koujiname === undefined) {obj.koujiname = '';}
+  if(obj.fast_datetime === undefined) {obj.fast_datetime = '';}
+  if(obj.last_datetime === undefined) {obj.last_datetime  = '';}
+  if(obj.picture_count === undefined) {obj.picture_count = 0;}
+  if(obj.upload_count === undefined) {obj.upload_count = '';}
+  if(typeof(obj.upload_count) === 'number') {
+    // 全てサーバーにアップロード済みの枚数は"青"表示
+    // アップロード残がある枚数は"オレンジ"で表示
+    if(obj.picture_count === obj.upload_count) {
+      obj.backgroundcolor = 'Blue';
+    }else{
+      obj.backgroundcolor = 'darkorange';
+    }
+  }
+
   var elm = $('<ons-list-item class="koujiListItem" id="koujiList_item_' + cnt + '" tappable lock-on-drag modifier="longdivider">'+
                 '<ons-col width="90%">'+
                   '<ons-row>'+
-                    '<ons-col class="textsize5" id="koujiList_name_' + cnt + '"></ons-col>'+
+                    '<ons-col class="textsize5" id="koujiList_name_' + cnt + '">'+obj.koujiname+'</ons-col>'+
                   '</ons-row>'+
                   '<ons-row>'+
-                    '<ons-col class="textsize3" style="color:gray" id="koujiList_date_' + cnt + '"></ons-col>'+
+                    '<ons-col class="textsize3" style="color:gray" id="koujiList_date_' + cnt + '">'+'\n' + obj.fast_datetime + ' ～ ' + obj.last_datetime+'</ons-col>'+
                   '</ons-row>'+
                 '</ons-col>'+
                 '<ons-col width="10%">'+
                   '<ons-row>'+
-                    '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: darkorange"></span></ons-col>'+
+                    '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: '+obj.backgroundcolor+'">'+obj.picture_count+'</span></ons-col>'+
                   '</ons-row>'+
                 '</ons-col>'+
                 '<ons-button class="itemDelete" id="itemDelete_'+cnt+'" style="display:none">'+
@@ -132,25 +147,6 @@ function koujiListHtml(obj, cnt) {
                 '</ons-button>'+
               '</ons-list-item>');
   elm.appendTo($('#koujiListBox'));
-
-  if(obj.koujiname === undefined) {obj.koujiname = '';}
-  if(obj.fast_datetime === undefined) {obj.fast_datetime = '';}
-  if(obj.last_datetime === undefined) {obj.last_datetime  = '';}
-  if(obj.picture_count === undefined) {obj.picture_count = 0;}
-  if(obj.upload_count === undefined) {obj.upload_count = '';}
-
-  $('#koujiList_name_'+cnt).text(obj.koujiname);
-  $('#koujiList_date_'+cnt).text('\n' + obj.fast_datetime + ' ～ ' + obj.last_datetime);
-  $('#koujiList_count_'+cnt).text(obj.picture_count);
-  if(typeof(obj.upload_count) === 'number') {
-    // 全てサーバーにアップロード済みの枚数は"青"表示
-    // アップロード残がある枚数は"オレンジ"で表示
-    if(obj.picture_count === obj.upload_count) {
-      $('#koujiList_count_'+cnt).css('background-color', 'Blue');
-    }else{
-      $('#koujiList_count_'+cnt).css('background-color', 'darkorange');
-    }
-  }
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -321,9 +317,6 @@ koujiListAddEvent = function() {
 async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
   _log(1,'function','koujiListItemSet('+koujiname+','+koujiListCountId+')');
 
-  // 工事写真リストのアイテムをクリアする
-  $('#koujiPictureList').empty();
-
   // 工事写真リストのヘッダーの工事名をセット
   $('#koujiListItemName').text(koujiname);
   // 工事一覧の何番目が選択されたのかID
@@ -352,12 +345,8 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
     $('#splashModal').show();
   }
 
-  if(koujiPictureListViewStyle !== 'list') {
-    var elm = $('<ul style="margin: 0;padding: 0;">');
-    elm.appendTo($('#koujiPictureList'));
-  }
-
   var errcode = '';
+  var pictureInfoArray = [];
   for (var i=0; fileEntries.length > i; i++) {
     // 写真ファイルのリストを作成
     var fname = fileEntries[i].name.split('.');
@@ -370,7 +359,8 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
       if(folderReferences === 'dustbox') {
         pictureUrl = pictureUrl.replace( 'dustbox/'+filename, filename);
       }
-      var ret = await koujiListAddElement(filename, pictureUrl);
+      // uriをサムネイルフォルダに変換
+      var thumbnailuri = pictureUrl.replace( filename , 'thumbnail/'+filename);
 
       var infoFile = 'information/' + filename + '.json';
       try {
@@ -381,7 +371,11 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
         // 写真情報ファイルの読み込み
         var text = await localFile.getTextFile(file);
         // htmlにプレビュー･情報を付加
-        var ret = await koujiListAddInfo(file, text);
+        var info = await koujiListAddInfo(text, pictureUrl);
+        // サムネイル画像をキャッシュさせない為に'?1'を付加
+        info.thumbnailuri = thumbnailuri + '?1';
+        // 情報配列を追加
+        pictureInfoArray[filename] = info;
       } catch(e) {
         errcode = e.code;
       }
@@ -391,10 +385,8 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
     _alert('全ての撮影済み工事写真が取得できませんでした。('+errcode+')');
   }
 
-  if(koujiPictureListViewStyle !== 'list') {
-    var elm = $('</ul>');
-    elm.appendTo($('#koujiPictureList'));
-  }
+  // 工事写真一覧htmlを作成
+  var ret = await koujiListAddElement(pictureInfoArray);
 
   if(koujiPictureListSortIndex<0 && koujiPictureListSortIndex>3){
     koujiPictureListSortIndex = 0;
@@ -411,131 +403,119 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// koujiListAddElement()
-// 選択した工事の写真一覧を表示
+// koujiListAddInfo()
+// 写真リストにプレビューと黒板情報を表示
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiListAddElement(filename, uri) {
+function koujiListAddInfo(text, pictureUrl) {
   return new Promise(function(resolve, reject) {
-    _log(1,'function','koujiListAddElement('+filename+' : '+uri+')');
+    _log(1,'function','koujiListAddInfo()');
 
-    // uriをサムネイルフォルダに変換
-    var thumbnailuri = uri.replace( filename , 'thumbnail/'+filename);
-    // サムネイル画像をキャッシュさせない為の処理
-    thumbnailuri = thumbnailuri + '?1';
+    var pictureInfo = {};
+    try {
+      pictureInfo = JSON.parse(text);
+    } catch(e) {
+      _errorlog(1,'koujiListAddInfo()',e);
+    }
 
-    // 工事毎の行を作成
-    if(koujiPictureListViewStyle === 'list') {
-      // 詳細リスト表示
-      var elm = $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px">'+
-                    '<ons-col align="top" width="40%">'+
-                      '<img id="imag'+filename+'" class="thumbnail-s" src="'+thumbnailuri+'">'+
-                    '</ons-col>'+
+    // 撮影リストでのソートを可能にするためにclassにリストＩＤをセット
+    if(pictureInfo.pictureId === undefined) {pictureInfo.pictureId ='';}
 
-                    '<ons-col width=" 2%">'+
-                      '<p id="upload'+filename+'" style="visibility:hidden"></p>'+
-                    '</ons-col>'+
+    // 撮影日時をセット
+    if(pictureInfo.datetime === undefined) {pictureInfo.datetime ='';}
+    if(pictureInfo.datetime !== '') {pictureInfo.datetime = '撮影:'+pictureInfo.datetime;}
 
-                    '<ons-col width="55%" align="top">'+
-                      '<ons-row style="color:blue;">'+
-                        '<ons-col width="94%" align="top">'+
-                          '<p class="textsize3" id="date'+filename+'" style="margin:0">'+filename+'</p>'+
-                        '</ons-col>'+
+    // サーバーへのアップロード状況(未処理:'Untreated'、済み:'Already’)
+    if(pictureInfo.upload === undefined) {pictureInfo.upload = 'Untreated';}
+    if(pictureInfo.upload === 'Already') {
+      pictureInfo.uploadicon = 'ion-android-cloud-done';
+      pictureInfo.uploadiconcolor = 'Blue';
+    }
+    if(pictureInfo.upload === 'Untreated') {
+      pictureInfo.uploadicon = 'ion-android-more-horizontal';
+      pictureInfo.uploadiconcolor = 'darkorange';
+    }
+    // 工種をセット
+    if(pictureInfo.kousyu === undefined) {pictureInfo.kousyu = '';}
+    if(pictureInfo.kousyu !== '') {pictureInfo.kousyu = '工種:'+pictureInfo.kousyu;}
 
-                        '<ons-col width="6%" align="top">'+
-                          '<ons-icon class="iconsize3" id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color:darkorange"></ons-icon>'+
-                        '</ons-col>'+
-                      '</ons-row>'+
+    // 測点をセット
+    if(pictureInfo.sokuten === undefined) {pictureInfo.sokuten = '';}
+    if(pictureInfo.sokuten !== '') {pictureInfo.sokuten = '測点:'+pictureInfo.sokuten;}
 
-                      '<ons-row style="color:gray;">'+
-                        '<p class="textsize3" id="kousyu'+filename+'" style="margin:0"></p>'+
-                      '</ons-row>'+
+    // 備考をセット
+    if(pictureInfo.bikou === undefined) {pictureInfo.bikou = '';}
+    // 改行コードをhtml形式に変換
+    pictureInfo.bikou = pictureInfo.bikou.replace( /\n/g , '<br>' );
 
-                      '<ons-row style="color:gray;">'+
-                        '<p class="textsize3" id="sokuten'+filename+'" style="margin:0"></p>'+
-                      '</ons-row>'+
-
-                      '<ons-row style="color:black;">'+
-                        '<p class="textsize4" id="bikou'+filename+'" style="margin:0"></p>'+
-                      '</ons-row>'+
-                    '</ons-col>'+
-
-                    '<ons-button class="itemRecycl" id="itemRecycl'+filename+'" style="display:none">'+
-                      '<ons-icon class="itemRecyclIcon iconsize5" icon="ion-trash-a" fixed-width="true"></ons-icon>'+
-                    '</ons-button>'+
-                  '</ons-list-item>');
-    }else{
-      // タイル表示
-      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" onclick="koujiPictureView(this)" style="margin: 1px; float: left; list-style: none; position: relative;">'+
-                    '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
-                    '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
-                    '<p id="upload'+filename+'" style="display:none"></p>'+
-                    '<p id="date'+filename+'" style="display:none">'+filename+'</p>'+
-                    '<p id="kousyu'+filename+'" style="display:none"></p>'+
-                    '<p id="sokuten'+filename+'" style="display:none"></p>'+
-                    '<p id="bikou'+filename+'" style="display:none"></p>'+
-                  '</li>');
-	  }
-    elm.appendTo($('#koujiPictureList'));
-
-    resolve(null);
+    resolve(pictureInfo);
   });
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// koujiListAddInfo()
-// 写真リストにプレビューと黒板情報を表示
+// koujiListAddElement()
+// 選択した工事の写真一覧を表示
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiListAddInfo(file, text) {
+function koujiListAddElement(pictureInfoArray) {
   return new Promise(function(resolve, reject) {
-    _log(1,'function','koujiListAddInfo('+file.name+')');
+    _log(1,'function','koujiListAddElement()');
 
-    var fname = file.name.split('.');
-    var filename = fname[0];
+    var ary = pictureInfoArray;
+    // 工事写真リストのアイテムをクリアする
+    $('#koujiPictureList').empty();
 
-    var k = {};
-    try {
-      k = JSON.parse(text);
-    } catch(e) {
-      _errorlog(1,'koujiListAddInfo()',e+'->'+filename);
-    }
-
-    // 撮影リストでのソートを可能にするためにclassにリストＩＤをセット
-    if(k.pictureId === undefined) {k.pictureId ='';}
-    $('#listItem'+filename).addClass(k.pictureId);
-
-    // 撮影日時をセット
-    if(k.datetime === undefined) {k.datetime ='';}
-    $('#date'+filename).text('撮影:'+k.datetime);
-
-    // サーバーへのアップロード状況(未処理:'Untreated'、済み:'Already’)
-    if(k.upload === undefined) {k.upload = 'Untreated';}
-    $('#upload'+filename).text(k.upload);
-    if(k.upload === 'Already') {
-      $('#upload-icon'+filename).attr('icon', 'ion-android-cloud-done');
-      $('#upload-icon'+filename).css('color', 'Blue');
-    }
-    if(k.upload === 'Untreated') {
-      $('#upload-icon'+filename).attr('icon', 'ion-android-more-horizontal');
-      $('#upload-icon'+filename).css('color', 'darkorange');
-    }
-    // 工種をセット
-    if(k.kousyu === undefined) {k.kousyu = '';}
-    if(k.kousyu !== '') {
-      $('#kousyu'+filename).text('工種:'+k.kousyu);
-    }
-
-    // 測点をセット
-    if(k.sokuten === undefined) {k.sokuten = '';}
-    if(k.sokuten !== '') {
-      $('#sokuten'+filename).text('測点:'+k.sokuten);
-    }
-
-    // 備考をセット
-    if(k.bikou === undefined) {k.bikou = '';}
-    // 改行コードをhtml形式に変換
-    k.bikou = k.bikou.replace( /\n/g , '<br>' );
-    $('#bikou'+filename).html(k.bikou);
-
+    for(var filename in ary) {
+      // 工事毎の行を作成
+      if(koujiPictureListViewStyle === 'list') {
+        // 詳細リスト表示
+        var elm =
+          $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px">'+
+              '<ons-col align="top" width="40%">'+
+                '<img class="thumbnail-s" src="'+ary[filename].thumbnailuri+'">'+
+              '</ons-col>'+
+              '<ons-col width=" 2%">'+
+                '<p style="visibility:hidden" id="upload'+filename+'">'+ary[filename].upload+'</p>'+
+              '</ons-col>'+
+              '<ons-col width="55%" align="top">'+
+                '<ons-row style="color:blue;">'+
+                  '<ons-col width="94%" align="top">'+
+                    '<p class="textsize3" style="margin:0">'+ary[filename].datetime+'</p>'+
+                  '</ons-col>'+
+                  '<ons-col width="6%" align="top">'+
+                    '<ons-icon class="iconsize3" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+'"></ons-icon>'+
+                  '</ons-col>'+
+                '</ons-row>'+
+                '<ons-row style="color:gray">'+
+                  '<p class="textsize3" style="margin:0;">'+ary[filename].kousyu+'</p>'+
+                '</ons-row>'+
+                '<ons-row style="color:gray">'+
+                  '<p class="textsize3" style="margin:0;">'+ary[filename].sokuten+'</p>'+
+                '</ons-row>'+
+                '<ons-row style="color:black">'+
+                  '<p class="textsize4" style="margin:0;">'+ary[filename].bikou+'</p>'+
+                '</ons-row>'+
+              '</ons-col>'+
+              '<ons-button class="itemRecycl" id="itemRecycl'+filename+'" style="display:none">'+
+                '<ons-icon class="itemRecyclIcon iconsize5" icon="ion-trash-a" fixed-width="true"></ons-icon>'+
+              '</ons-button>'+
+            '</ons-list-item>');
+        elm.appendTo($('#koujiPictureList'));
+      }else{
+        // タイル表示
+        var elm =
+          $('<ul style="margin: 0;padding: 0;">'+
+              '<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;">'+
+                '<img class="thumbnail '+koujiPictureListViewStyle+'" src="'+ary[filename].thumbnailuri+'">'+
+                '<ons-icon icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
+                '<p style="display:none">'+ary[filename].upload+'</p>'+
+                '<p style="display:none">'+ary[filename].datetime+'</p>'+
+                '<p style="display:none">'+ary[filename].kousyu+'</p>'+
+                '<p style="display:none">'+ary[filename].sokuten+'</p>'+
+                '<p style="display:none">'+ary[filename].bikou+'</p>'+
+              '</li>'+
+            '</ul>');
+        elm.appendTo($('#koujiPictureList'));
+      }
+    };
     resolve(null);
   });
 }
@@ -670,6 +650,12 @@ pictureListAddEvent = function(folderReferences) {
       $('ons-button.itemRecycl').css('background-color','red');
       $('ons-icon.itemRecyclIcon').attr('icon','ion-trash-a');
     }
+  }else{
+    // タイル表示の場合で写真リストを選択すると、詳細表示画面を表示
+    $('li.thumbnailTile').off('click');
+    $('li.thumbnailTile').on('click', function(e) {
+      koujiPictureView(this);
+    });
   }
 }
 
