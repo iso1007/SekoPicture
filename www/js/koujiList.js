@@ -716,6 +716,12 @@ function koujiFilesToolMenu(obj) {
     if(tabMenuButtonId==='pictureListButton-sort'){
       koujiPictureListSortIndex = index;
       koujiPictureSort(index);
+      // 写真一覧にイベントを追加する
+      if($('#koujiListItemTitle').text() === '工事写真一覧[ゴミ箱]') {
+        pictureListAddEvent('dustbox');
+			}else{
+        pictureListAddEvent('original');
+			}
     }else{
     // 表示切り替えボタンをクリック
     if(tabMenuButtonId==='pictureListButton-display'){
