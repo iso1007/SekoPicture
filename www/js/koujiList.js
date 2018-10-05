@@ -92,7 +92,7 @@ async function koujiListLoop() {
   }
 
   $('#koujiListCount').text(koujiList.length+'件');
-  if(koujiList.length > 0) {
+  if(koujiList.length > 0 || archiveCount > 0) {
     // 工事情報リストを最終撮影日付順･降順にソート
     // ================================================
     // ================================================
@@ -524,7 +524,7 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
         // 写真情報ファイルの読み込み
         var text = await localFile.getTextFile(file);
         // htmlにプレビュー･情報を付加
-        var info = await koujiListAddInfo(text, pictureUrl);
+        var info = await koujiListAddInfo(text);
         // サムネイル画像をキャッシュさせない為に'?1'を付加
         info.thumbnailuri = thumbnailuri + '?1';
         // 情報配列を追加
@@ -559,7 +559,7 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
 // koujiListAddInfo()
 // 写真リストにプレビューと黒板情報を表示
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiListAddInfo(text, pictureUrl) {
+function koujiListAddInfo(text) {
   return new Promise(function(resolve, reject) {
     _log(1,'function','koujiListAddInfo()');
 
@@ -623,7 +623,7 @@ function koujiListAddElement(pictureInfoArray) {
         var elm =
           $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px">'+
               '<ons-col align="top" width="40%">'+
-                '<img class="thumbnail-s" src="'+ary[filename].thumbnailuri+'">'+
+                '<img class="thumbnail-s" id="thumbnailListItem_img'+filename+'" src="'+ary[filename].thumbnailuri+'">'+
               '</ons-col>'+
               '<ons-col width=" 2%">'+
                 '<p style="visibility:hidden" id="upload'+filename+'">'+ary[filename].upload+'</p>'+
@@ -631,20 +631,20 @@ function koujiListAddElement(pictureInfoArray) {
               '<ons-col width="55%" align="top">'+
                 '<ons-row style="color:blue;">'+
                   '<ons-col width="94%" align="top">'+
-                    '<p class="textsize3" style="margin:0">'+ary[filename].datetime+'</p>'+
+                    '<p class="textsize3" id="thumbnailListItem_datetime'+filename+'" style="margin:0">'+ary[filename].datetime+'</p>'+
                   '</ons-col>'+
                   '<ons-col width="6%" align="top">'+
                     '<ons-icon class="iconsize3" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+'"></ons-icon>'+
                   '</ons-col>'+
                 '</ons-row>'+
                 '<ons-row style="color:gray">'+
-                  '<p class="textsize3" style="margin:0;">'+ary[filename].kousyu+'</p>'+
+                  '<p class="textsize3" id="thumbnailListItem_kousyu'+filename+'" style="margin:0;">'+ary[filename].kousyu+'</p>'+
                 '</ons-row>'+
                 '<ons-row style="color:gray">'+
-                  '<p class="textsize3" style="margin:0;">'+ary[filename].sokuten+'</p>'+
+                  '<p class="textsize3" id="thumbnailListItem_sokuten'+filename+'" style="margin:0;">'+ary[filename].sokuten+'</p>'+
                 '</ons-row>'+
                 '<ons-row style="color:black">'+
-                  '<p class="textsize4" style="margin:0;">'+ary[filename].bikou+'</p>'+
+                  '<p class="textsize4" id="thumbnailListItem_bikou'+filename+'" style="margin:0;">'+ary[filename].bikou+'</p>'+
                 '</ons-row>'+
               '</ons-col>'+
               '<ons-button class="itemRecycl" id="itemRecycl'+filename+'" style="display:none">'+
@@ -1284,25 +1284,39 @@ function picturePreviewClose() {
 // koujiPictureViewClose()
 // 選択した工事写真の詳細画面を閉じる
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiPictureViewClose() {
+async function koujiPictureViewClose() {
   _log(1,'function','koujiPictureViewClose()');
+
+  // 詳細ウィンドウを非表示にする
+  $('#koujiviewModal').hide();
 
   var koujiname = $('#koujiListItemName').text();
   var filename = $('#koujiviewName').text();
-
-  // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + koujiname;
-
-  // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
-  window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
+  try {
+    // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
+    var folderurl = cordova.file.documentsDirectory + koujiname;
+    // directoryEntryオブジェクトを取得
+    var directoryEntry = await localFile.getFileSystemURL(folderurl);
+    // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+    var infoFile = 'information/' + filename + '.json';
+    var fileEntry = await localFile.getFileEntry(directoryEntry, infoFile);
+    // ファイルエントリーオブジェクトからfileオブジェクトを取得
+    var file = await localFile.getFileObject(fileEntry);
+    // 写真情報ファイルの読み込み
+    var text = await localFile.getTextFile(file);
     // 工事写真一覧のプレビュー･情報を更新
-    koujiListAddInfo(directoryEntry, filename);
-  });
-  // サムネイル画像を再表示(キャッシュから表示されないようにする)
-  var img = $('#imag'+filename).attr('src');
-  $('#imag'+filename).attr('src', img+'1');
-
-  $('#koujiviewModal').hide();
+    var info = await koujiListAddInfo(text);
+    // 工事写真一覧の表示を更新する
+    $('#thumbnailListItem_datetime'+filename).text(info.datetime);
+    $('#thumbnailListItem_kousyu'+filename).text(info.kousyu);
+    $('#thumbnailListItem_sokuten'+filename).text(info.sokuten);
+    $('#thumbnailListItem_bikou'+filename).html(info.bikou);
+    // サムネイル画像を再表示(キャッシュから表示されないようにする)
+    var img = $('#thumbnailListItem_img'+filename).attr('src');
+    $('#thumbnailListItem_img'+filename).attr('src', img+info.datetime);
+  } catch(e) {
+    errcode = e.code;
+  }
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
