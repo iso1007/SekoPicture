@@ -354,6 +354,37 @@ localStrage.setInformationHeader = function(directory, filename, updtflg, callba
   setFirebaseGeoLocation(koujiname, presentLocation);
 };
 
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// localStrage.moveToDirectory()
+// 指定したフォルダを移動する、又は名前を変更する
+// 正常に移動･変更ができた場合はnullをコールバック
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+localStrage.moveToDirectory = function(localFolder, moveToFolder, callback) {
+  _log(1,'function','localStrage.moveToDirectory('+localFolder+'->'+moveToFolder+')');
+
+  // iosはDocuments配下のクラウド非同期フォルダに保存
+//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
+  var folderurl = cordova.file.documentsDirectory + localFolder;
+
+  window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function(parentDirectoryEntry) {
+    // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
+    window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
+      // 指定されたフォルダを移動する
+      directoryEntry.moveTo(parentDirectoryEntry, moveToFolder, function() {
+        callback(null);
+      },
+      function(error){
+        _errorlog(1,'localStrage.moveToDirectory()', error.code+'-> '+folderurl);
+        callback('localStrage.moveToDirectory > directoryEntry.moveToDirectory Error: ('+error.code+')');
+      });
+    },
+    function(error) {
+      _log(1,'localStrage.moveToDirectory()', 'Folder Nothing -> '+folderurl);
+      callback('localStrage.moveToDirectory > resolveLocalFileSystemURL Error: ('+error.code+')');
+    });
+  });
+};
+
 // 2018/01/27 ADD -----↓
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // localStrage.removeDirectory()

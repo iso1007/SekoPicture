@@ -37,6 +37,7 @@ async function koujiListLoop() {
     $('#splashModal').show();
   }
   var removeCount = 0;
+  var archiveCount = 0;
   var koujiList = [];
   var errcode = '';
 
@@ -45,6 +46,18 @@ async function koujiListLoop() {
     var koujiname = fileEntrys[i].name;
     if(koujiname === 'NoCloud' || koujiname === 'CommonShape') {
       continue;
+    }
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      // アーカイブ表示の場合は'archive__'が付いていないフォルダを読み飛ばす
+      if(koujiname.substr(0,9) !== 'archive__') {
+        continue;
+      }
+    }else{
+      // 通常工事表示の場合は'archive__'が付いているフォルダをカウントして読み飛ばす
+      if(koujiname.substr(0,9) === 'archive__') {
+        archiveCount++;
+        continue;
+      }
     }
 
     var koujiInfo = {picture_count:0,koujiname:'',fast_datetime:'',last_datetime:''};
@@ -93,9 +106,7 @@ async function koujiListLoop() {
     });
 
     // 工事情報リストからhtmlを作成
-    for (var i=0; koujiList.length > i; i++) {
-      koujiListHtml(koujiList[i], i);
-    };
+    koujiListHtml(koujiList, archiveCount);
   }
 
   // 工事写真一覧の処理イベントを登録
@@ -110,43 +121,68 @@ async function koujiListLoop() {
 // koujiListHtml()
 // 撮影後の工事一覧の工事情報表示
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function koujiListHtml(obj, cnt) {
+function koujiListHtml(koujiList, archiveCount) {
   _log(1,'function','koujiListHtml()');
 
-  if(obj.koujiname === undefined) {obj.koujiname = '';}
-  if(obj.fast_datetime === undefined) {obj.fast_datetime = '';}
-  if(obj.last_datetime === undefined) {obj.last_datetime  = '';}
-  if(obj.picture_count === undefined) {obj.picture_count = 0;}
-  if(obj.upload_count === undefined) {obj.upload_count = '';}
-  if(typeof(obj.upload_count) === 'number') {
-    // 全てサーバーにアップロード済みの枚数は"青"表示
-    // アップロード残がある枚数は"オレンジ"で表示
-    if(obj.picture_count === obj.upload_count) {
-      obj.backgroundcolor = 'Blue';
-    }else{
-      obj.backgroundcolor = 'darkorange';
+  for (var i=0; koujiList.length > i; i++) {
+    var obj = koujiList[i];
+
+    if(obj.koujiname === undefined) {obj.koujiname = '';}
+    if(obj.fast_datetime === undefined) {obj.fast_datetime = '';}
+    if(obj.last_datetime === undefined) {obj.last_datetime  = '';}
+    if(obj.picture_count === undefined) {obj.picture_count = 0;}
+    if(obj.upload_count === undefined) {obj.upload_count = '';}
+    if(typeof(obj.upload_count) === 'number') {
+      // 全てサーバーにアップロード済みの枚数は"青"表示
+      // アップロード残がある枚数は"オレンジ"で表示
+      if(obj.picture_count === obj.upload_count) {
+        obj.backgroundcolor = 'Blue';
+      }else{
+        obj.backgroundcolor = 'darkorange';
+      }
     }
+    setHtml(i, obj.koujiname, obj.fast_datetime+' ～ '+obj.last_datetime, '', obj.backgroundcolor, obj.picture_count);
+  }
+  // アーカイブに工事があれば、まとめてアーカイブ工事件数を表示
+  if(archiveCount > 0) {
+    setHtml('archive', '　アーカイブ', '', 'silver', 'Blue', archiveCount);
   }
 
-  var elm = $('<ons-list-item class="koujiListItem" id="koujiList_item_' + cnt + '" tappable lock-on-drag modifier="longdivider">'+
-                '<ons-col width="90%">'+
-                  '<ons-row>'+
-                    '<ons-col class="textsize5" id="koujiList_name_' + cnt + '">'+obj.koujiname+'</ons-col>'+
-                  '</ons-row>'+
-                  '<ons-row>'+
-                    '<ons-col class="textsize3" style="color:gray" id="koujiList_date_' + cnt + '">'+'\n' + obj.fast_datetime + ' ～ ' + obj.last_datetime+'</ons-col>'+
-                  '</ons-row>'+
-                '</ons-col>'+
-                '<ons-col width="10%">'+
-                  '<ons-row>'+
-                    '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: '+obj.backgroundcolor+'">'+obj.picture_count+'</span></ons-col>'+
-                  '</ons-row>'+
-                '</ons-col>'+
-                '<ons-button class="itemDelete" id="itemDelete_'+cnt+'" style="display:none">'+
-                  '<ons-icon class="itemDeleteIcon iconsize5" icon="ion-trash-a" fixed-width="true"></ons-icon>'+
-                '</ons-button>'+
-              '</ons-list-item>');
-  elm.appendTo($('#koujiListBox'));
+  function setHtml(cnt, koujiname, datetime, backgroundcolor, iconbackcolor, picture_count) {
+    var itemArchiveIcon1 = '';
+    if(koujiname === '　アーカイブ') {
+      itemArchiveIcon1 = 'fa-archive';
+    }
+    var itemArchiveIcon2 = 'ion-archive';
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      itemArchiveIcon2 = 'ion-reply';
+    }
+
+    var elm =
+          $('<ons-list-item class="koujiListItem" id="koujiList_item_' + cnt + '" tappable lock-on-drag modifier="longdivider" style="background-color:'+backgroundcolor+'">'+
+            '<ons-col width="90%">'+
+              '<ons-row>'+
+                '<ons-icon class="iconsize3" icon="'+itemArchiveIcon1+'" style="color:darkorange"></ons-icon>'+
+                '<ons-col class="textsize5" id="koujiList_name_' + cnt + '">'+koujiname+'</ons-col>'+
+              '</ons-row>'+
+              '<ons-row>'+
+                '<ons-col class="textsize3" style="color:gray" id="koujiList_date_' + cnt + '">'+'\n'+datetime+'</ons-col>'+
+              '</ons-row>'+
+            '</ons-col>'+
+            '<ons-col width="10%">'+
+              '<ons-row>'+
+                '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: '+iconbackcolor+'">'+picture_count+'</span></ons-col>'+
+              '</ons-row>'+
+            '</ons-col>'+
+            '<ons-button class="itemDelete archive" id="itemArchive_'+cnt+'" style="background-color:blue;display:none">'+
+              '<ons-icon class="itemDeleteIcon archive iconsize4" icon="'+itemArchiveIcon2+'" fixed-width="true"></ons-icon>'+
+            '</ons-button>'+
+            '<ons-button class="itemDelete delete" id="itemDelete_'+cnt+'" style="display:none">'+
+              '<ons-icon class="itemDeleteIcon iconsize4" icon="ion-close-circled" fixed-width="true"></ons-icon>'+
+            '</ons-button>'+
+          '</ons-list-item>');
+    elm.appendTo($('#koujiListBox'));
+  }
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -170,7 +206,7 @@ function koujiSwipeDelete(obj) {
     $('ons-button.itemDelete').css('width','0px');
     $('ons-button.itemDelete').css('display','none');
   }else{
-    _confirm('「'+koujiname+'」は、<br>この端末から完全に削除されまます。<br>よろしいですか？', function(idx) {
+    _confirm('「'+koujiname+'」は、<br>この端末から完全に削除されまますが、よろしいですか？', function(idx) {
       // [OK]ボタンクリック時
       if(idx === 0 ) {
         _confirm('本当によろしいですか？', function(idx) {
@@ -187,6 +223,62 @@ function koujiSwipeDelete(obj) {
             $('ons-list-item.koujiListItem').css('margin-left','0px');
             $('ons-button.itemDelete').css('width','0px');
             $('ons-button.itemDelete').css('display','none');
+          }
+        });
+      }else{
+        $('ons-list-item.koujiListItem').css('margin-left','0px');
+        $('ons-button.itemDelete').css('width','0px');
+        $('ons-button.itemDelete').css('display','none');
+      }
+    });
+  }
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiSwipeArchive()
+// 選択した工事フォルダをアーカイブに移動
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function koujiSwipeArchive(obj) {
+  _log(1,'function','koujiSwipeArchive('+$(obj).attr('id')+')');
+
+  var itemDeleteId = $(obj).attr('id');
+  var koujiListItemId = itemDeleteId.replace( 'itemArchive_' , 'koujiList_item_');
+  var koujiListNameId = itemDeleteId.replace( 'itemArchive_' , 'koujiList_name_');
+  var koujiListCountId = itemDeleteId.replace( 'itemArchive_' , 'koujiList_count_');
+  var koujiname = $('#'+koujiListNameId).text();
+
+  if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+    // アーカイブから工事一覧に戻す
+    localStrage.moveToDirectory('archive__'+koujiname, koujiname, function(status) {
+      if(status === null){
+        // 工事リストからアイテムを削除
+        $('#'+koujiListItemId).remove();
+        $('#koujiListCount').text( $('ons-list-item.koujiListItem').length + '件' );
+      }
+    });
+  }else{
+    _confirm('「'+koujiname+'」をアーカイブに移動します。<br>必要に応じてアーカイブから工事一覧に戻す事ができます。', function(idx) {
+      // [OK]ボタンクリック時
+      if(idx === 0 ) {
+        localStrage.moveToDirectory(koujiname, 'archive__'+koujiname, function(status) {
+          if(status === null){
+            // 工事リストからアーカイブに移動
+            $('#'+koujiListItemId).remove();
+
+            var itemCount = $('ons-list-item.koujiListItem').length;
+            var koujiname = $('#koujiList_name_archive').text();
+            if(koujiname === '　アーカイブ') {
+              // 工事リストの最下行にアーカイブの行があれば、件数を追加
+              var archiveCount = parseInt($('#koujiList_count_archive').text(), 10);
+              archiveCount++;
+              $('#koujiList_count_archive').text(archiveCount);
+
+              itemCount = itemCount - 1;
+              $('#koujiListCount').text( itemCount + '件' );
+            }else{
+              // 工事リストの最下行にアーカイブの行が無ければ、工事一覧を再表示
+              koujiListDisplay();
+            }
           }
         });
       }else{
@@ -240,18 +332,32 @@ koujiListAddEvent = function() {
     leftMargin = parseInt(leftMargin,10);
 
     var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
-    var buttonWidth = iconWidth*1.5;
+    var buttonWidth = iconWidth*3;
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      buttonWidth = iconWidth*1.5;
+    }
 
-    if(leftMargin > -1*buttonWidth) {
-      leftMargin = leftMargin - 2;
-      if(leftMargin === -2) {
-        $('ons-list-item.koujiListItem').css('margin-left','0px');
-        $('ons-button.itemDelete').css('width','0px');
-        $('ons-button.itemDelete').css('display','none');
+    var koujiListItemId = $(this).attr('id');
+    var koujiListNameId = koujiListItemId.replace( 'koujiList_item_' , 'koujiList_name_');
+    var koujiname = $('#'+koujiListNameId).text();
+    if(koujiname !== '　アーカイブ') {
+      if(leftMargin > -1*buttonWidth) {
+        leftMargin = leftMargin - 2.5;
+        if(leftMargin === -2.5) {
+          $('ons-list-item.koujiListItem').css('margin-left','0px');
+          $('ons-button.itemDelete').css('width','0px');
+          $('ons-button.itemDelete').css('display','none');
+        }
+        if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+          $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)+'px');
+          $('ons-button.itemDelete.archive',this).css('display','block');
+        }else{
+          $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)/2+'px');
+          $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
+          $('ons-button.itemDelete',this).css('display','block');
+        }
+        $(this).css('margin-left',leftMargin+'px');
       }
-      $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)+'px');
-      $('ons-button.itemDelete',this).css('display','block');
-      $(this).css('margin-left',leftMargin+'px');
     }
 	});
 
@@ -261,13 +367,21 @@ koujiListAddEvent = function() {
     var leftMargin = $(this).css('margin-left');
     leftMargin = parseInt(leftMargin,10);
 
-    if(leftMargin < -2) {
-      leftMargin = leftMargin + 2;
+    var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
+    var buttonWidth = iconWidth*3;
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      buttonWidth = iconWidth*1.5;
+    }
 
-      if(leftMargin === 0) {
-        $('ons-button.itemDelete').css('width','0px');
-        $('ons-button.itemDelete').css('display','none');
-      }
+    if(leftMargin < -2.5) {
+      leftMargin = leftMargin + 2.5;
+      $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)/2+'px');
+      $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
+      $(this).css('margin-left',leftMargin+'px');
+    }else{
+      leftMargin === 0;
+      $('ons-button.itemDelete').css('width','0px');
+      $('ons-button.itemDelete').css('display','none');
       $(this).css('margin-left',leftMargin+'px');
     }
 	});
@@ -279,7 +393,10 @@ koujiListAddEvent = function() {
     leftMargin = parseInt(leftMargin,10);
 
     var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
-    var buttonWidth = iconWidth*1.5;
+    var buttonWidth = iconWidth*3;
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      buttonWidth = iconWidth*1.5;
+    }
 
     if(leftMargin < 0) {
       if(Math.abs(leftMargin) < buttonWidth/2) {
@@ -287,8 +404,14 @@ koujiListAddEvent = function() {
         $('ons-button.itemDelete',this).css('display','none');
         $(this).css('margin-left','0px');
       }else{
-        $('ons-button.itemDelete',this).css('width',buttonWidth+'px');
-        $('ons-button.itemDelete',this).css('display','block');
+        if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+          $('ons-button.itemDelete',this).css('width',buttonWidth+'px');
+          $('ons-button.itemDelete.archive',this).css('display','block');
+        }else{
+          $('ons-button.itemDelete',this).css('width',buttonWidth/2+'px');
+          $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
+          $('ons-button.itemDelete',this).css('display','block');
+        }
         $(this).css('margin-left',(-1*buttonWidth)+'px');
       }
     }
@@ -296,14 +419,44 @@ koujiListAddEvent = function() {
 
   // 写真リストを選択すると、詳細表示画面を表示
   $('ons-list-item.koujiListItem').off('click');
-  $('ons-list-item.koujiListItem').on('click', function(e) {
-    koujiListItemClick(this);
+  if($('#koujiListTytle').text() !== '工事一覧(アーカイブ)') {
+    $('ons-list-item.koujiListItem').on('click', function(e) {
+      var koujiListItemId = $(this).attr('id');
+      var koujiListNameId = koujiListItemId.replace( 'koujiList_item_' , 'koujiList_name_');
+      var koujiname = $('#'+koujiListNameId).text();
+      if(koujiname === '　アーカイブ') {
+         $('#koujiListTytle').text('工事一覧(アーカイブ)');
+         $('#koujiListArchiveBackButton').css('display','block');
+         koujiListDisplay();
+      }else{
+         $('#koujiListTytle').text('工事一覧');
+         $('#koujiListArchiveBackButton').css('display','none');
+         koujiListItemClick(this);
+      }
+    });
+  }
+
+  // アーカイブ一覧から通常の工事一覧に戻る
+  $('#koujiListArchiveBackButton').off('click');
+  $('#koujiListArchiveBackButton').on('click', function(e) {
+    $('#koujiListTytle').text('工事一覧');
+    $('#koujiListArchiveBackButton').css('display','none');
+    koujiListDisplay();
   });
 
-  // リサイクルボタンをクリックした場合
-  $('ons-button.itemDelete').off('click');
-  $('ons-button.itemDelete').on('click', function(e) {
-    // 工事フォルダの削除処理を実行
+  // アーカイブボタンをクリックした場合
+  $('ons-button.itemDelete.archive').off('click');
+  $('ons-button.itemDelete.archive').on('click', function(e) {
+    // 工事フォルダをアーカイブに移動、又はアーカイブから工事一覧に移動
+    koujiSwipeArchive(this);
+    // 詳細表示ウィンドウを表示させないため
+    e.stopPropagation();
+  });
+
+  // 削除ボタンをクリックした場合
+  $('ons-button.itemDelete.delete').off('click');
+  $('ons-button.itemDelete.delete').on('click', function(e) {
+    // 工事フォルダの完全削除を実行
     koujiSwipeDelete(this);
     // 詳細表示ウィンドウを表示させないため
     e.stopPropagation();
@@ -495,7 +648,7 @@ function koujiListAddElement(pictureInfoArray) {
                 '</ons-row>'+
               '</ons-col>'+
               '<ons-button class="itemRecycl" id="itemRecycl'+filename+'" style="display:none">'+
-                '<ons-icon class="itemRecyclIcon iconsize5" icon="ion-trash-a" fixed-width="true"></ons-icon>'+
+                '<ons-icon class="itemRecyclIcon iconsize4" icon="ion-trash-a" fixed-width="true"></ons-icon>'+
               '</ons-button>'+
             '</ons-list-item>');
         elm.appendTo($('#koujiPictureList'));
