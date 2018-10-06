@@ -375,14 +375,18 @@ koujiListAddEvent = function() {
 
     if(leftMargin < -2.5) {
       leftMargin = leftMargin + 2.5;
-      $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)/2+'px');
-      $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
       $(this).css('margin-left',leftMargin+'px');
+      if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+        $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)+'px');
+        $('ons-button.itemDelete.delete',this).css('left', Math.abs(leftMargin)+'px)');
+      }else{
+        $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)/2+'px');
+        $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
+			}
     }else{
-      leftMargin === 0;
       $('ons-button.itemDelete').css('width','0px');
       $('ons-button.itemDelete').css('display','none');
-      $(this).css('margin-left',leftMargin+'px');
+      $('ons-list-item.koujiListItem').css('margin-left','0px');
     }
 	});
 
@@ -402,7 +406,7 @@ koujiListAddEvent = function() {
       if(Math.abs(leftMargin) < buttonWidth/2) {
         $('ons-button.itemDelete',this).css('width','0px');
         $('ons-button.itemDelete',this).css('display','none');
-        $(this).css('margin-left','0px');
+        $('ons-list-item.koujiListItem').css('margin-left','0px');
       }else{
         if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
           $('ons-button.itemDelete',this).css('width',buttonWidth+'px');
