@@ -620,6 +620,21 @@ kokuban.setDataInitialize = function() {
   var str = localStrage.getItems('firebase:temp/kokuban');
   // 読み込んだテキストをJSON形式に変換
   var k = JSON.parse(str);
+
+  // インストール後の初回起動時のみ
+  if(k.kouji===undefined) {
+    k.directory = '';
+    k.kouji = '';
+    k.top = 0;
+    k.left = 0;
+    k.kokubanX = 0;
+    k.kokubanY = 0;
+    k.kousyu = '';
+    k.sokuten = '';
+    k.bikou = '';
+    k.pictureId = '';
+    k.syamei = '';
+  }
    
   // 値を変更する  
   var date = new Date();

@@ -211,9 +211,9 @@ function pictureChangeDirection(obj) {
 
   // 縦・横固定の場合は画面の向き検出イベントを開始する
   // イベントが停止している場合のみ実行
-  if(direction[2]==='device' && watchAccelerationID===null) {
+//  if(direction[2]==='device' && watchAccelerationID===null) {
     orientWatch('start');
-  };  
+//  };  
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_

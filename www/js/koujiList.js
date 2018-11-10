@@ -662,7 +662,7 @@ function koujiListAddElement(pictureInfoArray) {
           $('<ul style="margin: 0;padding: 0;">'+
               '<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;">'+
                 '<img class="thumbnail '+koujiPictureListViewStyle+'" src="'+ary[filename].thumbnailuri+'">'+
-                '<ons-icon icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
+                '<ons-icon class="iconsize3" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+';position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                 '<p style="display:none">'+ary[filename].upload+'</p>'+
                 '<p style="display:none">'+ary[filename].datetime+'</p>'+
                 '<p style="display:none">'+ary[filename].kousyu+'</p>'+

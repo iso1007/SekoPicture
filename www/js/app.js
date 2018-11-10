@@ -66,6 +66,8 @@ ons.ready(function() {
   // Firebaseの初期化
   try {
     firebaseAuth.initialize(function() {
+      // 黒板情報を事前にセット
+      setFirebaseKokubanToLocalStrage();
       // ログイン画面の表示
       try {
         firebaseAuth.loginDialogShow();
@@ -944,7 +946,8 @@ app.cameraTakePicture = function() {
   k = JSON.parse(str);
   // 工事名称が取得できない場合の初期フォルダ
   str = k.directory;
-  if(str===undefined) {str = 'その他';}
+  if(str==='' || str===undefined) { str = '工事名なし'; }
+  k.directory = str;
   directory = str;
   // 黒板の場所を保存
   k.top  = $('#kokuban').offset().top;

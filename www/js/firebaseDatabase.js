@@ -68,32 +68,6 @@ function setFirebaseToLocalStrage() {
     localStrage.setItems("firebase:group00/koujiList",json_text);
   });
 
-  // firebaseから黒板情報をlocalstrageにコピー 
-  folder = "common/kokuban/list";
-  // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
-  firebase.database().ref(folder).once('value', function(snapshot) {
-    // 読み込んだJSONデータをテキスト形式に変換
-    json_text = JSON.stringify(snapshot.val(), '', '    ');
-    // ローカルストレージに書き込み
-    localStrage.setItems("firebase:kokuban/list",json_text);
-  });
-    
-  // firebaseから黒板情報をlocalstrageにコピー 
-  folder = "common/kokuban/list";
-  // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
-  firebase.database().ref(folder).once('value', function(snapshot) {
-    Object.keys(snapshot.val()).forEach(function(key) {
-      // firebaseから黒板情報をlocalstrageにコピー 
-      // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
-      firebase.database().ref('common/kokuban/'+key).once('value', function(kokuban) {
-        // 読み込んだJSONデータをテキスト形式に変換
-        json_text = JSON.stringify(kokuban.val(), '', '    ');
-        // ローカルストレージに書き込み
-        localStrage.setItems('firebase:kokuban/'+key, json_text);
-      });
-    });  
-  });
-
   // 2018/01/30 ADD -----↓ 
   // 略図ファイルの更新処理
   
@@ -146,7 +120,36 @@ function setFirebaseToLocalStrage() {
 //  });
 //  // 2018/01/15 ↑
   // 2018/01/30 DEL -----↑
-} 
+}
+ 
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// setFirebaseKokubanToLocalStrage()
+// FirebaseDatabaseの黒板情報をローカルストレージにセット
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+function setFirebaseKokubanToLocalStrage() {
+  _log(1,'function','setFirebaseKokubanToLocalStrage()');
+
+  // firebaseから黒板情報をlocalstrageにコピー
+  folder = "common/kokuban/list";
+  // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
+  firebase.database().ref(folder).once('value', function(snapshot) {
+    // 読み込んだJSONデータをテキスト形式に変換
+    json_text = JSON.stringify(snapshot.val(), '', '    ');
+    // ローカルストレージに書き込み
+    localStrage.setItems("firebase:kokuban/list",json_text);
+
+    Object.keys(snapshot.val()).forEach(function(key) {
+      // firebaseから黒板情報をlocalstrageにコピー
+      // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
+      firebase.database().ref('common/kokuban/'+key).once('value', function(kokuban) {
+        // 読み込んだJSONデータをテキスト形式に変換
+        json_text = JSON.stringify(kokuban.val(), '', '    ');
+        // ローカルストレージに書き込み
+        localStrage.setItems('firebase:kokuban/'+key, json_text);
+      });
+    });
+  });
+}
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // setFirebaseKoujiinfo()
