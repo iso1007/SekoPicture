@@ -181,16 +181,13 @@ app.setSelfTimerClick = function() {
 app.setSelfTimer = function(waiteTime) {
   _log(1,'function','app.setSelfTimer('+waiteTime+')');
 
-  // セルフタイマーの時間をバッジで表示、同時にアイコンサイズを小さくする
-  // タイマーをオフにした場合はバッジを消してアイコンサイズを元に戻す
+  // セルフタイマーの時間をバッジで表示、タイマーをオフにした場合はバッジを消す
   if(waiteTime==='0') {
     $('#selfTimerTime').text('');
-      $('#iconSelfTimer').removeClass('iconsize3').addClass('iconsize5');
   }else{
     $('#selfTimerTime').text(waiteTime);
-    $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
   }
-
+ 
   // ポップオーバーメニューを消去
   menuSelfTimer.hide();
 };
@@ -215,19 +212,15 @@ app.setFlashMode = function(flashMode) {
   // フラッシュモードがoff以外の場合はバッジで表示、同時にアイコンサイズを小さくする
   // フラッシュモードをoffにした場合はバッジを消してアイコンサイズを元に戻す
   if(flashMode==='off') {
-    $('#setFlashMode ons-icon').attr('icon','ion-flash-off');
-  }else{
-    $('#setFlashMode ons-icon').attr('icon','ion-flash');
+    $('#setFlashMode ons-icon').attr('icon','md-flash-off');
   }
   if(flashMode==='auto') {
-    $('#setFlashType').show();
-    $('#setFlashType').text('A');
-    CameraPreview.setFlashMode('auto');
-  }else{
-    $('#setFlashType').hide();
-    $('#setFlashType').text(flashMode);
-    CameraPreview.setFlashMode(flashMode);
+    $('#setFlashMode ons-icon').attr('icon','md-flash-auto');
   }
+  if(flashMode==='on') {
+    $('#setFlashMode ons-icon').attr('icon','md-flash');
+  }
+  CameraPreview.setFlashMode(flashMode);
 
   // ポップオーバーメニューを消去
   menuFlashMode.hide();
@@ -243,6 +236,7 @@ app.setGridBroderClick = function() {
   if(viewGridBorder) {
     $('#grid-border').hide();
     viewGridBorder = false;
+    $('#setGridBroder ons-icon').attr('icon','md-grid');
 
     // 非表示状態をローカルストレージに保存
     pictureItemSet('grid', false);
@@ -250,6 +244,7 @@ app.setGridBroderClick = function() {
   }else{
     $('#grid-border').show();
     viewGridBorder = true;
+    $('#setGridBroder ons-icon').attr('icon','md-grid-off');
 
     // 表示状態をローカルストレージに保存
     pictureItemSet('grid', true);
@@ -626,8 +621,9 @@ app.setElementPosition = function() {
   }
 
   // 起動時のフラッシュモードを'auto'にする
-  $('#setFlashType').text('A');
-  CameraPreview.setFlashMode('auto');
+//  $('#setFlashType').text('A');
+//  CameraPreview.setFlashMode('auto');
+  CameraPreview.setFlashMode('off');
 
   $('#pic-box-border').css({
     position : 'absolute',
@@ -681,9 +677,11 @@ app.setElementPosition = function() {
   if(pictureItemGet('grid')===true) {
     viewGridBorder = true;
     $('#grid-border').show();
+    $('#setGridBroder ons-icon').attr('icon','md-grid-off');
   }else{
     viewGridBorder = false;
     $('#grid-border').hide();
+    $('#setGridBroder ons-icon').attr('icon','md-grid');
   }
 
   // 黒板の位置設定
@@ -806,10 +804,8 @@ app.setOrientationChange = function(acceleration) {
       $('#tool-button1 ons-icon').attr({'rotate':'90'});
       $('#tool-button2 ons-icon').attr({'rotate':'90'});
     }
-    // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
-    if($('#selfTimerTime').text()!=='') {
-      $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
-    }
+    // セルフタイマーのアイコンバッジの向きも回転させる
+		$('#selfTimerTime').css({'transform' : 'rotate(' + rot + ')'});
 
     devaiceOrientation = nowOrientation;
   }

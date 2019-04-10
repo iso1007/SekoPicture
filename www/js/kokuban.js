@@ -171,6 +171,8 @@ kokuban.makeframe = function() {
   height = height * winSizeBairitu * kokubanSizeBairitu; 
   style.width  = width  + "px";
   style.height = height + "px";
+  const baseFont = "600 20px monospace,sans-serif";
+	const baseAlign = "left";
 
   // 黒板の色
   var confKokubanBackColor = kokubanColor; 
@@ -184,6 +186,8 @@ kokuban.makeframe = function() {
   ctx.lineWidth = 0;
   ctx.fillStyle = confKokubanBackColor;  // 黒板の色
   ctx.fillRect(0, 0, k.frame.w, k.frame.h);
+  ctx.textBaseline = "top";
+  ctx.fillStyle = confKokubanItemColor;
 
   // 枠線
   if(k.box0    === undefined) {k.box0    = {};};
@@ -207,6 +211,14 @@ kokuban.makeframe = function() {
   if(k.box1.title.y  === undefined) {k.box1.title.y  = 0;};
   if(k.box1.title.w  === undefined) {k.box1.title.w  = 0;};
   if(k.box1.title.h  === undefined) {k.box1.title.h  = 0;};
+  if(k.box1.title.char  === undefined) {k.box1.title.char  = '工事名';};
+  if(k.box1.title.font  === undefined) {k.box1.title.font  = baseFont;};
+  if(k.box1.title.align === undefined) {k.box1.title.align = baseAlign;};
+  if(k.box1.title.char.length > 0) {
+    ctx.font = k.box1.title.font;
+    ctx.textAlign = k.box1.title.align;
+    ctx.fillText(k.box1.title.char, k.box1.title.x+5, k.box1.title.y+(k.box1.title.h-20)/2, k.box1.title.w-10);
+  };
   if(k.box1.title.lw > 0) {
     ctx.lineWidth = k.box1.title.lw;
     ctx.strokeRect(k.box1.title.x, k.box1.title.y, k.box1.title.w, k.box1.title.h);
@@ -217,6 +229,8 @@ kokuban.makeframe = function() {
   if(k.box1.item.y  === undefined) {k.box1.item.y  = 0;};
   if(k.box1.item.w  === undefined) {k.box1.item.w  = 0;};
   if(k.box1.item.h  === undefined) {k.box1.item.h  = 0;};
+  if(k.box1.item.font   === undefined) {k.box1.item.font  = baseFont;};
+  if(k.box1.title.align === undefined) {k.box1.title.align = baseAlign;};
   if(k.box1.item.lw > 0) {
     ctx.lineWidth = k.box1.item.lw;
     ctx.strokeRect(k.box1.item.x, k.box1.item.y, k.box1.item.w, k.box1.item.h);
@@ -230,6 +244,14 @@ kokuban.makeframe = function() {
   if(k.box2.title.y  === undefined) {k.box2.title.y  = 0;};
   if(k.box2.title.w  === undefined) {k.box2.title.w  = 0;};
   if(k.box2.title.h  === undefined) {k.box2.title.h  = 0;};  
+  if(k.box2.title.char  === undefined) {k.box2.title.char  = '工　種';};
+  if(k.box2.title.font  === undefined) {k.box2.title.font  = baseFont;};
+  if(k.box2.title.align === undefined) {k.box2.title.align = baseAlign;};
+  if(k.box2.title.char.length > 0) {
+    ctx.font = k.box2.title.font;
+    ctx.textAlign = k.box2.title.align;
+    ctx.fillText(k.box2.title.char, k.box2.title.x+5, k.box2.title.y+(k.box2.title.h-20)/2, k.box2.title.w-10);
+  };
   if(k.box2.title.lw > 0) {
     ctx.lineWidth = k.box2.title.lw;
     ctx.strokeRect(k.box2.title.x, k.box2.title.y, k.box2.title.w, k.box2.title.h);
@@ -240,6 +262,8 @@ kokuban.makeframe = function() {
   if(k.box2.item.y  === undefined) {k.box2.item.y  = 0;};
   if(k.box2.item.w  === undefined) {k.box2.item.w  = 0;};
   if(k.box2.item.h  === undefined) {k.box2.item.h  = 0;};
+  if(k.box2.item.font  === undefined) {k.box2.item.font  = baseFont;};
+  if(k.box2.item.align === undefined) {k.box2.item.align = baseAlign;};
   if(k.box2.item.lw > 0) {
     ctx.lineWidth = k.box2.item.lw;
     ctx.strokeRect(k.box2.item.x, k.box2.item.y, k.box2.item.w, k.box2.item.h);
@@ -253,6 +277,14 @@ kokuban.makeframe = function() {
   if(k.box3.title.y  === undefined) {k.box3.title.y  = 0;};
   if(k.box3.title.w  === undefined) {k.box3.title.w  = 0;};
   if(k.box3.title.h  === undefined) {k.box3.title.h  = 0;};  
+  if(k.box3.title.char  === undefined) {k.box3.title.char  = '測　点';};
+  if(k.box3.title.font  === undefined) {k.box3.title.font  = baseFont;};
+  if(k.box3.title.align === undefined) {k.box3.title.align = baseAlign;};
+  if(k.box3.title.char.length > 0) {
+    ctx.font = k.box3.title.font;
+    ctx.textAlign = k.box3.title.align;
+    ctx.fillText(k.box3.title.char, k.box3.title.x+5, k.box3.title.y+(k.box3.title.h-20)/2, k.box3.title.w-10);
+  };
   if(k.box3.title.lw > 0) {
     ctx.lineWidth = k.box3.title.lw;
     ctx.strokeRect(k.box3.title.x, k.box3.title.y, k.box3.title.w, k.box3.title.h);
@@ -263,6 +295,8 @@ kokuban.makeframe = function() {
   if(k.box3.item.y  === undefined) {k.box3.item.y  = 0;};
   if(k.box3.item.w  === undefined) {k.box3.item.w  = 0;};
   if(k.box3.item.h  === undefined) {k.box3.item.h  = 0;};
+  if(k.box3.item.font  === undefined) {k.box3.item.font  = baseFont;};
+  if(k.box3.item.align === undefined) {k.box3.item.align = baseAlign;};
   if(k.box3.item.lw > 0) {
     ctx.lineWidth = k.box3.item.lw;
     ctx.strokeRect(k.box3.item.x, k.box3.item.y, k.box3.item.w, k.box3.item.h);
@@ -276,6 +310,14 @@ kokuban.makeframe = function() {
   if(k.box4.title.y  === undefined) {k.box4.title.y  = 0;};
   if(k.box4.title.w  === undefined) {k.box4.title.w  = 0;};
   if(k.box4.title.h  === undefined) {k.box4.title.h  = 0;};    
+  if(k.box4.title.char  === undefined) {k.box4.title.char  = '日　付';};
+  if(k.box4.title.font  === undefined) {k.box4.title.font  = baseFont;};
+  if(k.box4.title.align === undefined) {k.box4.title.align = baseAlign;};
+  if(k.box4.title.char.length > 0) {
+    ctx.font = k.box4.title.font;
+    ctx.textAlign = k.box4.title.align;
+    ctx.fillText(k.box4.title.char, k.box4.title.x+5, k.box4.title.y+(k.box4.title.h-20)/2, k.box4.title.w-10);
+  };
   if(k.box4.title.lw > 0) {
     ctx.lineWidth = k.box4.title.lw;
     ctx.strokeRect(k.box4.title.x, k.box4.title.y, k.box4.title.w, k.box4.title.h);
@@ -286,6 +328,8 @@ kokuban.makeframe = function() {
   if(k.box4.item.y  === undefined) {k.box4.item.y  = 0;};
   if(k.box4.item.w  === undefined) {k.box4.item.w  = 0;};
   if(k.box4.item.h  === undefined) {k.box4.item.h  = 0;};
+  if(k.box4.item.font  === undefined) {k.box4.item.font  = baseFont;};
+  if(k.box4.item.align === undefined) {k.box4.item.align = baseAlign;};
   if(k.box4.item.lw > 0) {
     ctx.lineWidth = k.box4.item.lw;
     ctx.strokeRect(k.box4.item.x, k.box4.item.y, k.box4.item.w, k.box4.item.h);
@@ -299,6 +343,14 @@ kokuban.makeframe = function() {
   if(k.box8.title.y  === undefined) {k.box8.title.y  = 0;};
   if(k.box8.title.w  === undefined) {k.box8.title.w  = 0;};
   if(k.box8.title.h  === undefined) {k.box8.title.h  = 0;};    
+  if(k.box8.title.char  === undefined) {k.box8.title.char  = '備　考';};
+  if(k.box8.title.font  === undefined) {k.box8.title.font  = baseFont;};
+  if(k.box8.title.align === undefined) {k.box8.title.align = baseAlign;};
+  if(k.box8.title.char.length > 0) {
+    ctx.font = k.box8.title.font;
+    ctx.textAlign = k.box8.title.align;
+    ctx.fillText(k.box8.title.char, k.box8.title.x+5, k.box8.title.y+(k.box8.title.h-20)/2, k.box8.title.w-10);
+  };
   if(k.box8.title.lw > 0) {
     ctx.lineWidth = k.box8.title.lw;
     ctx.strokeRect(k.box8.title.x, k.box8.title.y, k.box8.title.w, k.box8.title.h);
@@ -309,6 +361,8 @@ kokuban.makeframe = function() {
   if(k.box8.item.y  === undefined) {k.box8.item.y  = 0;};
   if(k.box8.item.w  === undefined) {k.box8.item.w  = 0;};
   if(k.box8.item.h  === undefined) {k.box8.item.h  = 0;};
+  if(k.box8.item.font  === undefined) {k.box8.item.font  = baseFont;};
+  if(k.box8.item.align === undefined) {k.box8.item.align = baseAlign;};
   if(k.box8.item.lw > 0) {
     ctx.lineWidth = k.box8.item.lw;
     ctx.strokeRect(k.box8.item.x, k.box8.item.y, k.box8.item.w, k.box8.item.h);
@@ -323,6 +377,14 @@ kokuban.makeframe = function() {
   if(k.box9.title.y  === undefined) {k.box9.title.y  = 0;};
   if(k.box9.title.w  === undefined) {k.box9.title.w  = 0;};
   if(k.box9.title.h  === undefined) {k.box9.title.h  = 0;};    
+  if(k.box9.title.char  === undefined) {k.box9.title.char  = '社　名';};
+  if(k.box9.title.font  === undefined) {k.box9.title.font  = baseFont;};
+  if(k.box9.title.align === undefined) {k.box9.title.align = baseAlign;};
+  if(k.box9.title.char.length > 0) {
+    ctx.font = k.box9.title.font;
+    ctx.textAlign = k.box9.title.align;
+    ctx.fillText(k.box9.title.char, k.box9.title.x+5, k.box9.title.y+(k.box9.title.h-20)/2, k.box9.title.w-10);
+  };
   if(k.box9.title.lw > 0) {
     ctx.lineWidth = k.box9.title.lw;
     ctx.strokeRect(k.box9.title.x, k.box9.title.y, k.box9.title.w, k.box9.title.h);
@@ -333,28 +395,16 @@ kokuban.makeframe = function() {
   if(k.box9.item.y  === undefined) {k.box9.item.y  = 0;};
   if(k.box9.item.w  === undefined) {k.box9.item.w  = 0;};
   if(k.box9.item.h  === undefined) {k.box9.item.h  = 0;};
+  if(k.box9.item.font  === undefined) {k.box9.item.font  = baseFont;};
+  if(k.box9.item.align === undefined) {k.box9.item.align = baseAlign;};
   if(k.box9.item.lw > 0) {
-    syameiprint = true;
     ctx.lineWidth = k.box9.item.lw;
     ctx.strokeRect(k.box9.item.x, k.box9.item.y, k.box9.item.w, k.box9.item.h);
   };
+  if(k.box9.item.h > 0) {
+    syameiprint = true;
+	};
 
-  ctx.fillStyle = confKokubanItemColor; // 罫線の色
-  
-  //========================================================================
-  //========================================================================
-  //===設定から取得する=====================================================
-  //========================================================================
-  //========================================================================
-//ctx.font = "20px area";
-  ctx.font = "600 20px monospace,sans-serif";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  ctx.fillText("工事名", k.box1.title.x+5, k.box1.title.y+(k.box1.title.h-20)/2, k.box1.title.w-10);
-  ctx.fillText("工　種", k.box2.title.x+5, k.box2.title.y+(k.box2.title.h-20)/2, k.box2.title.w-10);
-  ctx.fillText("測　点", k.box3.title.x+5, k.box3.title.y+(k.box3.title.h-20)/2, k.box3.title.w-10);
-  ctx.fillText("日　付", k.box4.title.x+5, k.box4.title.y+(k.box4.title.h-20)/2, k.box4.title.w-10);
-  
   // イメージ情報
   if(k.image     === undefined) {k.image     = {};};
   if(k.image.x   === undefined) {k.image.x   = 0;};
@@ -389,6 +439,8 @@ kokuban.makeframe = function() {
   // 工事名称
   var str = ik.kouji;
   var kouji = str.split('\n');
+  ctx.font = k.box1.item.font;
+  ctx.textAlign = k.box1.item.align;
   if(kouji.length === 1) {
     ctx.fillText(kouji[0], k.box1.item.x+5, k.box1.item.y+(k.box1.item.h-20)/2, k.box1.item.w-10);
   }else{
@@ -397,15 +449,23 @@ kokuban.makeframe = function() {
   };
   
   // 工種
+  ctx.font = k.box2.item.font;
+  ctx.textAlign = k.box2.item.align;
   ctx.fillText(ik.kousyu,  k.box2.item.x+5, k.box2.item.y+(k.box2.item.h-20)/2, k.box2.item.w-10);
   
   // 測点
+  ctx.font = k.box3.item.font;
+  ctx.textAlign = k.box3.item.align;
   ctx.fillText(ik.sokuten, k.box3.item.x+5, k.box3.item.y+(k.box3.item.h-20)/2, k.box3.item.w-10);
 
   // 日付
+  ctx.font = k.box4.item.font;
+  ctx.textAlign = k.box4.item.align;
   ctx.fillText(ik.hiduke, k.box4.item.x+5, k.box4.item.y+(k.box4.item.h-20)/2, k.box4.item.w-10);
 
   // 社名
+  ctx.font = k.box9.item.font;
+  ctx.textAlign = k.box9.item.align;
   if(syameiprint) {
     ctx.fillText(ik.syamei, k.box9.item.x+5, k.box9.item.y+(k.box9.item.h-20)/2, k.box9.item.w-10);
   };
@@ -414,8 +474,8 @@ kokuban.makeframe = function() {
   // 縦横の表示位置によって調整を行う
   var str = ik.bikou;
   var bikou = str.split('\n');
-  ctx.textAlign = "center";
-  ctx.font = "600 30px monospace,sans-serif";
+  ctx.font = k.box8.item.font;
+  ctx.textAlign = k.box8.item.align;
   var pos = {x : 0, y : 0, w : 0};
   // 横位置が中央の場合
   pos.x = k.box8.item.x + k.box8.item.w / 2;
@@ -651,27 +711,43 @@ kokuban.setDataInitialize = function() {
 // 黒板日付の表示フォーマット
 //====================================================
 kokuban.setDateFormat = function(date) {
-  
-//function setDateFormat(date) {
   _log(1,'function','kokuban.setDateFormat()');
   
-  var Hiduke = '';
+  // ローカルストレージから黒板設定情報を読み込み
+  let str = localStrage.getItems('firebase:group00/config/field');
+  // 読み込んだテキストをJSON形式に変換
+  let json = JSON.parse(str);
+  let Hiduke = '';
+  try {
+    Hiduke = json['field05']['item01']['name'];
+	}catch(e){
+		Hiduke = '元号YY年MM年DD日';
+	}
 
+  let newGengou = new Date( '2019/05/01 00:00' );
+  if(Hiduke.indexOf('元号') > -1) {
+		if(date > newGengou) {
+      Hiduke = Hiduke.replace( '元号', '令和' );
+		}else{
+      Hiduke = Hiduke.replace( '元号', '平成' );
+		}	
+	}
+  if(Hiduke.indexOf('YYYY') > -1) {
+    Hiduke = Hiduke.replace( 'YYYY', date.getFullYear() );
+	}
+  if(Hiduke.indexOf('YY') > -1) {
+		if(date > newGengou) {
+      Hiduke = Hiduke.replace( 'YY', date.getFullYear() - 1988 );
+		}else{
+      Hiduke = Hiduke.replace( 'YY', date.getFullYear() - 1988 );
+		}
+	}
+  if(Hiduke.indexOf('MM') > -1) {
+    Hiduke = Hiduke.replace( 'MM', date.getMonth()+1 );
+	}
+  if(Hiduke.indexOf('DD') > -1) {
+    Hiduke = Hiduke.replace( 'DD', date.getDate() );
+	}
 
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-//  日付の書式設定に従ってフォーマットする
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-//=================================================================================================
-
-  
-  Hiduke = '平成' + (date.getFullYear() - 1988) + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
-  
   return Hiduke;
 };

@@ -751,6 +751,9 @@ pictureCheckList.setInformationHeader = function(koujiname, shootinglistNo) {
     // デバイスローカル(documentsDirectory)に保存
     localStrage.saveBlobFile(directory, filename, blob, function(url){
       _log(1,'pictureCheckList.setInformationHeader','update normalend');
+		},
+		function(msg) {
+      _errorlog(1,'工事名:'+koujiname+' 撮影リスト番号:'+shootinglistNo);
     });
   },
   function(e) {

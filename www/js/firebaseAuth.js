@@ -98,6 +98,10 @@ firebaseAuth.logoffLinkClick = function () {
 //function logoffLinkClick() {
   _log(1,'function','firebaseAuth.logoffLinkClick()');
 
+// 2018/11/15 仮 add ↓
+if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
+  _confirm('新しいユーザーを登録する為には、別途契約が必要です。　続けますか？', function(status) {
+	  if(status === 0) {
   // ユーザーのログオフ
   firebaseAuth.loginUserLogoff();
   
@@ -110,13 +114,40 @@ firebaseAuth.logoffLinkClick = function () {
   $('input#email-input').attr('readonly',false);
   $("ons-row#pass-input").show();
   if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
-    // 新規t登録の場合は確認パスワードのボックスを表示
+    // 新規登録の場合は確認パスワードのボックスを表示
     $("ons-button#logoff").text("既存のユーザーで使用する");
     $("ons-row#passconf-input").show();
   }else{
     $("ons-button#logoff").text("新しいユーザーを登録する");
     $("ons-row#passconf-input").hide();
   };
+
+  	}
+  })
+}else{	
+// 2018/11/15 仮 add ↑
+
+  // ユーザーのログオフ
+  firebaseAuth.loginUserLogoff();
+  
+  // ユーザー・パスワードの入力画面を表示
+  activeuser.email = '';
+  activeuser.uid   = '';
+  $("input#email-input").val("");
+  $("input#pass-input").val("");
+  $("input#passconf-input").val("");
+  $('input#email-input').attr('readonly',false);
+  $("ons-row#pass-input").show();
+  if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
+    // 新規登録の場合は確認パスワードのボックスを表示
+    $("ons-button#logoff").text("既存のユーザーで使用する");
+    $("ons-row#passconf-input").show();
+  }else{
+    $("ons-button#logoff").text("新しいユーザーを登録する");
+    $("ons-row#passconf-input").hide();
+  };
+
+}	// 2018/11/15 仮 add
 };
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_

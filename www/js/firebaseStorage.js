@@ -61,6 +61,9 @@ firebaseStorage.fileDownload = function(firebaseFolder, localFolder, fileName) {
       // デバイスローカル(documentsDirectory/localFolder)に保存
       localStrage.saveBlobFile(firebaseFolder, fileName, blob, function() {
         _log(1,'function','firebaseStorage.fileDownload() Download OK');
+			},
+			function(msg) {
+        _errorlog(1,'firebaseFolder:'+firebaseFolder+' localFolder:'+localFolder+' fileName:'+fileName);
       });
       
     };

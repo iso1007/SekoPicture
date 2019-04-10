@@ -70,40 +70,48 @@ function setFirebaseToLocalStrage() {
 
   // 2018/01/30 ADD -----↓ 
   // 略図ファイルの更新処理
-  
-  // firebaseStorageの略図ファイルの追加をリッスン、追加があればローカルドライブにダウンロード
-  var firebaseref = activeuser.uid+'/group00/pictureList/'+commonShapeFolderName;
-  firebase.database().ref(firebaseref).on('child_added', function(snapshot) {
-    
-    // UID/CommonShape/フォルダ名の取得
-    var uid = firebase.auth().currentUser.uid;
-    var folderName = uid + '/' + commonShapeFolderName + '/';
-    // ファイル名の取得
-    var fileName = snapshot.key + snapshot.val();
-    
-    _log(1,'function','setFirebaseToLocalStrage()['+'child_added : '+fileName+']');
-    
-    // firebaseStrageから略図ファイルをダウンロード
-    firebaseStorage.fileDownload(commonShapeFolderName, folderName, fileName);
-  });
-  
-  // firebaseStorageの略図ファイルの削除をリッスン、削除があればローカルドライブからも削除
-  var firebaseref = activeuser.uid+'/group00/pictureList/'+commonShapeFolderName;
-  firebase.database().ref(firebaseref).on('child_removed', function(snapshot) {
+  // iosはDocuments配下のクラウド非同期フォルダに保存
+  var folderurl = cordova.file.documentsDirectory;
+  // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
+  window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
+		// 略図保存用フォルダが無ければ作成
+    directoryEntry.getDirectory('CommonShape', { create: true }, function() {
 
-    // CommonShape/フォルダ名の取得
-    var folderName = commonShapeFolderName + '/';
-    // ファイル名の取得
-    var fileName = snapshot.key + snapshot.val();
+      // firebaseStorageの略図ファイルの追加をリッスン、追加があればローカルドライブにダウンロード
+      var firebaseref = activeuser.uid+'/group00/pictureList/'+commonShapeFolderName;
+      firebase.database().ref(firebaseref).on('child_added', function(snapshot) {
     
-    _log(1,'function','setFirebaseToLocalStrage()['+'child_removed : '+fileName+']');
+        // UID/CommonShape/フォルダ名の取得
+        var uid = firebase.auth().currentUser.uid;
+        var folderName = uid + '/' + commonShapeFolderName + '/';
+        // ファイル名の取得
+        var fileName = snapshot.key + snapshot.val();
+    
+        _log(1,'function','setFirebaseToLocalStrage()['+'child_added : '+fileName+']');
+    
+        // firebaseStrageから略図ファイルをダウンロード
+        firebaseStorage.fileDownload(commonShapeFolderName, folderName, fileName);
+      });
+  
+      // firebaseStorageの略図ファイルの削除をリッスン、削除があればローカルドライブからも削除
+      var firebaseref = activeuser.uid+'/group00/pictureList/'+commonShapeFolderName;
+      firebase.database().ref(firebaseref).on('child_removed', function(snapshot) {
 
-    // ローカルストレージからファイルを削除
-    localStrage.removeFile(folderName, fileName, function(status) {
+        // CommonShape/フォルダ名の取得
+        var folderName = commonShapeFolderName + '/';
+        // ファイル名の取得
+        var fileName = snapshot.key + snapshot.val();
+    
+        _log(1,'function','setFirebaseToLocalStrage()['+'child_removed : '+fileName+']');
+
+        // ローカルストレージからファイルを削除
+        localStrage.removeFile(folderName, fileName, function(status) {
 //      console.log(status);
-    });
-  });
+        });
+      });
   // 2018/01/30 ADD -----↑ 
+    });
+	});
 
   // 2018/01/30 DEL -----↓
   // 2018/01/15 ↓
