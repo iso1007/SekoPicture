@@ -310,8 +310,10 @@ setKokuban.setHelpHiduke = function() {
       "cancelButtonLabel" : 'キャンセル',
       "cancelButtonColor" : '#000000'
     }, function(date){
-      var Hiduke = kokuban.setDateFormat(date);
-      $("#setInputHiduke").val(Hiduke);
+			if(typeof date !== 'undefined') {
+        var Hiduke = kokuban.setDateFormat(date);
+        $("#setInputHiduke").val(Hiduke);
+			}
     });
 };
 
