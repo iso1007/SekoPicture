@@ -23,7 +23,7 @@ async function koujiListLoop() {
   _log(1,'function','koujiListLoop()');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
-  var folderurl = cordova.file.documentsDirectory;
+  var folderurl = localStorageDirectory;
   try {
     // directoryEntryオブジェクトを取得
     var directoryEntry = await localFile.getFileSystemURL(folderurl);
@@ -485,7 +485,7 @@ async function koujiListItemSet(koujiname, koujiListCountId, folderReferences) {
   }
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   // directoryEntryオブジェクトを取得
   var directoryEntry = await localFile.getFileSystemURL(folderurl);
   // fileEntrysオブジェクトを取得
@@ -985,7 +985,7 @@ async function koujiPictureView(obj) {
   var koujiname = $('#koujiListItemName').text();
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   try {
     // directoryEntryオブジェクトを取得
     var directoryEntry = await localFile.getFileSystemURL(folderurl);
@@ -1298,7 +1298,7 @@ async function koujiPictureViewClose() {
   var filename = $('#koujiviewName').text();
   try {
     // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-    var folderurl = cordova.file.documentsDirectory + koujiname;
+    var folderurl = localStorageDirectory + koujiname;
     // directoryEntryオブジェクトを取得
     var directoryEntry = await localFile.getFileSystemURL(folderurl);
     // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
@@ -1379,8 +1379,7 @@ function pictureSwipeDelete(obj) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 async function pictureDelete(koujiname, filename) {
   // iosはDocuments配下のクラウド非同期フォルダに保存
-  //  var folderurl = cordova.file.documentsDirectory+'NoCloud/'+koujiname;
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   var jpgfile = filename + '.jpg';
   try {
     // 移動先directoryEntryオブジェクトを取得
@@ -1447,7 +1446,7 @@ function pictureSwipeReply(obj) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 async function pictureReply(koujiname, filename) {
   // iosはDocuments配下のクラウド非同期フォルダに保存
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   var jpgfile = filename + '.jpg';
   try {
     // ゴミ箱のdirectoryEntryオブジェクトを取得

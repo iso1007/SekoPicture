@@ -14,22 +14,22 @@ setKokuban.setItemInitialize = function() {
   var k = JSON.parse(str);
   if(typeof(k.kouji) === 'string') {
     $('#setInputKouji').val(k.kouji);
-  };  
+  };
   if(typeof(k.kousyu) === 'string') {
     $('#setInputKousyu').val(k.kousyu);
-  };  
+  };
   if(typeof(k.sokuten) === 'string') {
     $('#setInputSokuten').val(k.sokuten);
-  };  
+  };
   if(typeof(k.hiduke) === 'string') {
     $('#setInputHiduke').val(k.hiduke);
-  };  
+  };
   if(typeof(k.bikou) === 'string') {
     $('#setInputBikou').val(k.bikou);
-  };  
+  };
   if(typeof(k.syamei) === 'string') {
     $('#setInputSyamei').val(k.syamei);
-  };  
+  };
   if(typeof(k.pictureId) === 'string') {
     $('#setBikouPictureId').text(k.pictureId);
   };
@@ -43,14 +43,14 @@ setKokuban.setItemInitialize = function() {
     $('#setShapePanel').css({'display': 'block'});
     $('#setViewShape').attr({'src': k.shapeUri});
     $('#setShapePanelShapeName').text(k.shapeName);
-    
+
     var objsrc = $('#'+k.shapePosition).attr('src');
     $('#setViewShapePosition').attr({'src': objsrc});
-    
-    $('#shapeReverseCheck').prop({'checked': k.shapeReverse});    
+
+    $('#shapeReverseCheck').prop({'checked': k.shapeReverse});
   }
   // 2018/01/24 -----↑ ADD
-  
+
   // ローカルストレージから工事情報を読み込み
   var str = localStrage.getItems('firebase:group00/koujiList');
   // 読み込んだテキストをJSON形式に変換
@@ -85,33 +85,33 @@ setKokuban.setItemInitialize = function() {
   $('#setHelpSyamei').on('touchstart',function() {
     setKokuban.setHelpSyamei(json);
   });
-  
+
   // 項目毎の入力項目クリック時に発生する検索を停止する
   $('#setInputKouji').off('touchstart');
   $('#setInputKouji').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
   $('#setInputKousyu').off('touchstart');
   $('#setInputKousyu').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
   $('#setInputSokuten').off('touchstart');
   $('#setInputSokuten').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
   $('#setInputHiduke').off('touchstart');
   $('#setInputHiduke').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
   $('#setInputBikou').off('touchstart');
   $('#setInputBikou').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
   $('#setInputSyamei').off('touchstart');
   $('#setInputSyamei').on('touchstart', function(e) {
-    e.stopImmediatePropagation(); 
+    e.stopImmediatePropagation();
   });
-  
+
 };
 
 //====================================================
@@ -160,9 +160,9 @@ setKokuban.setHelpKouji = function(json) {
       elm = elm + '  <ons-row>';
       if(data[2]==='2199/01/01') {
         elm = elm + '    <ons-col class="textsize4" id="takeDateTime" width="50%" style="padding:0px;color:darkorange">New!</ons-col>';
-      }else{  
+      }else{
         elm = elm + '    <ons-col class="textsize3" id="takeDateTime" width="50%" style="padding:0px;color:gray">'+data[1].slice(0,10)+' ～ '+data[2].slice(0,10)+'</ons-col>';
-      }  
+      }
       elm = elm + '    <ons-col class="textsize3" id="builderName" width="50%" style="padding:0px;color:gray">'+data[3]+'</ons-col>';
       elm = elm + '  </ons-row>';
       elm = elm + '</ons-list-item>';
@@ -177,7 +177,7 @@ setKokuban.setHelpKouji = function(json) {
     $("#setInputKouji").blur();
     $("#setHelpTitle").text("工事名検索");
     $("#setHelpModal").show();
-  };  
+  };
 };
 
 //====================================================
@@ -201,12 +201,12 @@ setKokuban.setHelpKoujiClick = function(obj) {
 //====================================================
 setKokuban.setHelpKousyu = function(json) {
   _log(1,'function','setKokuban.setHelpKousyu()');
-  
+
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
   var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpKousyuClick(this)'></ons-list-item>");
   elm.appendTo($("#setHelpList"));
-      
+
   // ローカルストレージのアイテム設定をループして検索リストにセット
   try {
     // 工種情報を配列で取得する
@@ -222,13 +222,13 @@ setKokuban.setHelpKousyu = function(json) {
     });
   } catch(e) {
     alert(e);
-  };  
-  
+  };
+
   if($("#setHelpList>ons-list-item").length>0) {
     $("#setInputKousyu").blur();
     $("#setHelpTitle").text("工種検索");
     $("#setHelpModal").show();
-  };  
+  };
 };
 
 //====================================================
@@ -237,7 +237,7 @@ setKokuban.setHelpKousyu = function(json) {
 //====================================================
 setKokuban.setHelpKousyuClick = function(obj) {
   _log(1,'function','setKokuban.setHelpKousyuClick()');
-  
+
   // 選択項目を入力フィールドにコピー
   $('#setInputKousyu').val($(obj).text());
   $("#setHelpModal").hide();
@@ -249,7 +249,7 @@ setKokuban.setHelpKousyuClick = function(obj) {
 //====================================================
 setKokuban.setHelpSokuten = function(json) {
   _log(1,'function','setKokuban.setHelpSokuten()');
-  
+
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
   var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpSokutenClick(this)'></ons-list-item>");
@@ -270,14 +270,14 @@ setKokuban.setHelpSokuten = function(json) {
     });
   } catch(e) {
     alert(e);
-  };  
-  
+  };
+
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
     $("#setInputSokuten").blur();
     $("#setHelpTitle").text("測点検索");
     $("#setHelpModal").show();
-  };  
+  };
 };
 
 //====================================================
@@ -286,7 +286,7 @@ setKokuban.setHelpSokuten = function(json) {
 //====================================================
 setKokuban.setHelpSokutenClick = function(obj) {
   _log(1,'function','setKokuban.setHelpSokutenClick()');
-  
+
   // 選択項目を入力フィールドにコピー
   $('#setInputSokuten').val($(obj).text());
   $("#setHelpModal").hide();
@@ -323,7 +323,7 @@ setKokuban.setHelpHiduke = function() {
 //====================================================
 setKokuban.setHelpBikou = function(json) {
   _log(1,'function','setKokuban.setHelpBikou()');
-  
+
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
 
@@ -333,7 +333,7 @@ setKokuban.setHelpBikou = function(json) {
     var field  = "field03";
     var item01 = "item01";
     var name   = "name";
-    
+
     var obj1 = Object.keys(json[field]);
     // 備考第1階層をループしリストを作成する
     $.each(obj1, function(i, key1) {     // 2018/01/30 ADD
@@ -344,13 +344,13 @@ setKokuban.setHelpBikou = function(json) {
       if(key1.match(/item/) && str1 !== undefined) {    // 2018/01/30 ADD
 //    if(str1 !== undefined) {                          // 2018/01/30 DEL
         var str2 = json[field][key1][item01][name];  // 見出し判定
-        if(str2 !== undefined) { 
+        if(str2 !== undefined) {
           addListItem(1, str1, fid1, 'header');
         }else{
           addListItem(1, str1, fid1, 'item');
-        };  
-      };  
-      
+        };
+      };
+
       // 備考第2階層をループしリストを作成する
       var obj2 = Object.keys(json[field][key1]);
       $.each(obj2, function(i, key2) {     // 2018/01/30 ADD
@@ -366,7 +366,7 @@ setKokuban.setHelpBikou = function(json) {
           }catch(e){
             addListItem(2, str2, fid2, 'item');
           };
-          
+
           // 備考第3階層をループしリストを作成する
           var obj3 = Object.keys(json[field][key1][key2]);
           $.each(obj3, function(i, key3) {     // 2018/01/30 ADD
@@ -382,7 +382,7 @@ setKokuban.setHelpBikou = function(json) {
               }catch(e){
                 addListItem(3, str3, fid3, 'item');
               };
-              
+
               // 備考第4階層をループしリストを作成する
               var obj4 = Object.keys(json[field][key1][key2][key3]);
               $.each(obj4, function(i, key4) {     // 2018/01/30 ADD
@@ -398,7 +398,7 @@ setKokuban.setHelpBikou = function(json) {
                   }catch(e){
                     addListItem(4, str4, fid4, 'item');
                   };
-                  
+
                   // 備考第5階層をループしリストを作成する
                   var obj5 = Object.keys(json[field][key1][key2][key3][key4]);
                   $.each(obj5, function(i, key5) {     // 2018/01/30 ADD
@@ -414,7 +414,7 @@ setKokuban.setHelpBikou = function(json) {
                       }catch(e){
                         addListItem(5, str5, fid5, 'item');
                       };
-                  
+
                       // 備考第6階層をループしリストを作成する
                       var obj6 = Object.keys(json[field][key1][key2][key3][key4][key5]);
                       $.each(obj6, function(i, key6) {     // 2018/01/30 ADD
@@ -425,24 +425,24 @@ setKokuban.setHelpBikou = function(json) {
 //                      if(str6 !== undefined) {                          // 2018/01/30 DEL
                           // 検索リストに要素を追加
                           addListItem(6, str6, fid6, 'item');
-                        
-                        };  
-                      });  
-                      
-                    };  
-                  }); 
-                  
+
+                        };
+                      });
+
+                    };
+                  });
+
                 };
-              });  
+              });
             };
           });
-        };  
-      });  
+        };
+      });
     });
   } catch(e) {
     alert(e);
   };
-  
+
   // 検索リストに要素を追加する(level*15 はインデント)
   function addListItem(level, str, fid, flg) {
     var elm = $('');
@@ -453,13 +453,13 @@ setKokuban.setHelpBikou = function(json) {
     }
     elm.appendTo($('#setHelpList'));
   };
-  
+
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
     $("#setInputBikou").blur();
     $("#setHelpTitle").text("備考検索");
     $("#setHelpModal").show();
-  };  
+  };
 };
 
 //====================================================
@@ -468,7 +468,7 @@ setKokuban.setHelpBikou = function(json) {
 //====================================================
 setKokuban.setHelpBikouClick = function(obj) {
   _log(1,'function','setKokuban.setHelpBikouClick()');
-  
+
   // 選択項目を入力フィールドにコピー
   $('#setInputBikou').val($(obj).text());
   $('#setBikouPictureId').text($(obj).attr('id'));
@@ -483,7 +483,7 @@ setKokuban.bikouTextSupport = function() {
   _log(1,'function','setKokuban.bikouTextSupport()');
 
   var val = $('#setInputBikou').val();
-  
+
   var bikou = val.split('\n');
 
   // 備考を１行ずつ処理
@@ -504,7 +504,7 @@ setKokuban.bikouTextSupport = function() {
       type = 'text';
       pos = bikou_line.indexOf('^X');
     };
-    
+
     if(pos !== -1) {
       $('#setInputBikou').blur();
 
@@ -514,7 +514,7 @@ setKokuban.bikouTextSupport = function() {
 
       // ダイアログ画面で入力
       var text = bikou_line.substr(0,pos)+'_'.repeat(len)+bikou_line.substr(pos+len);
-      
+
       if(flg==='9') {
         // 数字入力文字列を表示
         $('#numberInputText').text('_'.repeat(len));
@@ -529,16 +529,16 @@ setKokuban.bikouTextSupport = function() {
             'margin-left'  : margin+'.px' ,
             'margin-right' : margin+'.px'
         });
-        
+
         // 数字入力ダイアログを表示
         numberInputModal.show();
-        
+
       }else{
-        
+
         // 文字入力ダイアログを表示
         var options = { title: '',
                         buttonLabel: 'OK',
-                        placeholder: '', 
+                        placeholder: '',
                         inputType: type,
                         modifier: 'material',
                         autofocus: true,
@@ -552,11 +552,11 @@ setKokuban.bikouTextSupport = function() {
                           var text2 = val.substr(0,pos2)+ret+val.substr(pos2+len2);
                           $('#setInputBikou').val(text2);
                           $('#setInputBikou').focus();
-                        } 
+                        }
                       };
         ons.notification.prompt(text, options);
       }
-      
+
       return null;
     };
   };
@@ -568,13 +568,13 @@ setKokuban.bikouTextSupport = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.numberKeyInput = function(obj) {
   _log(1,'function','setKokuban.numberKeyInput()');
-  
+
   var key = obj.innerText;
   var beforeString = $('#numberInputText').text();
   if(beforeString[0]==='_') {
     beforeString = '';
   }
-  
+
   // 1文字目を切り出し
   var firstString = '';
   var afterString = '';
@@ -594,7 +594,7 @@ setKokuban.numberKeyInput = function(obj) {
       afterString = key + beforeString;
     }else{
       afterString = beforeString + key;
-    }  
+    }
   }
 
   // 入力桁数が設定値を超えた場合は、先頭から桁数分を切り出す
@@ -612,16 +612,16 @@ setKokuban.numberKeyInput = function(obj) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.numberKeyInputHide = function() {
   _log(1,'function','setKokuban.numberKeyInputHide()');
-  
-  var val = $('#setInputBikou').val();  
+
+  var val = $('#setInputBikou').val();
   var bikou_line = $('#numberString').text();
   var pos = bikou_line.indexOf('^9');
   var flg = '9';
-  
+
   // 入力文字列の桁数をカウント
   for(var len = 1; bikou_line.substr(pos+len,1) === flg; len++) {
   };
-  
+
   var text = $('#numberString').text();
   var str  = $('#numberInputText').text();
   var ret  = text.substr(0,pos)+str.substr(-len)+text.substr(pos+len);
@@ -630,7 +630,7 @@ setKokuban.numberKeyInputHide = function() {
   var text2 = val.substr(0,pos2)+ret+val.substr(pos2+len2);
   var text2 = val.substr(0,pos2)+ret+val.substr(pos2+len2);
   numberInputModal.hide();
-  
+
   $('#setInputBikou').val(text2);
 };
 
@@ -640,7 +640,7 @@ setKokuban.numberKeyInputHide = function() {
 //====================================================
 setKokuban.setHelpSyamei = function(json) {
   _log(1,'function','setKokuban.setHelpSyamei()');
-  
+
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
   var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpSyameiClick(this)'></ons-list-item>");
@@ -661,14 +661,14 @@ setKokuban.setHelpSyamei = function(json) {
     });
   } catch(e) {
     alert(e);
-  };  
-  
+  };
+
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
     $("#setInputSyamei").blur();
     $("#setHelpTitle").text("社名検索");
     $("#setHelpModal").show();
-  };  
+  };
 };
 
 //====================================================
@@ -677,19 +677,19 @@ setKokuban.setHelpSyamei = function(json) {
 //====================================================
 setKokuban.setHelpSyameiClick = function(obj) {
   _log(1,'function','setKokuban.setHelpSyameiClick()');
-  
+
   // 選択項目を入力フィールドにコピー
   $('#setInputSyamei').val($(obj).text());
   $("#setHelpModal").hide();
 };
-  
+
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // setKokuban.itemToCamera()
 // ローカルストレージに黒板設定情報を更新しカメラに切り替える
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.itemToCamera = function() {
   _log(1,'function','setKokuban.itemToCamera()');
-  
+
   // 入力した内容を取得
   setKokuban.itemSaveStrage('kouji', $('#setInputKouji').val());
   setKokuban.itemSaveStrage('kousyu', $('#setInputKousyu').val());
@@ -698,11 +698,11 @@ setKokuban.itemToCamera = function() {
   setKokuban.itemSaveStrage('bikou', $('#setInputBikou').val());
   setKokuban.itemSaveStrage('pictureId', $('#setBikouPictureId').text());
   setKokuban.itemSaveStrage('syamei', $('#setInputSyamei').val());
-  
+
   // 改行コードの削除した工事名を保存
   var str = $('#setInputKouji').val();
   setKokuban.itemSaveStrage('directory', str.replace( /\n/g , '' ));
-  
+
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
 
@@ -713,7 +713,7 @@ setKokuban.itemToCamera = function() {
 
   // 黒板イメージの再生成
   kokuban.makeframe();
-  
+
   // 設定メニュー画面の非表示
   $('#topNavigator').hide();
 };
@@ -724,19 +724,19 @@ setKokuban.itemToCamera = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.itemSaveStrage = function(key, val) {
   _log(1,'function','setKokuban.itemSaveStrage(key:'+key+' val:'+val);
-  
+
   // ローカルストレージから読み込み
   var str = localStrage.getItems('firebase:temp/kokuban');
   // 読み込んだテキストをJSON形式に変換
   var k = JSON.parse(str);
-  
-  // 値を変更する  
+
+  // 値を変更する
   k[key] = val;
-  
+
   // JSON形式をテキスト形式に変換
   str = JSON.stringify(k);
   // ローカルストレージに書き戻し
-  localStrage.setItems('firebase:temp/kokuban', str); 
+  localStrage.setItems('firebase:temp/kokuban', str);
 };
 
 // 2018/01/24 ↓-----ADD
@@ -752,7 +752,7 @@ setKokuban.shapeSelectedMenu = function () {
   // 読み込んだテキストをJSON形式に変換
   var ik = JSON.parse(str);
   if(ik.shapeName  === undefined) {ik.shapeName  = '';}
-  
+
   var options = [];
   if(ik.shapeName === '') {
      options = ['登録された略図から選択',
@@ -780,7 +780,7 @@ setKokuban.shapeSelectedMenu = function () {
       setKokuban.shapeSelectedClear();
     }
   });
-}; 
+};
 
 //====================================================
 // setKokuban.shapeSelectedModal()
@@ -788,12 +788,12 @@ setKokuban.shapeSelectedMenu = function () {
 //====================================================
 setKokuban.shapeSelectedModal = function () {
   _log(1,'function','setKokuban.shapeSelectedModal()');
-  
+
   $("#shapeSelected").empty();
   var str = '';
-  
+
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + commonShapeFolderName;
+  var folderurl = localStorageDirectory + commonShapeFolderName;
   
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
   window.resolveLocalFileSystemURL(folderurl,
@@ -804,7 +804,7 @@ setKokuban.shapeSelectedModal = function () {
       // ディレクトリ内のフォルダ一覧を取得
       directoryReader.readEntries(
         function getFileName(fileEntries) {
-          
+
           // ディレクトリ内をループ
           $.each( fileEntries, function() {
             // 略図ダイアログの作成
@@ -830,7 +830,7 @@ setKokuban.shapeSelectedModal = function () {
 
     // 略図イメージのリストを作成
 //    var html = '<ons-list-item class="textsize5" id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" style="padding-top:0px" onclick="setKokuban.shapeSelected(this)">'+filename+
-    var html = '<ons-list-item class="textsize5" id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" onclick="setKokuban.shapeSelected(this)">'+filename+    
+    var html = '<ons-list-item class="textsize5" id="shapeItem-'+name[0]+'" tappable modifier="longdivider chevron" onclick="setKokuban.shapeSelected(this)">'+filename+
                '  <ons-row>'+
 //               '    <img id="shape-'+name[0]+'" width="auto" style="padding-top:0px;margin-top:0px;">'+
                '    <img id="shape-'+name[0]+'" width="auto">'+
@@ -838,7 +838,7 @@ setKokuban.shapeSelectedModal = function () {
                '</ons-list-item>';
     var elm = $(html);
     elm.appendTo($('#shapeSelected'));
-    
+
     // 写真リストにサムネイル画像を表示
     $('#shape-'+name[0]).attr({'src': uri});
     $('#shape-'+name[0]).css({height:($('#shapeViewModal').height() / 10)});
@@ -854,7 +854,7 @@ setKokuban.shapeSelected = function(obj) {
 
   // 黒板リストから選択した番号を取得
   var objid = $(obj).attr('id');
-  
+
   var filename = $('#'+objid).text();
   var name = filename.split('.');
 
@@ -868,10 +868,10 @@ setKokuban.shapeSelected = function(obj) {
   $('#setShapeButton').css({'display': 'none'});
   $('#setShapePanel').css({'display': 'block'});
   $('#setShapePanelShapeName').text(filename);
-    
+
   // 選択した図形のファイル名を保存する
   setKokuban.itemSaveStrage('shapeName', filename);
-    
+
   // ファイルのUriをローカルストレージに保存
   setKokuban.itemSaveStrage('shapeUri', src);
 
@@ -887,7 +887,7 @@ setKokuban.shapeSelected = function(obj) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 setKokuban.shapeSelectedClear = function(obj) {
   _log(1,'function','setKokuban.shapeSelectedClear()');
-  
+
   // ローカルストレージ上の略図名をクリア
   setKokuban.itemSaveStrage('shapeName', '');
 
@@ -895,7 +895,7 @@ setKokuban.shapeSelectedClear = function(obj) {
   $('#setShapeButton').css({'display': 'block'});
   $('#setShapePanel').css({'display': 'none'});
   $('#setViewShape').attr({'src': null});
-};  
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // setKokuban.openAlbumPicker()
@@ -917,7 +917,7 @@ setKokuban.openAlbumPicker = function() {
   };
 
   navigator.camera.getPicture(function cameraSuccess(imageUri) {
-    
+
     // 黒板設定画面を再表示
     $('#setShapeButton').css({'display': 'none'});
     $('#setShapePanel').css({'display': 'block'});
@@ -927,10 +927,10 @@ setKokuban.openAlbumPicker = function() {
     var str = imageUri.split('/');
     const filename = str[str.length - 1];
     $('#setShapePanelShapeName').text(filename);
-    
+
     // ファイル名を略図の名前としてローカルストレージに保存
     setKokuban.itemSaveStrage('shapeName', filename);
-    
+
     // ファイルのUriをローカルストレージに保存
     setKokuban.itemSaveStrage('shapeUri', imageUri);
 
@@ -941,7 +941,7 @@ setKokuban.openAlbumPicker = function() {
 //    var directory = k.directory;
 //    if(k.directory===undefined) {directory = 'その他';}
 //    directory = directory+'/shape';
-//    
+//
 //    // 略図の保存先フォルダをローカルストレージに保存
 //    setKokuban.itemSaveStrage('shapeFolder', directory);
 //
@@ -949,24 +949,24 @@ setKokuban.openAlbumPicker = function() {
 //    imgToFile(imageUri, directory, filename);
 
   }, function cameraError(error) {
-    
+
     _errorlog(1,'setKokuban.openAlbumPicker()',e);
   }, options);
 
 
-//  // 取り込んだ画像をローカルに保存 
+//  // 取り込んだ画像をローカルに保存
 //  const imgToFile = function(imageUri, directory, filename) {
-//    
-//    // 出力写真・黒板合成用canvasの作成 
+//
+//    // 出力写真・黒板合成用canvasの作成
 //    const cvs = document.createElement('canvas');
 //    const ctx = cvs.getContext('2d');
-//  
+//
 //    // 写真イメージを出力用canvasに描画
 //    const img = new Image();
 //    img.src = imageUri;
 //    img.onload = function() {
-//      cvs.width  = img.width; 
-//      cvs.height = img.height; 
+//      cvs.width  = img.width;
+//      cvs.height = img.height;
 //
 //      ctx.drawImage(img, 0, 0, img.width, img.height);
 //      const image = cvs.toDataURL( "image/jpeg" , 1.0 );

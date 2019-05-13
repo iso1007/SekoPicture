@@ -46,8 +46,7 @@ localStrage.makeDirectory = function(localFolder, callback, error_callback) {
   _log(1,'function','localStrage.makeDirectory()');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var folderurl = cordova.file.documentsDirectory;
+  var folderurl = localStorageDirectory;
   _log(1,'function',folderurl+localFolder);
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
@@ -122,8 +121,7 @@ localStrage.saveBlobFile = function(localFolder, localFileName, blob, callback, 
   _log(1,'function','localStrage.saveBlobFile()');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var folderurl = cordova.file.documentsDirectory+localFolder;
+  var folderurl = localStorageDirectory+localFolder;
   _log(1,'function',folderurl);
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
@@ -169,8 +167,7 @@ localStrage.getJsonFile = function(localFolder, localFileName, callback, error_c
   _log(1,'function','localStrage.getJsonFile()');
 
   // 設定ファイルへのパス
-//  var urlToFile = cordova.file.documentsDirectory + 'NoCloud/' + localFolder + '/' + localFileName;
-  var urlToFile = cordova.file.documentsDirectory + localFolder + '/' + localFileName;
+  var urlToFile = localStorageDirectory + localFolder + '/' + localFileName;
   _log(1,'localStrage.getJsonFile',urlToFile);
 
   // 設定ファイルのFileEntryオブジェクトを取得（Rippleでは動作せず）
@@ -363,10 +360,9 @@ localStrage.moveToDirectory = function(localFolder, moveToFolder, callback) {
   _log(1,'function','localStrage.moveToDirectory('+localFolder+'->'+moveToFolder+')');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var folderurl = cordova.file.documentsDirectory + localFolder;
+  var folderurl = localStorageDirectory + localFolder;
 
-  window.resolveLocalFileSystemURL(cordova.file.documentsDirectory, function(parentDirectoryEntry) {
+  window.resolveLocalFileSystemURL(localStorageDirectory, function(parentDirectoryEntry) {
     // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
     window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
       // 指定されたフォルダを移動する
@@ -395,8 +391,7 @@ localStrage.removeDirectory = function(localFolder, callback, error_callback) {
   _log(1,'function','localStrage.removeDirectory('+localFolder+')');
 
   // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var folderurl = cordova.file.documentsDirectory + localFolder;
+  var folderurl = localStorageDirectory + localFolder;
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
   window.resolveLocalFileSystemURL(folderurl, function(directoryEntry) {
@@ -423,9 +418,7 @@ localStrage.removeDirectory = function(localFolder, callback, error_callback) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 localStrage.removeFile = function(localFolder, localFile, callback) {
   // iosはDocuments配下のクラウド非同期フォルダに保存
-//  var folderurl = cordova.file.documentsDirectory + 'NoCloud/';
-  var fileurl = cordova.file.documentsDirectory + localFolder + localFile;
-
+  var fileurl = localStorageDirectory + localFolder + localFile;
   _log(1,'function','localStrage.removeFile('+fileurl+')');
 
   // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得

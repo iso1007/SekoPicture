@@ -275,7 +275,7 @@ pictureCheckList.loopPictureList = async function(koujiname, ary) {
   var pictureCheckListArray = ary;
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   try {
     // directoryEntryオブジェクトを取得
     var directoryEntry = await localFile.getFileSystemURL(folderurl);

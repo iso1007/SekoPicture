@@ -36,6 +36,9 @@ var presentLocation = {lat : 0, lng : 0, alt : 0, tim : 0};
 // 同期処理のループを途中で中断する場合に使用するフラグ
 var loopBreakFlag = false;
 
+// ローカルデバイス
+var localStorageDirectory = '';
+     
 var app = function() {};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -86,6 +89,16 @@ ons.ready(function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 app.afterLoginInitialize1 = function() {
   _log(1,'function','app.afterLoginInitialize1()');
+
+  // デバイスのOSによってローカルの保存ディレクトリをセット
+  if(device.platform === 'iOS') {
+  // ローカルデバイス
+    localStorageDirectory = cordova.file.documentsDirectory;
+  }else{
+    if(device.platform === 'Android') {
+      localStorageDirectory = cordova.file.externalDataDirectory;
+    }
+  }
 
   // オフライン時は実行しない
   if(activeuser.uid !== '') {
@@ -187,7 +200,7 @@ app.setSelfTimer = function(waiteTime) {
   }else{
     $('#selfTimerTime').text(waiteTime);
   }
- 
+
   // ポップオーバーメニューを消去
   menuSelfTimer.hide();
 };

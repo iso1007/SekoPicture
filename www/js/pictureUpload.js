@@ -65,7 +65,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
   $('#upload-dlg-button').hide();
 
   // iosはDocuments/クラウド非同期フォルダ/工事名フォルダを参照
-  var folderurl = cordova.file.documentsDirectory + koujiname;
+  var folderurl = localStorageDirectory + koujiname;
   var directoryEntry = null;
   try {
     // directoryEntryオブジェクトを取得
@@ -247,7 +247,7 @@ pictureUpload.controlFileUpdate = function(fileWriter, src, count, flg) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureUpload.reset = function() {
   _log(1,'function','pictureUpload.reset()');
-  
+
   var koujiname = $('#koujiListItemName').text();
   var listItem = $('#koujiPictureList').children('ons-list-item');
   if(listItem.length == 0) {
@@ -257,7 +257,7 @@ pictureUpload.reset = function() {
 
   var pictureListArray = new Array();
   var resetMaxCount = 0;
-  
+
   if(pictureAllCount === 0) {
     _information('リセットする写真がありません。');
   }else{
@@ -274,24 +274,24 @@ pictureUpload.reset = function() {
     if(resetMaxCount === 0) {
       _information('リセットする写真がありません。');
     }else{
-    
-      
+
+
       $('#upload-dlg').show();
-      
+
       $('#upload-dlg-mesage').text('リセット中です。');
       $('#upload-dlg-progress').show();
       $('#upload-dlg-button').hide();
 
       // 写真リストをループ
       var koujiPictureResetIntervalId = -1;
-      
-      var folderurl = cordova.file.documentsDirectory + koujiname;
-  
+
+      var folderurl = localStorageDirectory + koujiname;
+
       // dataDirectoryフォルダのDirectoryEntryオブジェクトを取得
       window.resolveLocalFileSystemURL(folderurl,
         // (resolveLocalFileSystemURL)成功時のコールバック関数
         function getdirectoryEntry(directoryEntry) {
-          
+
           filename = '';
           var i = 0;
           var resetCount = 0;
@@ -299,17 +299,17 @@ pictureUpload.reset = function() {
           // ファイル名毎のループ処理
           var intervalLoop = function(){
             if(i < pictureListArray.length) {
-              
+
               filename = pictureListArray[i];
               i++;
 
               // 情報ファイルのアッロード情報をリセットする
-              pictureUpload.resetInformation(directoryEntry, koujiname, filename, function() {    
-                
+              pictureUpload.resetInformation(directoryEntry, koujiname, filename, function() {
+
                 resetCount++;
-              
+
                 // プログレスバーの位置計算
-                var progressValue = Math.ceil(resetCount/resetMaxCount*100); 
+                var progressValue = Math.ceil(resetCount/resetMaxCount*100);
                 $('#upload-dlg-progress').attr('value',String(progressValue));
                 $('#upload-dlg-counter').text(resetCount+'/'+resetMaxCount);
 
@@ -321,7 +321,7 @@ pictureUpload.reset = function() {
                 if(resetCount === resetMaxCount) {
                   // ループ処理を終了する
                   clearInterval(koujiPictureResetIntervalId);
-                  
+
                  // 工事写真管理ファイルの件数情報更新
                  $('#upload-dlg-progress').hide();
 
@@ -329,14 +329,14 @@ pictureUpload.reset = function() {
                  $('#upload-dlg-button').show();
                 }
               });
-            }  
+            }
           };
           // 1000ミリ秒毎に１件づつアップロードを繰りまえす
           koujiPictureResetIntervalId = setInterval(intervalLoop, 1000);
 
           // 管理ファイルのアップロード件数を０リセット
           pictureUpload.controlReset(directoryEntry, pictureAllCount);
-  
+
         },
         function fail(e) {
           _errorlog(1,'pictureUpload.reset()',e.code+'->'+koujiname);
@@ -347,8 +347,8 @@ pictureUpload.reset = function() {
       var koujiListCountId = $('#koujiListCountId').text();
       $('#'+koujiListCountId).text(pictureAllCount);
       $('#'+koujiListCountId).css('background-color', 'darkorange');
-      
-    }  
+
+    }
   }
 };
 
@@ -358,7 +358,7 @@ pictureUpload.reset = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureUpload.uploadDlgHide = function() {
   _log(1,'function','pictureUpload.uploadDlgHide()');
-  
+
   // 工事一覧に戻る
   koujiPictureListTokoujiList();
 };
@@ -367,13 +367,13 @@ pictureUpload.uploadDlgHide = function() {
 // pictureUpload.resetInformation()
 // 工事写真のアイテムをアップロード
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, normal_callback) {    
+pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, normal_callback) {
   _log(1,'function','pictureUpload.resetInformation('+koujiname+','+filename+')');
-  
+
   // 写真情報ファイルをアップロード
-  var infofile = filename + '.json'; 
+  var infofile = filename + '.json';
   // 一覧からファイル名を取得
-  directoryEntry.getFile('information/'+infofile, null, 
+  directoryEntry.getFile('information/'+infofile, null,
     function getFile(fileEntry) {
     // Fileオブジェクトを取得
       fileEntry.file(
@@ -381,7 +381,7 @@ pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, n
           var reader = new FileReader();
           reader.readAsText(file);
           reader.onloadend = function(e) {
-            
+
             // 写真情報ファイルをjson形式に変換
             var json_text = JSON.parse(reader.result);
             // ローカルにある写真情報ファイルにアップロード未フラグをセット
@@ -389,7 +389,7 @@ pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, n
             var json_out  = JSON.stringify(json_text);
 
             blob = new Blob( [json_out], {type:"JSON\/javascript"} );
-            
+
             fileEntry.createWriter(
               // (fileEntry.createWriter)の成功
               function success3(fileWriter) {
@@ -423,11 +423,11 @@ pictureUpload.resetInformation = function(directoryEntry, koujiname, filename, n
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureUpload.controlReset = function(directoryEntry, count) {
   _log(1,'function','pictureUpload.controlReset()');
-  
+
   // 工事写真の管理ファイルを更新
   var filename = 'control' + '.json';
   // 一覧からファイル名を取得
-  directoryEntry.getFile('information/'+filename, null, 
+  directoryEntry.getFile('information/'+filename, null,
     function getFile(fileEntry) {
     // Fileオブジェクトを取得
       fileEntry.file(
@@ -440,12 +440,12 @@ pictureUpload.controlReset = function(directoryEntry, count) {
             json_text.picture_count = count;
             json_text.upload_count  = 0;
             var json_out = JSON.stringify(json_text);
-  
+
             blob = new Blob( [json_out], {type:"JSON\/javascript"} );
-            
+
             // firebaseDatabaseの工事情報を更新
             setFirebaseKoujiinfo(json_text);
-            
+
             fileEntry.createWriter(
               // (fileEntry.createWriter)の成功
               function success3(fileWriter) {
