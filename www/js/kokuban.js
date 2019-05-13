@@ -737,7 +737,11 @@ kokuban.setDateFormat = function(date) {
 	}
   if(Hiduke.indexOf('YY') > -1) {
 		if(date > newGengou) {
-      Hiduke = Hiduke.replace( 'YY', date.getFullYear() - 1988 );
+			if(date.getFullYear() == 2019) {
+        Hiduke = Hiduke.replace( 'YY', '元' );
+			}else{
+        Hiduke = Hiduke.replace( 'YY', date.getFullYear() - 2018 );
+			}
 		}else{
       Hiduke = Hiduke.replace( 'YY', date.getFullYear() - 1988 );
 		}
