@@ -72,7 +72,7 @@ firebaseAuth.loginDialogShow = function () {
           $('input#email-input').attr('readonly',false);
           $("ons-row#pass-input").show();
           $("ons-row#passconf-input").hide();
-          $("ons-button#logoff").text("新しいユーザーを登録する");
+          $("ons-button#logoff")[0].innerText = "新しいユーザーを登録する";
         }else{
           // 前回正常ログイン
           $("input#email-input").val(activeuser.email);
@@ -81,7 +81,7 @@ firebaseAuth.loginDialogShow = function () {
           $('input#email-input').attr('readonly',true);
           $("ons-row#pass-input").hide();
           $("ons-row#passconf-input").hide();
-          $("ons-button#logoff").text("別のユーザーで使用する");
+          $("ons-button#logoff")[0].innerText = "別のユーザーで使用する";
         };
         // ログインダイアログの表示
         loginDialog.show();
@@ -115,10 +115,10 @@ if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
   $("ons-row#pass-input").show();
   if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
     // 新規登録の場合は確認パスワードのボックスを表示
-    $("ons-button#logoff").text("既存のユーザーで使用する");
+    $("ons-button#logoff")[0].innerText = "既存のユーザーで使用する";
     $("ons-row#passconf-input").show();
   }else{
-    $("ons-button#logoff").text("新しいユーザーを登録する");
+    $("ons-button#logoff")[0].innerText = "新しいユーザーを登録する";
     $("ons-row#passconf-input").hide();
   };
 
@@ -140,10 +140,10 @@ if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
   $("ons-row#pass-input").show();
   if($("ons-button#logoff").text() === "新しいユーザーを登録する") {
     // 新規登録の場合は確認パスワードのボックスを表示
-    $("ons-button#logoff").text("既存のユーザーで使用する");
+    $("ons-button#logoff")[0].innerText = "既存のユーザーで使用する";
     $("ons-row#passconf-input").show();
   }else{
-    $("ons-button#logoff").text("新しいユーザーを登録する");
+    $("ons-button#logoff")[0].innerText = "新しいユーザーを登録する";
     $("ons-row#passconf-input").hide();
   };
 
