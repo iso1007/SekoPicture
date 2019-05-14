@@ -548,6 +548,7 @@ app.setElementPosition = function() {
   // 最小ボタン高さを計算(最小を60pxとする)
   var BtnHeight = 60;   // 機能ボタンの高さの初期値
   var BtnSideGap = 15;  // 機能ボタンの上下マージンの初期値
+  if(device.platform === 'Android') {BtnSideGap = 1}
   // 写真エリアの上下ボーダー幅が、ボタン高さ+上下マージンよりも広い場合はボタン高さを計算
   if(picBoxBorderTopBottom > (BtnHeight + BtnSideGap * 2)) {
     BtnHeight = picBoxBorderTopBottom - BtnSideGap * 2;
