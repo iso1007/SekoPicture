@@ -638,7 +638,7 @@ function koujiListAddElement(pictureInfoArray) {
                     '<p class="textsize3" id="thumbnailListItem_datetime'+filename+'" style="margin:0">'+ary[filename].datetime+'</p>'+
                   '</ons-col>'+
                   '<ons-col width="6%" align="top">'+
-                    '<ons-icon class="iconsize3" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+'"></ons-icon>'+
+                    '<ons-icon class="iconsize3" id="uploadicon'+filename+'" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+'"></ons-icon>'+
                   '</ons-col>'+
                 '</ons-row>'+
                 '<ons-row style="color:gray">'+
@@ -1318,6 +1318,12 @@ async function koujiPictureViewClose() {
     // サムネイル画像を再表示(キャッシュから表示されないようにする)
     var img = $('#thumbnailListItem_img'+filename).attr('src');
     $('#thumbnailListItem_img'+filename).attr('src', img+info.datetime);
+    // アップロード済みフラグを未アップロードに変更
+    if(info.upload === 'Untreated') {
+      $('#uploadicon'+filename).attr('icon', 'ion-android-more-horizontal');
+      $('#uploadicon'+filename).css('color', 'darkorange');
+      $('#upload'+filename).text(info.upload);
+		}
   } catch(e) {
     errcode = e.code;
   }
