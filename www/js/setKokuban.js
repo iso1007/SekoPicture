@@ -56,8 +56,8 @@ setKokuban.setItemInitialize = function() {
   // 読み込んだテキストをJSON形式に変換
   var json_koji = JSON.parse(str);
   // 項目毎の検索イベントを定義する
-  $('#setHelpKouji').off('touchstart');
-  $('#setHelpKouji').on('touchstart',function() {
+  $('#setHelpKouji').off('click');
+  $('#setHelpKouji').on('click',function() {
     setKokuban.setHelpKouji(json_koji);
   });
 
@@ -65,50 +65,50 @@ setKokuban.setItemInitialize = function() {
   var str = localStrage.getItems('firebase:group00/config/field');
   // 読み込んだテキストをJSON形式に変換
   var json = JSON.parse(str);
-  $('#setHelpKousyu').off('touchstart');
-  $('#setHelpKousyu').on('touchstart',function() {
+  $('#setHelpKousyu').off('click');
+  $('#setHelpKousyu').on('click',function() {
     setKokuban.setHelpKousyu(json);
   });
-  $('#setHelpSokuten').off('touchstart');
-  $('#setHelpSokuten').on('touchstart',function() {
+  $('#setHelpSokuten').off('click');
+  $('#setHelpSokuten').on('click',function() {
     setKokuban.setHelpSokuten(json);
   });
-  $('#setHelpHiduke').off('touchstart');
-  $('#setHelpHiduke').on('touchstart',function() {
+  $('#setHelpHiduke').off('click');
+  $('#setHelpHiduke').on('click',function() {
     setKokuban.setHelpHiduke();
   });
-  $('#setHelpBikou').off('touchstart');
-  $('#setHelpBikou').on('touchstart',function() {
+  $('#setHelpBikou').off('click');
+  $('#setHelpBikou').on('click',function() {
     setKokuban.setHelpBikou(json);
   });
-  $('#setHelpSyamei').off('touchstart');
-  $('#setHelpSyamei').on('touchstart',function() {
+  $('#setHelpSyamei').off('click');
+  $('#setHelpSyamei').on('click',function() {
     setKokuban.setHelpSyamei(json);
   });
 
   // 項目毎の入力項目クリック時に発生する検索を停止する
-  $('#setInputKouji').off('touchstart');
-  $('#setInputKouji').on('touchstart', function(e) {
+  $('#setInputKouji').off('click');
+  $('#setInputKouji').on('click', function(e) {
     e.stopImmediatePropagation();
   });
-  $('#setInputKousyu').off('touchstart');
-  $('#setInputKousyu').on('touchstart', function(e) {
+  $('#setInputKousyu').off('click');
+  $('#setInputKousyu').on('click', function(e) {
     e.stopImmediatePropagation();
   });
-  $('#setInputSokuten').off('touchstart');
-  $('#setInputSokuten').on('touchstart', function(e) {
+  $('#setInputSokuten').off('click');
+  $('#setInputSokuten').on('click', function(e) {
     e.stopImmediatePropagation();
   });
-  $('#setInputHiduke').off('touchstart');
-  $('#setInputHiduke').on('touchstart', function(e) {
+  $('#setInputHiduke').off('click');
+  $('#setInputHiduke').on('click', function(e) {
     e.stopImmediatePropagation();
   });
-  $('#setInputBikou').off('touchstart');
-  $('#setInputBikou').on('touchstart', function(e) {
+  $('#setInputBikou').off('click');
+  $('#setInputBikou').on('click', function(e) {
     e.stopImmediatePropagation();
   });
-  $('#setInputSyamei').off('touchstart');
-  $('#setInputSyamei').on('touchstart', function(e) {
+  $('#setInputSyamei').off('click');
+  $('#setInputSyamei').on('click', function(e) {
     e.stopImmediatePropagation();
   });
 
