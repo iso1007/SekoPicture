@@ -1,7 +1,32 @@
 /* 画面サイズの横幅が374px以下の場合に適用 */
-/* 中間サイズを分ける場合は以下の記述を追加する
-/*@media (min-width: 375px) and (max-width: 767px) {*/
-@media (max-width: 767px) {
+@media (max-width: 374px) {
+  /* アイコンサイズ */
+  .iconsize1 { font-size: 12px; }
+  .iconsize2 { font-size: 16px; }
+  .iconsize3 { font-size: 18px; }
+  .iconsize4 { font-size: 25px; }
+  .iconsize5 { font-size: 28px; }
+  .iconsize6 { font-size: 31px; }
+  .iconsize7 { font-size: 37px; }
+  .iconsize8 { font-size: 46px; }
+
+  /* テキストサイズ */
+  .textsize1 { font-size:  3px; }
+  .textsize3 { font-size: 10px; }
+  .textsize4 { font-size: 12px; }
+  .textsize5 { font-size: 14px; }
+  .textsize6 { font-size: 16px; }
+  .textsize9 { font-size: 28px; }
+
+  .contentsize8 { height:80%; }
+
+  /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
+  #previewMessage { font-size: 28px; margin-top : 150px; }
+  #selfTimerCounter { font-size: 180 px; margin-top: 100px; }
+}
+
+/* 中間サイズを分ける場合は以下の記述を追加する */
+@media (min-width: 375px) and (max-width: 767px) {
   /* アイコンサイズ */
   .iconsize1 { font-size: 14px; }
   .iconsize2 { font-size: 18px; }
@@ -9,8 +34,9 @@
   .iconsize4 { font-size: 28px; }
   .iconsize5 { font-size: 31px; }
   .iconsize6 { font-size: 35px; }
+  .iconsize7 { font-size: 42px; }
   .iconsize8 { font-size: 50px; }
-  
+
   /* テキストサイズ */
   .textsize1 { font-size:  4px; }
   .textsize3 { font-size: 12px; }
@@ -18,10 +44,9 @@
   .textsize5 { font-size: 16px; }
   .textsize6 { font-size: 18px; }
   .textsize9 { font-size: 30px; }
-  
-  /*.contentsize7 { height:80%; }*/
+
   .contentsize8 { height:83%; }
-  
+
   /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
   #previewMessage { font-size: 30px; margin-top : 150px; }
   #selfTimerCounter { font-size: 200px; margin-top: 100px; }
@@ -36,8 +61,9 @@
   .iconsize4 { font-size: 37px; }
   .iconsize5 { font-size: 40px; }
   .iconsize6 { font-size: 45px; }
+  .iconsize7 { font-size: 52px; }
   .iconsize8 { font-size: 62px; }
-  
+
   /* テキストサイズ */
   .textsize1 { font-size: 10px; }
   .textsize3 { font-size: 18px; }
@@ -46,11 +72,9 @@
   .textsize6 { font-size: 24px; }
   .textsize9 { font-size: 40px; }
 
-  /*.contentsize7 { height:85%; }*/
   .contentsize8 { height:90%; }
 
   /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
   #previewMessage { font-size: 50px; margin-top : 450px; }
   #selfTimerCounter { font-size: 300px; margin-top: 300px; }
 }
-

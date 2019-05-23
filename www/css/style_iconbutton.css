@@ -15,7 +15,7 @@
 /*カメラ画面の機能ボタン*/
 ons-button.cameraCtrl {
   padding-top: 3%;
-  color: #1c4466;
+	color: #294751;
   text-align: center;
   background-image: -webkit-linear-gradient(#dddddd 0%, #bbbbbb 100%);
   background-image: linear-gradient(#dddddd 0%, #bbbbbb 100%);
@@ -27,6 +27,12 @@ ons-button.cameraCtrl {
 
 ons-button.cameraCtrl.disabled {
   color: gray;
+}
+
+#selfTimerTime {
+    position: absolute;
+    top: 30px;
+    left: 33px;
 }
 
 /*メインメニュー画面の機能ボタン*/

@@ -24,17 +24,17 @@ img.thumbnail {
 @media (max-width: 767px) {
   /* サムネイル(小) */
   img.thumbnail.tile-s {
-    height: 67px;
+    width: calc(100vw / 4 - 4px);
   }
 
   /* サムネイル(中) */
   img.thumbnail.tile-m {
-    height: 90px;
+    width: calc(100vw / 3 - 4px);
   }
 
   /* サムネイル(大) */
   img.thumbnail.tile-l {
-    height: 137px;
+    width: calc(100vw / 2 - 4px);
   }
 }
 
@@ -42,17 +42,17 @@ img.thumbnail {
 @media (min-width: 768px) {
   /* サムネイル(小) */
   img.thumbnail.tile-s {
-    height: 112px;
+    width: calc(100vw / 5 - 4px);
   }
 
   /* サムネイル(中) */
   img.thumbnail.tile-m {
-    height: 141px;
+    width: calc(100vw / 4 - 4px);
   }
 
   /* サムネイル(大) */
   img.thumbnail.tile-l {
-    height: 188px;
+    width: calc(100vw / 3 - 4px);
   }
 }
 

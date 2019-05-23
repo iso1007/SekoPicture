@@ -51,6 +51,10 @@ ons.ready(function() {
   // 端末標準のステータスバーを非表示にする
   StatusBar.hide();
 
+  let MaxWidth  = window.innerWidth;
+  let MaxHeight = window.innerHeight;
+  $('#displayResolution').text(MaxWidth + '×'+ MaxHeight);
+
   // 起動時の背景色
   $('html').css('background-color','#524e4d');
 
@@ -548,14 +552,13 @@ app.setElementPosition = function() {
   // 最小ボタン高さを計算(最小を60pxとする)
   var BtnHeight = 60;   // 機能ボタンの高さの初期値
   var BtnSideGap = 15;  // 機能ボタンの上下マージンの初期値
-  if(device.platform === 'Android') {BtnSideGap = 1}
-  // 写真エリアの上下ボーダー幅が、ボタン高さ+上下マージンよりも広い場合はボタン高さを計算
-  if(picBoxBorderTopBottom > (BtnHeight + BtnSideGap * 2)) {
-    BtnHeight = picBoxBorderTopBottom - BtnSideGap * 2;
-    // ボタンの高さが100pxを超えた場合は上下マージンを再計算
-    if(BtnHeight > 100) {
-      BtnHeight = 100;
-      BtnSideGap = (picBoxBorderTopBottom - BtnHeight) / 2;
+  var postAdjust = 0;
+  if(device.platform === 'iOS') {
+    postAdjust = 35;
+  }else{
+    if(device.platform === 'Android') {
+      postAdjust = 45;
+      BtnSideGap = 1;
     }
   }
 
@@ -585,7 +588,7 @@ app.setElementPosition = function() {
 
     $(btnName).css({
       opacity  : 0.8,
-      padding  : Math.round((BtnHeight-35)/2-2)+'px',  // 35はアイコンサイズ
+     'padding' : Math.round((BtnHeight-postAdjust)/2)+'px 0px 0px 0px',
       position : 'absolute',
       top      : BtnSideGap,
       left     : ((MaxWidth - picBoxBorderLeftRight) / 5) * pty + picBoxBorderLeftRight,
@@ -598,7 +601,7 @@ app.setElementPosition = function() {
   $('ons-button#koujiListDisplay').css({
     opacity  : 0.8,
     position : 'absolute',
-    padding  : Math.round((BtnHeight-30)/2-2)+'px',  // 30はアイコンサイズ
+   'padding' : Math.round((BtnHeight-postAdjust)/2)+'px 0px 0px 0px',
     top      : MaxHeight - BtnHeight - BtnSideGap,
     left     : picBoxBorderLeftRight,
     height   : BtnHeight,
@@ -609,7 +612,7 @@ app.setElementPosition = function() {
   $('ons-button#cameraTakeButton').css({
     opacity  : 0.8,
     position : 'absolute',
-    padding  : Math.round((BtnHeight-30)/2-2)+'px',  // 30はアイコンサイズ
+   'padding' : Math.round((BtnHeight-postAdjust)/2)+'px 0px 0px 0px',
     top      : MaxHeight - BtnHeight - BtnSideGap,
     left     : ((MaxWidth - picBoxBorderLeftRight) / 5) * 1 + picBoxBorderLeftRight,
     height   : BtnHeight,
@@ -620,19 +623,12 @@ app.setElementPosition = function() {
   $('ons-button#pictureCheckButton').css({
     opacity  : 0.8,
     position : 'absolute',
-    padding  : Math.round((BtnHeight-30)/2-2)+'px',  // 30はアイコンサイズ
+   'padding' : Math.round((BtnHeight-postAdjust)/2)+'px 0px 0px 0px',
     top      : MaxHeight - BtnHeight - BtnSideGap,
     left     : ((MaxWidth - picBoxBorderLeftRight) / 5) * 4 + picBoxBorderLeftRight,
     height   : BtnHeight,
     width    : (MaxWidth - picBoxBorderLeftRight) / 5 - picBoxBorderLeftRight
   });
-
-  // セルフタイマーが設定されている場合は、アイコンサイズを小さくする
-  if($('#selfTimerTime').text()==='') {
-    $('#iconSelfTimer').removeClass('iconsize3').addClass('iconsize5');
-  }else{
-    $('#iconSelfTimer').removeClass('iconsize5').addClass('iconsize3');
-  }
 
   // 起動時のフラッシュモードを'auto'にする
 //  $('#setFlashType').text('A');

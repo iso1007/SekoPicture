@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="css/style_popover.css">
 </head>
 <body>
+  <p align="right" id="displayResolution"></p>
+
   <!--機能メニュー画面 -->
   <ons-navigator id="setNavigator" var="setNavigator" page="confMenu.html" style="visibility:hidden">
   </ons-navigator>
@@ -48,33 +50,32 @@
     <!--機能ボタン-->
     <div id="tool-button1">
       <ons-button class="cameraCtrl" id="setSelfTimer"  modifier="outline" onclick="app.setSelfTimerClick()">
-        <ons-icon class="iconsize5" id="iconSelfTimer" icon="ion-clock" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" id="iconSelfTimer" icon="md-time-countdown" rotate="0"></ons-icon>
         <span class="notification" id="selfTimerTime" style=""></span>
       </ons-button>
       <ons-button class="cameraCtrl" id="setFlashMode"  modifier="outline" onclick="app.setFlashModeClick()">
-        <ons-icon class="iconsize5" icon="ion-flash" rotate="0"></ons-icon>
-        <span id="setFlashType" style=""></span>
+        <ons-icon class="iconsize6" icon="md-flash-off" rotate="0"></ons-icon>
       </ons-button>
       <ons-button class="cameraCtrl" id="setGridBroder" modifier="outline" onclick="app.setGridBroderClick()">
-        <ons-icon class="iconsize5" icon="ion-ios-grid-view-outline" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" icon="md-grid" rotate="0"></ons-icon>
       </ons-button>
       <ons-button class="cameraCtrl" id="switchCamera"  modifier="outline" onclick="app.switchCameraClick()">
-        <ons-icon class="iconsize5" icon="ion-ios-reverse-camera-outline" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" icon="md-camera-switch" rotate="0"></ons-icon>
       </ons-button>
       <ons-button class="cameraCtrl" id="controlPanel"  modifier="outline" onclick="app.controlPanelClick()">
-        <ons-icon class="iconsize5" icon="ion-gear-a" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" icon="md-settings" rotate="0"></ons-icon>
       </ons-button>
     </div>
     <!--シャッターボタン-->
     <div id="tool-button2">
       <ons-button class="cameraCtrl" id="koujiListDisplay" modifier="outline" onclick="app.koujiListDisplayClick()">
-        <ons-icon class="iconsize4" icon="fa-picture-o" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" icon="md-collection-image" rotate="0"></ons-icon>
       </ons-button>
       <ons-button class="cameraCtrl" id="cameraTakeButton" modifier="outline" onclick="app.cameraTakeButtonClick()">
-        <ons-icon class="iconsize4" icon="fa-camera" rotate="0"></ons-icon>
+        <ons-icon class="iconsize7" icon="md-camera" rotate="0"></ons-icon>
       </ons-button>
       <ons-button class="cameraCtrl" id="pictureCheckButton" modifier="outline" onclick="app.pictureCheckButtonClick()">
-        <ons-icon class="iconsize4" icon="fa-check-square-o" rotate="0"></ons-icon>
+        <ons-icon class="iconsize6" icon="md-check-square" rotate="0"></ons-icon>
       </ons-button>
     </div>
 
@@ -125,6 +126,7 @@
   <script type="text/javascript" src="js/confMenu.js"></script>
   <script type="text/javascript" src="js/confKokuban.js"></script>
   <script type="text/javascript" src="js/confPicture.js"></script>
+  <script type="text/javascript" src="js/confCommon.js"></script>
   <script type="text/javascript" src="js/checkPicture.js"></script>
   <script type="text/javascript" src="js/koujiList.js"></script>
   <script type="text/javascript" src="js/pictureUpload.js"></script>
