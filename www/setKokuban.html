@@ -10,7 +10,7 @@
   </ons-toolbar>
   
   <ons-list id="setKokubanItems" style="width:100%;height:100%;overflow:scroll" class="content_back_color">
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-building-o" style="color: blue"></ons-icon></ons-col>
         <ons-col class="textsize4">工事名</ons-col>
@@ -22,7 +22,7 @@
       <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
     
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-gavel" style="color: blue"></ons-icon></ons-col>
         <ons-co class="textsize4">工　種</ons-col>
@@ -34,7 +34,7 @@
       <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
     
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-binoculars" style="color: blue"></ons-icon></ons-col>
         <ons-col class="textsize4">測　点</ons-col>
@@ -46,7 +46,7 @@
       <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
 
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-calendar" style="color: blue"></ons-icon></ons-col>
         <ons-col class="textsize4">日　付</ons-col>
@@ -58,7 +58,7 @@
       <ons-icon class="iconsize4" icon="fa-chevron-circle-right" style="color: blue"></ons-icon>
     </ons-list-item>
 
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-file-text-o" style="color: blue"></ons-icon></ons-col>
         <ons-col class="textsize4">備　考</ons-col>
@@ -93,7 +93,7 @@
     </ons-list-item>
     <!-- 2018/01/24 追加 ↑-->
     
-    <ons-list-header>
+    <ons-list-header modifier="uniform">
       <ons-row>
         <ons-col width="8%"><ons-icon icon="fa-building-o" style="color: blue"></ons-icon></ons-col>
         <ons-col class="textsize4">会社名</ons-col>
@@ -108,7 +108,7 @@
 
   <ons-modal id="setHelpModal">
     <ons-list modifier="inset" class="modal_back_color" style="height:90%;overflow:scroll">
-      <ons-list-header>
+      <ons-list-header modifier="uniform">
         <ons-col class="textsize4" id="setHelpTitle"></ons-col>
       </ons-list-header>
       
@@ -235,7 +235,7 @@
   <ons-modal id="shapeViewModal">
     <ons-list modifier="inset" style="height:90%;overflow:auto" class="modal_back_color">
     <!--<ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">-->
-      <ons-list-header class="textsize4">略図選択</ons-list-header>
+      <ons-list-header class="textsize4" modifier="uniform">略図選択</ons-list-header>
       
       <ons-list id="shapeSelected" class="contentsize8" style="overflow:auto">
       </ons-list>
@@ -257,7 +257,7 @@
   <!--略図表示位置選択用ダイアログ-->
   <ons-modal id="shapePositionModal">
     <ons-list modifier="inset" style="width:95%;height:90%;overflow:auto" class="modal_back_color">
-      <ons-list-header class="textsize4">表示設定</ons-list-header>
+      <ons-list-header class="textsize4" modifier="uniform">表示設定</ons-list-header>
       
       <ons-list id="shapePisitionSelected" class="contentsize8" style="overflow:auto">
         <ons-list-item>

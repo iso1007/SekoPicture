@@ -52,6 +52,13 @@ html, body {
   text-align: center;
 }*/
 
+.list-header--uniform {
+  background-color: whitesmoke;
+  color: black;
+  height: 1em;
+  padding-top: 0px;
+}
+
 #setNavigator, #topNavigator, #lstNavigator, #chkNavigator {
   z-index: 2000;
 }
