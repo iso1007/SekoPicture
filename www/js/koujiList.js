@@ -625,7 +625,7 @@ function koujiListAddElement(pictureInfoArray) {
       if(koujiPictureListViewStyle === 'list') {
         // 詳細リスト表示
         var elm =
-          $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px">'+
+          $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="'+ary[filename].pictureId+'">'+
               '<ons-col align="top" width="40%">'+
                 '<img class="thumbnail-s" id="thumbnailListItem_img'+filename+'" src="'+ary[filename].thumbnailuri+'">'+
               '</ons-col>'+
@@ -660,7 +660,7 @@ function koujiListAddElement(pictureInfoArray) {
         // タイル表示
         var elm =
           $('<ul style="margin: 0;padding: 0;">'+
-              '<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;">'+
+              '<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" pictureId="'+ary[filename].pictureId+'">'+
                 '<img class="thumbnail '+koujiPictureListViewStyle+'" src="'+ary[filename].thumbnailuri+'">'+
                 '<ons-icon class="iconsize3" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+';position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                 '<p style="display:none">'+ary[filename].upload+'</p>'+
@@ -947,16 +947,16 @@ function koujiPictureSort(index) {
     // 撮影項目リストの順番に表示
     case 2:
       items.sort(function(a, b){
-        if( $(a).attr('class')+$(a).attr('id') > $(b).attr('class')+$(b).attr('id') ) return 1;
-        if( $(a).attr('class')+$(a).attr('id') < $(b).attr('class')+$(b).attr('id') ) return -1;
+        if( $(a).attr('pictureId')+$(a).attr('id') > $(b).attr('pictureId')+$(b).attr('id') ) return 1;
+        if( $(a).attr('pictureId')+$(a).attr('id') < $(b).attr('pictureId')+$(b).attr('id') ) return -1;
         return 0;
       });
   	  break;
     // 撮影項目リストの逆順に表示
     case 3:
       items.sort(function(a, b){
-        if( $(a).attr('class')+$(a).attr('id') > $(b).attr('class')+$(b).attr('id') ) return -1;
-        if( $(a).attr('class')+$(a).attr('id') < $(b).attr('class')+$(b).attr('id') ) return 1;
+        if( $(a).attr('pictureId')+$(a).attr('id') > $(b).attr('pictureId')+$(b).attr('id') ) return -1;
+        if( $(a).attr('pictureId')+$(a).attr('id') < $(b).attr('pictureId')+$(b).attr('id') ) return 1;
         return 0;
       });
       break;
