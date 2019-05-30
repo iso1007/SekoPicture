@@ -620,6 +620,13 @@ function koujiListAddElement(pictureInfoArray) {
     // 工事写真リストのアイテムをクリアする
     $('#koujiPictureList').empty();
 
+    // 工事写真一覧の表示エリアの高さを計算
+    $('#koujiPictureList').height('100%');
+    let tabmenuHeight = $('#tabbarMenu').height();
+    let piclistHeight = $('#koujiPictureList').height();
+    let piclistHeaderHeight = $('#koujiPictureListHeader').height();
+    $('#koujiPictureList').height(piclistHeight-piclistHeaderHeight-tabmenuHeight);
+
     for(var filename in ary) {
       // 工事毎の行を作成
       if(koujiPictureListViewStyle === 'list') {

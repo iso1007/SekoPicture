@@ -22,7 +22,7 @@
 
   /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
   #previewMessage { font-size: 28px; margin-top : 150px; }
-  #selfTimerCounter { font-size: 180 px; margin-top: 100px; }
+  #selfTimerCounter { font-size: 180px; margin-top: 100px; }
 }
 
 /* 中間サイズを分ける場合は以下の記述を追加する */
