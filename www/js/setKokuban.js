@@ -311,6 +311,11 @@ setKokuban.setHelpHiduke = function() {
       "cancelButtonColor" : '#000000'
     }, function(date){
 			if(typeof date !== 'undefined') {
+        // Androidの場合はstringで返ってくるので、object形式に変換
+			  if(typeof(date) === 'string') {
+          date = new Date( date );
+        }
+				// datePickerから返ってきた日付を、設定された表示形式に変換
         var Hiduke = kokuban.setDateFormat(date);
         $("#setInputHiduke").val(Hiduke);
 			}
