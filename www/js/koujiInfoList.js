@@ -10,6 +10,13 @@ koujiInfoList.koujiListDisplay = function() {
 
   // 工事情報のリストを初期化
   $("#koujiInfoList").empty();
+  // 工事写真一覧の表示エリアの高さを計算
+  $('#koujiInfoList').height('100%');
+  let tabmenuHeight = $('#koujiInfoTabbarMenu').height();
+  let koujilistHeight = $('#koujiInfoList').height();
+  let koujilistHeaderHeight = $('#koujiInfoListHeader').height();
+  $('#koujiInfoList').height(koujilistHeight-koujilistHeaderHeight-tabmenuHeight);
+
   // スプラッシュ表示
   $('#splashModal').show();
 
@@ -354,6 +361,12 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
 
   // 工事写真リストのアイテムをクリアする
   $('#koujiPictureList').empty();
+  // 工事写真一覧の表示エリアの高さを計算
+  $('#koujiPictureList').height('100%');
+  let tabmenuHeight = $('#tabbarMenu').height();
+  let piclistHeight = $('#koujiPictureList').height();
+  let piclistHeaderHeight = $('#koujiPictureListHeader').height();
+  $('#koujiPictureList').height(piclistHeight-piclistHeaderHeight-tabmenuHeight);
 
   // タブバーのクラウドアイコンを非表示にする
   $('#tabbar_cloud').attr('style','visibility:hidden');
