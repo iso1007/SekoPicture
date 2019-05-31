@@ -458,7 +458,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
     // 工事毎の行を作成
     if(koujiPictureListViewStyle === 'list') {
       // 詳細リスト表示
-      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" onclick="koujiInfoList.koujiPictureView(this)">'+
+      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<ons-col align="top" width="40%">'+
                       '<img id="imag'+filename+'" class="thumbnail-s" src="'+thumbnailuri+'">'+
                     '</ons-col>'+
@@ -493,7 +493,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
                   '</ons-list-item>');
     }else{
       // タイル表示
-      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" onclick="koujiInfoList.koujiPictureView(this)">'+
+      var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
 //                    '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                     '<p id="upload'+filename+'" style="display:none"></p>'+
@@ -521,7 +521,7 @@ koujiInfoList.koujiListAddInfo = function(filename, json) {
 
     // 撮影リストでのソートを可能にするためにclassにリストＩＤをセット
     if(k.pictureId === undefined) {k.pictureId = '';}
-    $('#listItem'+filename).attr('class',k.pictureId);
+    $('#listItem'+filename).attr('pictureId',k.pictureId);
 
     // 撮影日時をセット
     if(k.datetime === undefined) {k.datetime = '';}
@@ -609,7 +609,7 @@ koujiInfoList.koujiFilesToolMenu = function(obj) {
     // ソートボタンをクリック
     if(tabMenuButtonId==='pictureListButton-sort'){
       koujiPictureListSortIndex = index;
-      koujiPictureSort(index);
+      koujiInfoList.koujiPictureSort(index);
     }else{
     // ソートボタンをクリック
     if(tabMenuButtonId==='pictureListButton-display'){
@@ -674,16 +674,16 @@ koujiInfoList.koujiPictureSort = function(index) {
     // 撮影項目リストの順番に表示
     case 2:
       items.sort(function(a, b){
-        if( $(a).attr('class')+$(a).attr('id') > $(b).attr('class')+$(b).attr('id') ) return 1;
-        if( $(a).attr('class')+$(a).attr('id') < $(b).attr('class')+$(b).attr('id') ) return -1;
+        if( $(a).attr('pictureId')+$(a).attr('id') > $(b).attr('pictureId')+$(b).attr('id') ) return 1;
+        if( $(a).attr('pictureId')+$(a).attr('id') < $(b).attr('pictureId')+$(b).attr('id') ) return -1;
         return 0;
       });
   	  break;
     // 撮影項目リストの逆順に表示
     case 3:
       items.sort(function(a, b){
-        if( $(a).attr('class')+$(a).attr('id') > $(b).attr('class')+$(b).attr('id') ) return -1;
-        if( $(a).attr('class')+$(a).attr('id') < $(b).attr('class')+$(b).attr('id') ) return 1;
+        if( $(a).attr('pictureId')+$(a).attr('id') > $(b).attr('pictureId')+$(b).attr('id') ) return -1;
+        if( $(a).attr('pictureId')+$(a).attr('id') < $(b).attr('pictureId')+$(b).attr('id') ) return 1;
         return 0;
       });
       break;
