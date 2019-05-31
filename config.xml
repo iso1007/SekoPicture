@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" id="co.jp.yatama.SekoSyashin" version="0.1.05" ios-CFBundleVersion="0.1.05">
+<widget xmlns="http://www.w3.org/ns/widgets" id="co.jp.yatama.SekoSyashin" version="0.1.07" ios-CFBundleVersion="0.1.07">
   <name>施工写真</name>
   <description>Made with YATAMA (http://yatama.co.jp)</description>
   <author/>
@@ -7,17 +7,13 @@
   <allow-navigation href="*"/>
   <allow-intent href="itms:*"/>
   <allow-intent href="itms-apps:*"/>
-  <preference name="Orientation" value="portrait"/>
   <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root"/>
   <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,root"/>
   <preference name="iosPersistentFileLocation" value="Compatibility"/>
   <preference name="loglevel" value="DEBUG"/>
   <preference name="AndroidLaunchMode" value="singleTop"/>
   <preference name="ErrorUrl" value=""/>
-  <preference name="Fullscreen" value="false"/>
-  <preference name="KeepRunning" value="true"/>
   <preference name="SplashScreen" value="screen"/>
-  <preference name="SplashScreenDelay" value="1000"/>
   <preference name="AllowInlineMediaPlayback" value="false"/>
   <preference name="BackupWebStorage" value="cloud"/>
   <preference name="FadeSplashScreenDuration" value="250"/>
@@ -33,7 +29,6 @@
     <param name="ios-package" value="CDVLocalStorage"/>
   </feature>
   <preference name="UIWebViewDecelerationSpeed" value="normal"/>
-  <preference name="monaca:AndroidIsPackageNameSeparate" value="false"/>
   <platform name="ios">
     <icon src="/res/ios/icon/icon.png" width="57" height="57"/>
     <icon src="/res/ios/icon/icon@2x.png" width="114" height="114"/>
@@ -59,25 +54,31 @@
     </config-file>
     <!--　デバイスのカメラの使用を宣言し、メッセージを定義する -->
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription" overwrite="true">
-      <string>本アプリを使用する場合は、必ずカメラの使用を許可して下さい</string>
+      <string>本アプリを使用して写真撮影をする場合に必要です。 アプリを使用する場合は、必ずカメラの使用を許可して下さい。</string>
     </config-file>
     <!--　デバイスのカメラロールの使用を宣言し、メッセージを定義する -->
     <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription" overwrite="true">
-      <string>本アプリを使用する場合は、必ずカメラロールの使用を許可して下さい</string>
+      <string>本アプリを使用してカメラロールから略図を取得することが出来ます。 略図機能を使用する場合は、必ずカメラロールの使用を許可して下さい。</string>
     </config-file>
+    <edit-config file="*-Info.plist" target="NSPhotoLibraryUsageDescription" mode="merge">
+      <string>本アプリを使用してカメラロールから略図を取得することが出来ます。 略図機能を使用する場合は、必ずカメラロールの使用を許可して下さい。</string>
+    </edit-config>
     <!--　デバイスのGPS機能の使用を宣言し、メッセージを定義する -->
     <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription" overwrite="true">
-      <string>写真に位置情報を付加する場合に使用します。</string>
+      <string>本アプリを使用して取得した位置情報を、撮影した写真データ保存する事が出来ます。　位置情報を保存する場合は位置情報サービスの使用を許可して下さい。</string>
     </config-file>
     <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
     <icon src="/res/ios/icon/icon-1024.png" width="1024" height="1024"/>
     <splash src="/res/ios/screen/Default~iphone.png" width="320" height="480"/>
     <splash src="/res/ios/screen/Default@2x~iphone.png" width="640" height="960"/>
     <splash src="/res/ios/screen/Default-568h@2x~iphone.png" width="640" height="1136"/>
-    <splash src="/res/ios/screen/Default-667h.png" width="750" height="1334"/>
     <splash src="/res/ios/screen/Default-736h.png" width="1242" height="2208"/>
     <splash src="/res/ios/screen/Default-Portrait~ipad.png" width="768" height="1024"/>
     <splash src="/res/ios/screen/Default-Portrait@2x~ipad.png" width="1536" height="2048"/>
+    <splash src="/res/ios/screen/Default-Landscape-736h.png" width="2208" height="1242"/>
+    <splash src="/res/ios/screen/Default-Landscape~ipad.png" width="1024" height="768"/>
+    <splash src="/res/ios/screen/Default-Landscape@2x~ipad.png" width="2048" height="1536"/>
+    <splash src="/res/ios/screen/Default-667h.png" width="750" height="1334"/>
     <config-file platform="ios" parent="CFBundleLocalizations" target="*-Info.plist">
       <array>
         <string>ja</string>
@@ -91,12 +92,12 @@
     <icon src="/res/android/icon/xhdpi.png" density="xhdpi"/>
     <icon src="/res/android/icon/xxhdpi.png" density="xxhdpi"/>
     <icon src="/res/android/icon/xxxhdpi.png" density="xxxhdpi"/>
-    <splash src="/res/android/screen/splash-port-ldpi.9.png" density="port-ldpi"/>
-    <splash src="/res/android/screen/splash-port-mdpi.9.png" density="port-mdpi"/>
-    <splash src="/res/android/screen/splash-port-hdpi.9.png" density="port-hdpi"/>
-    <splash src="/res/android/screen/splash-port-xhdpi.9.png" density="port-xhdpi"/>
-    <splash src="/res/android/screen/splash-port-xxhdpi.9.png" density="port-xxhdpi"/>
-    <splash src="/res/android/screen/splash-port-xxxhdpi.9.png" density="port-xxxhdpi"/>
+    <splash src="/res/android/screen/splash-port-ldpi.png" density="port-ldpi"/>
+    <splash src="/res/android/screen/splash-port-mdpi.png" density="port-mdpi"/>
+    <splash src="/res/android/screen/splash-port-hdpi.png" density="port-hdpi"/>
+    <splash src="/res/android/screen/splash-port-xhdpi.png" density="port-xhdpi"/>
+    <splash src="/res/android/screen/splash-port-xxhdpi.png" density="port-xxhdpi"/>
+    <splash src="/res/android/screen/splash-port-xxxhdpi.png" density="port-xxxhdpi"/>
   </platform>
   <platform name="windows">
     <icon src="/res/winrt/icon/package_logo_winrt.png" target="StoreLogo"/>
@@ -122,6 +123,11 @@
   <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
     <string>need to photo library access to save pictures there</string>
   </edit-config>
+  <preference name="KeepRunning" value="true"/>
+  <preference name="monaca:AndroidIsPackageNameSeparate" value="false"/>
+  <preference name="Orientation" value="portrait"/>
+  <preference name="SplashScreenDelay" value="2000"/>
+  <preference name="Fullscreen" value="false"/>
   <preference name="ios-XCBuildConfiguration-TARGETED_DEVICE_FAMILY" value="1,2"/>
   <preference name="AutoHideSplashScreen" value="true"/>
   <preference name="FadeSplashScreen" value="true"/>
