@@ -166,20 +166,28 @@ function setFirebaseKokubanToLocalStrage() {
 function setFirebaseKoujiinfo(json_text) {
   _log(1,'function','setFirebaseKoujiinfo()');
 
-  // control.json からfirebaseDatabaseの工事情報を更新する
-  var folder = activeuser.uid+"/group00/koujiList/"+json_text.koujiname;
+  // 実際の写真枚数をカウント
+  var folder = activeuser.uid+"/group00/pictureList/"+json_text.koujiname;
+  var pictureCount = json_text.picture_count;
+  // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
+  firebase.database().ref(folder).once('value', function(snapshot) {
+    pictureCount = Object.keys(snapshot.val()).length;
 
-  // 撮影開始日時･最終撮影日時･写真枚数 情報の更新
-  firebase.database().ref(folder).update({
+    // control.json からfirebaseDatabaseの工事情報を更新する
+    var folder = activeuser.uid+"/group00/koujiList/"+json_text.koujiname;
+
+    // 撮影開始日時･最終撮影日時･写真枚数 情報の更新
+    firebase.database().ref(folder).update({
         fastDateTime : json_text.fast_datetime,
         lastDateTime : json_text.last_datetime,
-        pictureCount : json_text.picture_count
+        pictureCount : pictureCount
     });
 
-  // 撮影リスト番号が空白でない場合のみ更新する
-  if(json_text.shootinglistNo !== '') {
-    setFirebaseShootinglistNo(json_text.koujiname, json_text.shootinglistNo);
-  }
+    // 撮影リスト番号が空白でない場合のみ更新する
+    if(json_text.shootinglistNo !== '') {
+      setFirebaseShootinglistNo(json_text.koujiname, json_text.shootinglistNo);
+    }
+	});
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
