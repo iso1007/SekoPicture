@@ -485,10 +485,6 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
                         '<ons-col width="94%" align="top">'+
                           '<p class="textsize3" id="date'+filename+'" style="margin:0">'+filename+'</p>'+
                         '</ons-col>'+
-
-//                        '<ons-col width="6%" align="top">'+
-//                          '<ons-icon class="iconsize3" id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color:darkorange"></ons-icon>'+
-//                        '</ons-col>'+
                       '</ons-row>'+
 
                       '<ons-row style="color:gray;">'+
@@ -508,7 +504,6 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
       // タイル表示
       var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
-//                    '<ons-icon id="upload-icon'+filename+'" icon="ion-android-more-horizontal" style="color: darkorange;position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                     '<p id="upload'+filename+'" style="display:none"></p>'+
                     '<p id="date'+filename+'" style="display:none">'+filename+'</p>'+
                     '<p id="kousyu'+filename+'" style="display:none"></p>'+
@@ -540,19 +535,6 @@ koujiInfoList.koujiListAddInfo = function(filename, json) {
     if(k.datetime === undefined) {k.datetime = '';}
     $('#date'+filename).text('撮影:'+k.datetime);
 
-/*
-    // サーバーへのアップロード状況(未処理:'Untreated'、済み:'Already’)
-    if(k.upload === undefined) {k.upload = 'Untreated';}
-    $('#upload'+filename).text(k.upload);
-    if(k.upload === 'Already') {
-      $('#upload-icon'+filename).attr('icon', 'ion-android-cloud-done');
-      $('#upload-icon'+filename).css('color', 'Blue');
-    }
-    if(k.upload === 'Untreated') {
-      $('#upload-icon'+filename).attr('icon', 'ion-android-more-horizontal');
-      $('#upload-icon'+filename).css('color', 'darkorange');
-    }
-*/
     // 工種をセット
     if(k.kousyu === undefined) {k.kousyu = '';}
     if(k.kousyu !== '') {
@@ -824,72 +806,6 @@ koujiInfoList.getPicturelUrl = function(koujiname, filename) {
       reject(e);
 
     });
-  });
-};
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// picturePreview()
-// 選択した工事写真の拡大・縮小表示
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-koujiInfoList.picturePreview = function() {
-  _log(1,'function','picturePreview()');
-
-  $('#koujiviewModal').hide();
-  $('#picturePreviewModal').show();
-
-  var scale = 0.9;
-  var prevScale = 0.9;
-  var dragFlg = false;
-
-  var marginPosX = 0;
-  var marginPosY = 0;
-  var adjustY = 0;
-  var adjustX = 0;
-
-  $("#pictureView").attr({"src":$("#koujiviewPicture").attr("src")});
-  $('#pictureView').css({'transform': 'scale(' + scale + ',' + scale +')'});
-
-  resizeLeft = $('#pictureView').offset().left;
-  resizeTop  = $('#pictureView').offset().top;
-
-  // 2本指でピンチ動作を行なった場合は拡大・縮小
-  $('#pictureView').on('transform', function(event) {
-    scale = Math.max(0.9, Math.min(prevScale * event.originalEvent.gesture.scale, 4));
-    $('#pictureView').css({'transform': 'translate(' + resizeLeft + 'px, ' + resizeTop + 'px) scale(' + scale + ',' + scale +')'});
-  });
-
-  // 画面から指を離した時に、スケール値を退避
-  $('#pictureView').on('release', function(event) {
-    prevScale = scale;
-  });
-
-  // 画面にタッチを開始した時
-  $('#pictureView').on('touchstart', function(event) {
-    // transformが1倍のサイズ位置を設定するための補正
-    adjustY = ($('#pictureView').height() - ($('#pictureView').height() * scale)) / 2 + $('#pictureViewDiv').offset().top;
-    adjustX = ($('#pictureView').width()  - ($('#pictureView').width()  * scale)) / 2;
-
-    if(event.originalEvent.touches.length > 1) {
-      dragFlg = false;
-      // タッチの位置と画像の位置から画像のタッチ位置を取得
-      resizeLeft = $('#pictureView').offset().left - adjustX;
-      resizeTop  = $('#pictureView').offset().top  - adjustY;
-    }else{
-      dragFlg = true;
-      // タッチの位置と画像の位置から画像のタッチ位置を取得
-      marginPosX = event.originalEvent.touches[0].pageX - $('#pictureView').offset().left + adjustX;
-      marginPosY = event.originalEvent.touches[0].pageY - $('#pictureView').offset().top  + adjustY;
-    }
-  });
-
-  // 1本指でドラッグをした時は、イメージを移動
-  $('#pictureView').on('drag', function(event) {
-    if(dragFlg) {
-      var x = event.originalEvent.gesture.touches[0].pageX - marginPosX;
-      var y = event.originalEvent.gesture.touches[0].pageY - marginPosY;
-
-      $('#pictureView').css({'transform': 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ',' + scale +')'});
-    }
   });
 };
 
