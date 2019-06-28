@@ -58,6 +58,12 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
 //async function pictureFileEntrysLoop(koujiname, pictureListArray, pictureAllCount) {
   _log(1,'function','pictureFileEntrysLoop('+koujiname+')');
 
+  // スリープモードを停止
+  try {
+    window.powerManagement.acquire();
+  } catch(e) {
+  }	
+
   $('#upload-dlg').show();
 
   $('#upload-dlg-mesage').text('アップロード中です。');
@@ -275,6 +281,11 @@ pictureUpload.reset = function() {
       _information('リセットする写真がありません。');
     }else{
 
+      // スリープモードを停止
+      try {
+        window.powerManagement.acquire();
+      } catch(e) {
+      }	
 
       $('#upload-dlg').show();
 
@@ -358,6 +369,12 @@ pictureUpload.reset = function() {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 pictureUpload.uploadDlgHide = function() {
   _log(1,'function','pictureUpload.uploadDlgHide()');
+
+  // スリープモードを再開
+  try {
+  	window.powerManagement.release();
+  } catch(e) {
+  }	
 
   // 工事一覧に戻る
   koujiPictureListTokoujiList();
