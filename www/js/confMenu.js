@@ -74,7 +74,7 @@ function confCommonClick() {
     // 画面遷移後に実行されるコールバック
     callback: function() {
       // その他の設定画面の初期設定
-      confCommonInitial();
+      confCommon.Initial();
     }
   };
 

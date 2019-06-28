@@ -88,7 +88,7 @@ koujiInfoList.koujiListDisplay = function() {
       elm = elm + '    </ons-col>';
       elm = elm + '    <ons-col width="4%" align="bottom">';
       if(locat !== '') {
-        elm = elm + '      <a href="'+locat+'">';
+        elm = elm + '      <a href="#" class="locationUrl" url="'+locat+'" onClick="koujiInfoList.locationMap(this)">';
         elm = elm + '      <ons-icon class="iconsize6" icon="ion-location"></a>';
         elm = elm + '      </ons-icon>';
       }
@@ -124,8 +124,25 @@ koujiInfoList.koujiListDisplay = function() {
     alert(e);
   };
 
+  // 地図表示アイコンをタップした場合は、工事のクリックイベントを無効にする
+	$('.locationUrl').click(function(e) {
+    e.stopImmediatePropagation();
+  });
+
   $('#splashModal').hide();
 };
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.locationMap()
+// 地図表示アイコンクリックでgoogleMapを表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.locationMap = function(obj) {
+  _log(1,'function','koujiInfoList.locationMap()');
+
+  var url = $(obj).attr('url');
+  window.open = cordova.InAppBrowser.open;
+  window.open(url, '_system', 'location=yes');
+}
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // koujiInfoList.toolMenuSelect()
