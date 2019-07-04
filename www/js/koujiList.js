@@ -604,6 +604,9 @@ function koujiListAddInfo(text) {
     // 改行コードをhtml形式に変換
     pictureInfo.bikou = pictureInfo.bikou.replace( /\n/g , '<br>' );
 
+    // ハッシュ情報
+    if(pictureInfo.hash === undefined) {pictureInfo.hash = 'off';}
+
     resolve(pictureInfo);
   });
 }
@@ -635,6 +638,7 @@ function koujiListAddElement(pictureInfoArray) {
           $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="'+ary[filename].pictureId+'">'+
               '<ons-col align="top" width="40%">'+
                 '<img class="thumbnail-s" id="thumbnailListItem_img'+filename+'" src="'+ary[filename].thumbnailuri+'">'+
+                '<img class="thumblogo-s" id="thumbnailListItem_hash'+filename+'" src="./img/logo.png" hash="'+ary[filename].hash+'">'+
               '</ons-col>'+
               '<ons-col width=" 2%">'+
                 '<p style="visibility:hidden" id="upload'+filename+'">'+ary[filename].upload+'</p>'+
@@ -669,6 +673,7 @@ function koujiListAddElement(pictureInfoArray) {
           $('<ul style="margin: 0;padding: 0;">'+
               '<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" pictureId="'+ary[filename].pictureId+'">'+
                 '<img class="thumbnail '+koujiPictureListViewStyle+'" src="'+ary[filename].thumbnailuri+'">'+
+                '<img class="thumblogo '+koujiPictureListViewStyle+'" id="thumbnailListItem_hash'+filename+'" src="./img/logo.png" hash="'+ary[filename].hash+'">'+
                 '<ons-icon class="iconsize3" id="uploadicon'+filename+'" icon="'+ary[filename].uploadicon+'" style="color:'+ary[filename].uploadiconcolor+';position: absolute;left: 5px;bottom: 5px;"></ons-icon>'+
                 '<p style="display:none">'+ary[filename].upload+'</p>'+
                 '<p style="display:none">'+ary[filename].datetime+'</p>'+
@@ -917,6 +922,8 @@ function koujiFilesToolMenu(obj) {
         }
         $('img.thumbnail').addClass(koujiPictureListViewStyle);
         $('img.thumbnail').removeClass(beforeStyle);
+        $('img.thumblogo').addClass(koujiPictureListViewStyle);
+        $('img.thumblogo').removeClass(beforeStyle);
       }
     }}}
   });
@@ -1080,6 +1087,11 @@ async function koujiPictureView(obj) {
     // 写真のアップロード済みフラグ
     if(typeof(k.upload) === 'string') {
       $('#koujiviewUpload').text(k.upload);
+    };
+    // 改ざん検知フラグ
+    $('#koujiviewlogo').attr('hash', 'off');
+    if(typeof(k.hash) === 'string' && k.hash === 'on') {
+      $('#koujiviewlogo').attr('hash', 'on');
     };
   } catch(e) {
     _alert('写真の詳細情報の読み込みに失敗しました。'+e.code);
@@ -1331,6 +1343,8 @@ async function koujiPictureViewClose() {
       $('#uploadicon'+filename).css('color', 'darkorange');
       $('#upload'+filename).text(info.upload);
 		}
+		// ハッシュチェックフラグ
+    $('#thumbnailListItem_hash'+filename).attr('hash', info.hash);
   } catch(e) {
     errcode = e.code;
   }

@@ -1,15 +1,24 @@
 /* サムネイル(小) */
 .thumbnail-s {
-  /*padding: 2px 2px 2% 2%;*/
   padding: 0px 0px 0% 0%;
-  /*border: 1px #000 dotted;*/
   border: 1px #000 double;  
-  /*margin: 2px;*/
   margin: 0px;
   width: 100%;
   height: auto;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+
+/* サムネイル(小)表示のDCPロゴ */
+img.thumblogo-s {
+  width: calc(100vw / 9);
+  opacity: 0.0;
+  position: absolute;
+  top: 13px;
+  left: 7px;
+}
+img.thumblogo-s[hash='on'] {
+  opacity: 0.5;
 }
 
 /* タイル形式のサムネイル表示 */
@@ -20,21 +29,53 @@ img.thumbnail {
   -webkit-border-radius: 2px;
 }
 
+/* タイル形式表示のDCPロゴ */
+img.thumblogo {
+  opacity: 0.0;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+img.thumblogo[hash='on'] {
+  opacity: 0.5;
+}
+
+/* プレビュー表示のDCPロゴ */
+img#koujiviewlogo {
+  width: calc(100vw / 8);
+  opacity: 0.0;
+  position: absolute;
+  top: 0px;
+  right: 3%;
+}
+img#koujiviewlogo[hash='on'] {
+  opacity: 1.0;
+}
+
 /* 画面サイズの横幅が374px以下の場合に適用 */
 @media (max-width: 767px) {
   /* サムネイル(小) */
   img.thumbnail.tile-s {
     width: calc(100vw / 4 - 4px);
   }
+  img.thumblogo.tile-s {
+    width: calc(100vw / 12);
+  }
 
   /* サムネイル(中) */
   img.thumbnail.tile-m {
     width: calc(100vw / 3 - 4px);
   }
+  img.thumblogo.tile-m {
+    width: calc(100vw / 9);
+  }
 
   /* サムネイル(大) */
   img.thumbnail.tile-l {
     width: calc(100vw / 2 - 4px);
+  }
+  img.thumblogo.tile-l {
+    width: calc(100vw / 6);
   }
 }
 
@@ -44,15 +85,24 @@ img.thumbnail {
   img.thumbnail.tile-s {
     width: calc(100vw / 5 - 4px);
   }
+  img.thumblogo.tile-s {
+    width: calc(100vw / 15);
+  }
 
   /* サムネイル(中) */
   img.thumbnail.tile-m {
     width: calc(100vw / 4 - 4px);
   }
+  img.thumblogo.tile-m {
+    width: calc(100vw / 12);
+  }
 
   /* サムネイル(大) */
   img.thumbnail.tile-l {
     width: calc(100vw / 3 - 4px);
+  }
+  img.thumblogo.tile-l {
+    width: calc(100vw / 9);
   }
 }
 

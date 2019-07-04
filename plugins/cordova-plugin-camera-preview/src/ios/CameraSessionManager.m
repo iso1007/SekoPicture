@@ -701,7 +701,8 @@
       //Not granted access to mediaType
       dispatch_async(dispatch_get_main_queue(), ^{
           [[[UIAlertView alloc] initWithTitle:@"Error"
-                                      message:@"Camera permission not found. Please, check your privacy settings."
+//                                      message:@"Camera permission not found. Please, check your privacy settings."
+                                      message:@"このアプリでのカメラの使用が許可されていません。[設定]-[プライバシー]-[カメラ]でアクセス許可を設定してください。"
                                      delegate:self
                             cancelButtonTitle:@"OK"
                             otherButtonTitles:nil] show];

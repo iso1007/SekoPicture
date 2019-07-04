@@ -14,7 +14,8 @@
             "cordova-plugin-device": {},
             "cordova-plugin-geolocation": {},
             "cordova-plugin-camera-preview": {},
-            "at.gofg.sportscomputer.powermanagement": {}
+            "at.gofg.sportscomputer.powermanagement": {},
+            "cordova-plugin-inappbrowser": {}
         }
     },
     "dependencies": {
@@ -30,7 +31,8 @@
         "cordova-plugin-device": "2.0.1",
         "cordova-plugin-geolocation": "4.0.1",
         "cordova-plugin-camera-preview": "file:plugins/cordova-plugin-camera-preview",
-        "at.gofg.sportscomputer.powermanagement": "file:plugins/at.gofg.sportscomputer.powermanagement"
+        "at.gofg.sportscomputer.powermanagement": "file:plugins/at.gofg.sportscomputer.powermanagement",
+        "cordova-plugin-inappbrowser": "2.0.1"
     },
     "scripts": {
         "monaca:preview": "npm run dev",

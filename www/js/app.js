@@ -925,7 +925,6 @@ app.cameraTakePicture = function() {
   // 読み込んだテキストをJSON形式に変換
   k = JSON.parse(str);
 
-  // 2018/02/07 ADD ----- ↓
   // 位置情報を付加する設定がされている場合は、GPSから位置情報を取得する
   str = k.locationInformation;
   presentLocation = {lat : 0, lng : 0, alt : 0, tim : 0};
@@ -933,7 +932,11 @@ app.cameraTakePicture = function() {
   if(str === 'on') {
     _getLocation();
   }
-  // 2018/02/07 ADD ----- ↑
+  // 改ざん検知情報を付加するかのフラグを取得
+  str = k.hashInformation;
+  if(str === undefined) {str = 'off';}
+  if(str !== 'on') {str = 'off';}
+  var hashWriteFlg = str;
 
   // 写真サイズ指定
   str = k.size;
@@ -961,6 +964,12 @@ app.cameraTakePicture = function() {
   // 写真エリアの黒板位置を保存
   k.kokubanX = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().top - $('#pic-box').offset().top);
   k.kokubanY = (takeOption.width / $('#pic-box').width()) * ($('#kokuban').offset().left - $('#pic-box').offset().left);
+  // 改ざん検知情報を付加する設定で、既存写真の黒板編集操作でない場合はフラグをセット
+  if($('#pic-edit').attr('name') === '' && hashWriteFlg === 'on') {
+    k.hash = 'on';
+  }else{
+    k.hash = 'off';
+  }
   // JSON形式をテキスト形式に変換
   str = JSON.stringify(k);
   // ローカルストレージに書き戻し

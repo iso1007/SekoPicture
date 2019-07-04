@@ -14,7 +14,7 @@ localStrage.pictureSave = function(img_url, img_width, img_height, img_rot, dire
       // 撮影イメージ(Base64)形式をBlob形式に変換
       // サムネイル画像にはExif情報を付加しない
       var blob = '';
-      if(directory.indexOf('/thumbnail') > 0) {
+      if(directory.indexOf('/thumbnail') > 0 || directory.indexOf('/clipping') > 0) {
         blob = _Base64toBlob( img64 );
       }else{
         // 撮影イメージ(Base64)にExif情報を付加
@@ -229,6 +229,7 @@ localStrage.setInformation = function(directory, filename, callback, error_callb
   json_text.syamei   = json_in.syamei;
   json_text.kokubanX = json_in.kokubanX;
   json_text.kokubanY = json_in.kokubanY;
+  json_text.hash     = json_in.hash;
   var d = new Date();
   var yyyy = d.getFullYear();
   var mm   = d.getMonth()+1;

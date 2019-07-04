@@ -236,15 +236,7 @@ function _setExifInfo(imagesrc) {
   var bikous = json_in.bikou.split('\n'); // 備考の先頭行を取得
   info.Title = bikous[0]; // 写真タイトル
 
-  // ローカルストレージから読み込み
-  var str = localStrage.getItems('firebase:group00/config/picture');
-  // 読み込んだテキストをJSON形式に変換
-  var json_in = JSON.parse(str);
-  var hashWriteFlg = 'on';
-  try {
-    hashWriteFlg = json_in.hashInformation;
-  } catch(e) {
-  }
+  hashWriteFlg = json_in.hash; // ハッシュチェックフラグ
 
   // イメージとexif情報を合成
   var picImage = piexif.insert(exifBytes, imagesrc, info, hashWriteFlg);
