@@ -452,7 +452,7 @@ setKokuban.setHelpBikou = function(json) {
   function addListItem(level, str, fid, flg) {
     var elm = $('');
     if(flg === 'header') {
-      elm = $('<ons-list-header class="textsize4" id="'+fid+'" modifier="longdivider uniform" style="padding-left:'+(level*14)+'px;color:blue">'+str+'</ons-list-header>');
+      elm = $('<ons-list-header class="textsize4" id="'+fid+'" modifier="longdivider uniform" style="padding-top:0px;padding-left:'+(level*14)+'px;color:blue">'+str+'</ons-list-header>');
     }else{
       elm = $('<ons-list-item class="textsize5" tappable id="'+fid+'" modifier="longdivider" onclick="setKokuban.setHelpBikouClick(this)" style="padding-left:'+(level*14)+'px">'+str+'</ons-list-item>');
     }
