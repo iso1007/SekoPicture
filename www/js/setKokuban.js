@@ -316,8 +316,10 @@ setKokuban.setHelpHiduke = function() {
           date = new Date( date );
         }
 				// datePickerから返ってきた日付を、設定された表示形式に変換
-        var Hiduke = kokuban.setDateFormat(date);
-        $("#setInputHiduke").val(Hiduke);
+        if(date.getFullYear() > 2000) {
+          var Hiduke = kokuban.setDateFormat(date);
+          $("#setInputHiduke").val(Hiduke);
+				}
 			}
     });
 };
