@@ -12,13 +12,13 @@
 
   /* テキストサイズ */
   .textsize1 { font-size:  3px; }
-  .textsize3 { font-size: 10px; }
-  .textsize4 { font-size: 12px; }
-  .textsize5 { font-size: 14px; }
-  .textsize6 { font-size: 16px; }
-  .textsize9 { font-size: 28px; }
+  .textsize3 { font-size:  9px; }
+  .textsize4 { font-size: 11px; }
+  .textsize5 { font-size: 13px; }
+  .textsize6 { font-size: 14px; }
+  .textsize9 { font-size: 25px; }
 
-  .contentsize8 { height:80%; }
+  .contentsize8 { height:82%; }
 
   /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
   #previewMessage { font-size: 28px; margin-top : 150px; }
@@ -45,7 +45,7 @@
   .textsize6 { font-size: 18px; }
   .textsize9 { font-size: 30px; }
 
-  .contentsize8 { height:83%; }
+  .contentsize8 { height:85%; }
 
   /* プレビューメッセージ・セルフタイマーカウントダウンメッセージの位置 */
   #previewMessage { font-size: 30px; margin-top : 150px; }
