@@ -52,7 +52,7 @@ setKokuban.setItemInitialize = function() {
   // 2018/01/24 -----↑ ADD
 
   // ローカルストレージから工事情報を読み込み
-  var str = localStrage.getItems('firebase:group00/koujiList');
+  var str = localStrage.getItems('firebase:group00/koujiHelpList');
   // 読み込んだテキストをJSON形式に変換
   var json_koji = JSON.parse(str);
   // 項目毎の検索イベントを定義する
@@ -123,54 +123,11 @@ setKokuban.setHelpKouji = function(json) {
 
   // 検索ダイアログのリストを初期化
   $("#setHelpList").empty();
-  var elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpKoujiClick(this)'></ons-list-item>");
+  let elm = $("<ons-list-item tappable modifier='longdivider' onClick='setKokuban.setHelpKoujiClick(this)'></ons-list-item>");
   elm.appendTo($("#setHelpList"));
 
-  // ローカルストレージのアイテム設定をループして検索リストにセット
-  try {
-    // jsonからsort用の配列を作成
-    var koujilist = [];
-    $.each( json, function(koujiname, data) {
-      var kouji = [koujiname, data.fastDateTime, data.lastDateTime, data.builder];
-      if(data.fastDateTime===undefined) {
-        kouji[1] = '';
-      }
-      if(data.lastDateTime===undefined) {
-        kouji[2] = '';
-      }
-      if(kouji[2]==='') {
-        kouji[2] = '2199/01/01';
-      }
-      if(data.builder===undefined) {
-        kouji[3] = '';
-      }
-      koujilist.push(kouji);
-    });
-    // 最終撮影日時でsort
-    koujilist.sort(function(a,b) {
-      if( a[2] > b[2] ) return -1;
-      if( a[2] < b[2] ) return 1;
-      return 0;
-    });
-    // 工事番号をループしリストを作成する
-    $.each( koujilist, function(i, data) {
-      // 検索リストに要素を追加
-      var elm = '';
-      elm = elm + '<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpKoujiClick(this)">'+data[0]+'\n';
-      elm = elm + '  <ons-row>';
-      if(data[2]==='2199/01/01') {
-        elm = elm + '    <ons-col class="textsize4" id="takeDateTime" width="50%" style="padding:0px;color:darkorange">New!</ons-col>';
-      }else{
-        elm = elm + '    <ons-col class="textsize3" id="takeDateTime" width="50%" style="padding:0px;color:gray">'+data[1].slice(0,10)+' ～ '+data[2].slice(0,10)+'</ons-col>';
-      }
-      elm = elm + '    <ons-col class="textsize3" id="builderName" width="50%" style="padding:0px;color:gray">'+data[3]+'</ons-col>';
-      elm = elm + '  </ons-row>';
-      elm = elm + '</ons-list-item>';
-      $(elm).appendTo($('#setHelpList'));
-    });
-  } catch(e) {
-    alert(e);
-  };
+  // 工事の検索リストを100件ずつで追加・表示する
+  setKokuban.setHelpAddElement(json);
 
   // 検索リストが存在する場合のみ表示
   if($("#setHelpList>ons-list-item").length>0) {
@@ -178,6 +135,49 @@ setKokuban.setHelpKouji = function(json) {
     $("#setHelpTitle").text("工事名検索");
     $("#setHelpModal").show();
   };
+};
+
+//====================================================
+// setKokuban.setHelpAddElement()
+// 工事の検索リストを100件ずつで追加・表示する
+//====================================================
+setKokuban.setHelpAddElement = function(json) {
+  _log(1,'function','setKokuban.setHelpAddElement()');
+
+  // 工事番号をループしリストを作成する
+  $('.helpKoujiNext').remove();
+  let elmCount = $("#setHelpList>ons-list-item").length;
+	let cnt = 0; 
+  $.each( json, function(i, data) {
+    // 検索リストに要素を追加
+    if(i >= elmCount-1 && cnt < 50) {
+      var elm = '';
+      elm = elm + '<ons-list-item class="textsize5" tappable modifier="longdivider" onClick="setKokuban.setHelpKoujiClick(this)">'+data['name']+'\n';
+      elm = elm + '  <ons-row>';
+      if(data['lastDateTime']==='2199/01/01') {
+        elm = elm + '    <ons-col class="textsize4" id="takeDateTime" width="50%" style="padding:0px;color:darkorange">New!</ons-col>';
+      }else{
+        elm = elm + '    <ons-col class="textsize3" id="takeDateTime" width="50%" style="padding:0px;color:gray">'+data['fastDateTime'].slice(0,10)+' ～ '+data['lastDateTime'].slice(0,10)+'</ons-col>';
+      }
+      elm = elm + '    <ons-col class="textsize3" id="builderName" width="50%" style="padding:0px;color:gray">'+data['builder']+'</ons-col>';
+      elm = elm + '  </ons-row>';
+      elm = elm + '</ons-list-item>';
+      $(elm).appendTo($('#setHelpList'));
+      cnt++;
+      if(i+1 === json.length) {
+        cnt = 99999;
+      }
+    }
+    if(cnt === 50) {
+      cnt++;
+      var elm = $("<ons-list-item class='helpKoujiNext textsize5' tappable modifier='longdivider'>▼さらに表示▼</ons-list-item>");
+      $(elm).appendTo($('#setHelpList'));
+      $('.helpKoujiNext').off('click');
+      $('.helpKoujiNext').on('click',function() {
+        setKokuban.setHelpAddElement(json);
+      });
+	  }
+  });
 };
 
 //====================================================

@@ -66,6 +66,35 @@ function setFirebaseToLocalStrage() {
     json_text = JSON.stringify(snapshot.val(), '', '    ');
     // ローカルストレージに書き込み
     localStrage.setItems("firebase:group00/koujiList",json_text);
+
+    // ローカルストレージのアイテム設定をループして工事検索用のリストにセット、jsonからsort用の配列を作成
+    let koujilist = [];
+    $.each( snapshot.val(), function(koujiname, data) {
+      var kouji = {'name' : koujiname, 'fastDateTime' : data["fastDateTime"], 'lastDateTime' : data["lastDateTime"], 'builder' : data["builder"]};
+      if(data["fastDateTime"]===undefined) {
+        kouji["fastDateTime"] = '';
+      }
+      if(data["lastDateTime"]===undefined) {
+        kouji["lastDateTime"] = '';
+      }
+      if(kouji["lastDateTime"]==='') {
+        kouji["lastDateTime"] = '2199/01/01';
+      }
+      if(data["builder"]===undefined) {
+        kouji["builder"] = '';
+      }
+      koujilist.push(kouji);
+    });
+    // 最終撮影日時でsort
+    koujilist.sort(function(a,b) {
+      if( a['lastDateTime'] > b['lastDateTime'] ) return -1;
+      if( a['lastDateTime'] < b['lastDateTime'] ) return 1;
+      return 0;
+    });
+    // 読み込んだJSONデータをテキスト形式に変換
+    json_text = JSON.stringify(koujilist, '', '    ');
+    // ローカルストレージに書き込み
+    localStrage.setItems("firebase:group00/koujiHelpList",json_text);
   });
 
   // 2018/01/30 ADD -----↓
