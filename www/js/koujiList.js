@@ -350,12 +350,17 @@ koujiListAddEvent = function() {
         }
         if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
           $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)+'px');
-          $('ons-button.itemDelete.archive',this).css('display','block');
+          if($('ons-button.itemDelete.archive',this).css('display') === 'none') {
+            $('ons-button.itemDelete.archive',this).css('display','block');
+		  		}
         }else{
           $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)/2+'px');
           $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
-          $('ons-button.itemDelete',this).css('display','block');
+          if($('ons-button.itemDelete',this).css('display') === 'none') {
+            $('ons-button.itemDelete',this).css('display','block');
+		  		}
         }
+        $('ons-button.itemDelete').css('text-align', 'left');
         $(this).css('margin-left',leftMargin+'px');
       }
     }
@@ -746,8 +751,11 @@ pictureListAddEvent = function(folderReferences) {
           $('ons-button.itemRecycl').css('display','none');
         }
         $('ons-button.itemRecycl',this).css('width', Math.abs(leftMargin)+'px');
-        $('ons-button.itemRecycl',this).css('display','block');
+        if($('ons-button.itemRecycl',this).css('display') === 'none') {
+          $('ons-button.itemRecycl',this).css('display','block');
+				}
         $(this).css('margin-left',leftMargin+'px');
+        $('ons-button.itemRecycl').css('text-align', 'left');
       }
   	});
 
