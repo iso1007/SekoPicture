@@ -112,14 +112,14 @@ function setFirebaseToLocalStrage() {
 
         // UID/CommonShape/フォルダ名の取得
         var uid = firebase.auth().currentUser.uid;
-        var folderName = uid + '/' + commonShapeFolderName + '/';
+        var firebaseFolderName = uid + '/' + commonShapeFolderName + '/';
         // ファイル名の取得
         var fileName = snapshot.key + snapshot.val();
 
         _log(1,'function','setFirebaseToLocalStrage()['+'child_added : '+fileName+']');
 
         // firebaseStrageから略図ファイルをダウンロード
-        firebaseStorage.fileDownload(commonShapeFolderName, folderName, fileName);
+        firebaseStorage.fileDownload(firebaseFolderName, commonShapeFolderName, fileName);
       });
 
       // firebaseStorageの略図ファイルの削除をリッスン、削除があればローカルドライブからも削除

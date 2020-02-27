@@ -48,7 +48,7 @@ firebaseStorage.fileDownload = function(firebaseFolder, localFolder, fileName) {
   _log(1,'function','firebaseStorage.fileDownload('+firebaseFolder+' => '+localFolder+' : '+fileName+')');
   
   // ストレージオブジェクト作成
-  var starsRef = firebase.storage().ref().child(localFolder+fileName);
+  var starsRef = firebase.storage().ref().child(firebaseFolder+fileName);
 
   // firbase StoraeからURLを取得
   starsRef.getDownloadURL().then(function(url) {
@@ -59,7 +59,7 @@ firebaseStorage.fileDownload = function(firebaseFolder, localFolder, fileName) {
     xhr.onload = function(event) {
       var blob = xhr.response;
       // デバイスローカル(documentsDirectory/localFolder)に保存
-      localStrage.saveBlobFile(firebaseFolder, fileName, blob, function() {
+      localStrage.saveBlobFile(localFolder, fileName, blob, function() {
         _log(1,'function','firebaseStorage.fileDownload() Download OK');
 			},
 			function(msg) {
