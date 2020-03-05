@@ -1001,6 +1001,9 @@ async function koujiPictureView(obj) {
   $('ons-button.itemRecycl').css('width','0px');
   $('ons-button.itemRecycl').css('display','none');
 
+  // 保存 のボタンを表示にする
+  $('ons-button[onclick="koujiInfoList.pictureFileDownload()"]').attr('style','display:none');
+
   var itemname = $(obj).attr('id');
   var filename = itemname.replace( 'listItem' , '');
   $('#koujiviewName').text(filename);
@@ -1371,7 +1374,7 @@ function koujiPictureDelete() {
 
   if(uploadFlg === 'Already') {
     _alert('既にサーバーにアップロード済みの写真を削除する事は出来ません');
-    exit;
+		return; 
   }
 
   _confirm('この写真をごみ箱に移動します。<br>よろしいですか？', function(idx) {

@@ -121,14 +121,16 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
           fileEntry = await localFile.getFileEntry(directoryEntry, 'information/'+infofile);
           // ファイルエントリーオブジェクトからfileオブジェクトを取得
           file = await localFile.getFileObject(fileEntry);
-          // 写真ファイルのアップロード
+          // 写真ファイルのソースを取得
           src = await localFile.getTextFile(file);
-          // ファイルのアップロード
-          ret = await firebaseStorage.fileUpload(koujiname+'/information', infofile, src);
           // 写真情報ファイル更新の為にfileWriterを取得
           fileWriter = await localFile.getFileWriter(fileEntry);
           // 写真情報ファイルのアップロード済みフラグを更新
           ret = await pictureUpload.infomationFileUpdate(fileWriter, src);
+          // 写真ファイルのソースを取得
+          src = await localFile.getTextFile(file);
+          // 写真ファイルのアップロード
+          ret = await firebaseStorage.fileUpload(koujiname+'/information', infofile, src);
         } catch(e) {
           if(!errorFlg) {
             var msg = '';

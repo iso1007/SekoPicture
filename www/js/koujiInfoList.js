@@ -385,9 +385,6 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
   let piclistHeaderHeight = $('#koujiPictureListHeader').height();
   $('#koujiPictureList').height(piclistHeight-piclistHeaderHeight-tabmenuHeight);
 
-  // タブバーのクラウドアイコンを非表示にする
-  $('#tabbar_cloud').attr('style','visibility:hidden');
-
   // 工事写真リストのヘッダーの工事名をセット
   $('#koujiListItemName').text(koujiname);
   $('#koujiListItemTitle').text('工事写真一覧(クラウド)');
@@ -585,8 +582,8 @@ koujiInfoList.koujiFilesToolMenu = function(obj) {
   var options = [];
   if(tabMenuButtonId==='pictureListButton-cloud'){
     options = [
-//      '写真をサーバーからダウンロード',
-//      'キャンセル'
+      '写真をサーバーからダウンロード',
+      'キャンセル'
       ];
   }else{
   if(tabMenuButtonId==='pictureListButton-sort'){
@@ -616,6 +613,7 @@ koujiInfoList.koujiFilesToolMenu = function(obj) {
     if(tabMenuButtonId==='pictureListButton-cloud'){
       if(index === 0) {
 //        pictureUpload.checkPicture();
+        koujiInfoList.koujiPicturesDownload($('#koujiListItemName').text());
       }
     }else{
     // ソートボタンをクリック
@@ -717,6 +715,8 @@ koujiInfoList.koujiPictureView = async function(obj) {
   // 削除･編集 のボタンを非表示にする
   $('ons-button[onclick="koujiPictureDelete()"]').attr('style','display:none');
   $('ons-button[onclick="koujiPictureKokubanEdit()"]').attr('style','display:none');
+  // 保存 のボタンを表示にする
+  $('ons-button[onclick="koujiInfoList.pictureFileDownload()"]').attr('style','display:block');
 
   var itemname = $(obj).attr('id');
   var filename = itemname.replace( 'listItem' , '');
@@ -822,6 +822,203 @@ koujiInfoList.getPicturelUrl = function(koujiname, filename) {
     }).catch(function(e) {
       reject(e);
 
+    });
+  });
+};
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.koujiPicturesDownload()
+// firebase上の選択した工事の写真をローカルにダウンロード
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.koujiPicturesDownload = async function(koujiname) {
+  _log(1,'function','koujiInfoList.koujiPicturesDownload()');
+
+  try {
+    // ローカルドライブに必要なフォルダを作成する
+    var ret = await koujiInfoList.makeDirectory(koujiname);
+  } catch (e) {
+    // (localStrage.makeDirectory)でエラー発生
+    _alert('ローカルに「'+koujiname+'」フォルダが作成できませんでした。');
+    _errorlog(1,'koujiInfoList.koujiPicturesDownload(ローカルに「'+koujiname+'」が作成できませんでした。',e.code+e.message);
+    return;
+  }
+
+  // 表示形式がリスト形式かタイル形式か
+  if(koujiPictureListViewStyle === 'list') {
+    elm = 'ons-list-item';
+  }else{
+    elm = 'li';
+  }
+
+  var firebaseFolderName = activeuser.uid + '/' + koujiname + '/';
+  var select = '', elm = '', filename = '';
+  var jpgfile = '', fileEntry = null, file = null;
+  var datetime = ''; fast_datetime = '9999/99/99 99:99'; last_datetime = '0000/00/00 00:00';
+  var addcount = 0;
+  // ローカルフォルダのurl
+  var folderurl = localStorageDirectory + koujiname;
+  // directoryEntryオブジェクトを取得
+  var directoryEntry = await localFile.getFileSystemURL(folderurl);
+  // 写真の枚数を取得
+  var pictureCount = $('#koujiPictureList').children(elm).length;
+  if(pictureCount == 0) return;
+
+  for(var i=0; i<pictureCount; i++) {
+    select = $('#koujiPictureList').children(elm)[i].id;
+    filename = select.replace( 'listItem' , '');
+
+    datetime = $('#date'+filename).text();
+    datetime = datetime.replace( '撮影:' , '');
+    if(fast_datetime > datetime) {
+      fast_datetime = datetime;
+    }
+    if(last_datetime < datetime) {
+      last_datetime = datetime;
+    }
+
+    // 工事写真、サムネイル写真、ファイル情報のダウンロード
+    var ret = await koujiInfoList.pictureFileDownload(firebaseFolderName, koujiname, filename);
+    if(ret === null) {
+      jpgfile = '', fileEntry = null, file = null;
+      try {
+        // ローカルに同じファイルの存在確認
+        jpgfile = filename + '.jpg';
+        // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+        fileEntry = await localFile.getFileEntry(directoryEntry, jpgfile);
+        // ファイルエントリーオブジェクトからfileオブジェクトを取得
+        file = await localFile.getFileObject(fileEntry);
+      } catch(e) {
+        // ローカルに同じファイルがない場合は追加とみなす
+        addcount++;
+      }
+    }else{
+      _alert('サーバーから工事写真のダウンロードが出来ませんでした。['+ret+']');
+    }
+  }
+
+  // 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
+  koujiInfoList.setInformationHeader(koujiname, addcount, fast_datetime, last_datetime, function(ret) {
+    if(ret === null) {
+      _information(pictureCount+'枚の写真が端末に保存されました。')
+    }else{
+      _errorlog(1,'control.jsonが正常に保存できませんでした。',ret);
+    }
+  })
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.makeDirectory()
+// ローカルに必要なフォルダを作成するpromise関数
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.makeDirectory = function(koujiname) {
+  return new Promise(function(resolve, reject) {
+    _log(1,'function','koujiInfoList.makeDirectory()');
+
+    localStrage.makeDirectory(koujiname, function() {
+      resolve(null);
+    },
+    // (dustbox)フォルダの作成エラー
+    function fail(error) {
+      reject(error);
+    })
+  })
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.pictureFileDownload()
+// firebase上の選択した工事写真をローカルにダウンロード
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.pictureFileDownload = function(firebaseFolderName, koujiname, filename) {
+  return new Promise(function(resolve, reject) {
+    _log(1,'function','koujiInfoList.pictureFileDownload()');
+
+    try {
+      // firebaseStrageから工事写真・サムネイル写真・ファイル情報をダウンロード
+      firebaseStorage.fileDownload(firebaseFolderName, koujiname, filename+'.jpg');
+      firebaseStorage.fileDownload(firebaseFolderName+'thumbnail/', koujiname+'/thumbnail/', filename+'.jpg');
+      firebaseStorage.fileDownload(firebaseFolderName+'information/', koujiname+'/information/', filename+'.json');
+
+      resolve(null);
+    } catch(e) {
+      reject(e);
+    }
+  })
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.setInformationHeader()
+// 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.setInformationHeader = function(koujiname, addcount, fast_datetime, last_datetime, callback) {
+  _log(1,'function','koujiInfoList.setInformationHeader()');
+
+  var json_text = { koujiname:'',fast_datetime:'',last_datetime:'',picture_count:0,upload_count:0,shootinglistNo:'',geoLocation:{} };
+  var folderurl = koujiname + '/information';
+  var filename = 'control.json';
+
+  localStrage.getJsonFile(folderurl, filename, function(result) {
+    // 読み込んだテキストをJSON形式に変換
+    var text = result;
+    var k = {};
+    try {
+      k = JSON.parse(text);
+    }catch(e){
+      k.fast_datetime  = '9999/99/99 99:99';
+      k.last_datetime  = '0000/00/00 00:00';
+      k.shootinglistNo = '';
+    }
+
+    json_text.koujiname = koujiname;
+    // 最初撮影日時をセット
+    if(k.fast_datetime > fast_datetime) {
+      json_text.fast_datetime = fast_datetime;
+    }else{
+      json_text.fast_datetime = k.fast_datetime;
+    }
+    // 最終撮影日時をセット
+    if(k.last_datetime < last_datetime) {
+      json_text.last_datetime = last_datetime;
+    }else{
+      json_text.last_datetime = k.last_datetime;
+    }
+    json_text.shootinglistNo = k.shootinglistNo;
+    // 撮影枚数をカウントアップ
+    if(k.picture_count === undefined) {k.picture_count = 0;};
+    if(k.upload_count  === undefined) {k.upload_count  = 0;};
+    json_text.picture_count = k.picture_count + addcount;
+    json_text.upload_count = k.upload_count + addcount;
+    // jsonオブジェクトに変換
+    var json_out  = JSON.stringify(json_text);
+    blob = new Blob( [json_out], {type:"JSON\/javascript"} );
+    // デバイスローカル(documentsDirectory)に保存
+    localStrage.saveBlobFile(folderurl, filename, blob, function(url){
+      _log(1,'localStrage.setInformationHeader','update normalend');
+      callback(null);
+    },
+    function fail(message) {
+      callback(message);
+    });
+  },
+  function(e) {
+    // エラーが返ってきた場合はファイルが無いとみなし、新規作成する
+    // 工事名称をセット
+    json_text.koujiname = koujiname;
+    // 撮影開始日時をセット
+    json_text.fast_datetime = fast_datetime;
+    json_text.last_datetime = last_datetime;
+    // 撮影枚数をセット
+    json_text.picture_count = addcount;
+    json_text.upload_count  = addcount;
+    // jsonオブジェクトに変換
+    var json_out  = JSON.stringify(json_text);
+    blob = new Blob( [json_out], {type:"JSON\/javascript"} );
+    // デバイスローカル(documentsDirectory)に保存
+    localStrage.saveBlobFile(folderurl, filename, blob, function(url){
+      _log(1,'localStrage.setInformationHeader','new normalend');
+      callback(null);
+    },
+    function fail(message) {
+      callback(message);
     });
   });
 };
