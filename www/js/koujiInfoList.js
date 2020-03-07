@@ -844,6 +844,7 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
   }
 
   // 表示形式がリスト形式かタイル形式か
+  var elm = '';
   if(koujiPictureListViewStyle === 'list') {
     elm = 'ons-list-item';
   }else{
@@ -851,7 +852,7 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
   }
 
   var firebaseFolderName = activeuser.uid + '/' + koujiname + '/';
-  var select = '', elm = '', filename = '';
+  var select = '', filename = '';
   var jpgfile = '', fileEntry = null, file = null;
   var datetime = ''; fast_datetime = '9999/99/99 99:99'; last_datetime = '0000/00/00 00:00';
   var addcount = 0;
