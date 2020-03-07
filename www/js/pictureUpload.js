@@ -9,7 +9,7 @@ pictureUpload.checkPicture = function() {
 
   if(activeuser.uid === '') {
     _alert('現在はオフラインの為、アップロードは出来ません。\nネットワークに接続し、ログオンをしてから実行してください。');
-    exit;
+    return;
   }
 
   // 工事写真一覧からアイテムを取得
@@ -87,6 +87,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
 
     var uploadCount = 0, progressValue = 0;
     var uploadMaxCount = pictureListArray.length;
+    var uploadStatusArray = new Array();
 
     for(var i=0; i<pictureListArray.length; i++) {
       filename = pictureListArray[i];
@@ -102,7 +103,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
         // 写真ファイルのアップロード
         src = await localFile.getBlobFile(file);
         // ファイルのアップロード
-        ret = await firebaseStorage.fileUpload(koujiname, jpgfile, src);
+        uploadStatusArray.push(firebaseStorage.fileUpload(koujiname, jpgfile, src));
       } catch(e) {
         if(!errorFlg) {
           var msg = '';
@@ -130,7 +131,7 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
           // 写真ファイルのソースを取得
           src = await localFile.getTextFile(file);
           // 写真ファイルのアップロード
-          ret = await firebaseStorage.fileUpload(koujiname+'/information', infofile, src);
+          uploadStatusArray.push(firebaseStorage.fileUpload(koujiname+'/information', infofile, src));
         } catch(e) {
           if(!errorFlg) {
             var msg = '';
@@ -139,6 +140,22 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
             _alert('写真情報データのアップロードに失敗しました。('+infofile+' : '+msg+')');
             errorFlg = true;
           }
+        }
+      }
+
+      // 工事写真ファイルをアップロード
+      if(!errorFlg) {
+        try {
+          jpgfile = filename + '.jpg';
+          // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+          fileEntry = await localFile.getFileEntry(directoryEntry, 'clipping/'+jpgfile);
+          // ファイルエントリーオブジェクトからfileオブジェクトを取得
+          file = await localFile.getFileObject(fileEntry);
+          // 写真ファイルのアップロード
+          src = await localFile.getBlobFile(file);
+          // ファイルのアップロード
+          uploadStatusArray.push(firebaseStorage.fileUpload(koujiname+'/clipping', jpgfile, src));
+        } catch(e) {
         }
       }
 
@@ -155,7 +172,6 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
         $('#upload-icon'+filename).css('color', 'Blue');
       }
     };
-
     try {
       // 工事写真の管理ファイルを更新
       infofile = 'control' + '.json';
@@ -176,16 +192,30 @@ pictureUpload.pictureFileEntrysLoop = async function(koujiname, pictureListArray
       _alert('写真情報管理データの更新に失敗しました。('+infofile+' : '+msg+')');
     }
 
-    // 工事写真管理ファイルの件数情報更新
     $('#upload-dlg-progress').hide();
+		$('#upload-dlg-mesage').text('しばらくお待ちください。');
 
-    $('#upload-dlg-mesage').text('アップロードが終了しました。');
-    $('#upload-dlg-button').show();
+    // pending状態のPromiseが全て完了してから終了メッセージを表示
+    Promise.all(uploadStatusArray).then(function(results) {
+      // 工事写真管理ファイルの件数情報更新
+      uploadEndMessage('アップロードが終了しました。');
+    })
+    .catch( function () {
+      uploadEndMessage('一つ以上の写真がアップロードに失敗しました。');
+    });
 
-    // 工事一覧の件数表示を更新し、アイコンの色を青にする
-    var koujiListCountId = $('#koujiListCountId').text();
-    $('#'+koujiListCountId).text(pictureAllCount);
-    $('#'+koujiListCountId).css('background-color', 'Blue');
+    function uploadEndMessage(msg) {
+      // 工事写真管理ファイルの件数情報更新
+      $('#upload-dlg-progress').hide();
+
+      $('#upload-dlg-mesage').text(msg);
+      $('#upload-dlg-button').show();
+
+      // 工事一覧の件数表示を更新し、アイコンの色を青にする
+      var koujiListCountId = $('#koujiListCountId').text();
+      $('#'+koujiListCountId).text(pictureAllCount);
+      $('#'+koujiListCountId).css('background-color', 'Blue');
+    }
   }
 };
 
@@ -235,8 +265,6 @@ pictureUpload.controlFileUpdate = function(fileWriter, src, count, flg) {
     var blob = new Blob( [json], {type:"JSON\/javascript"} );
 
     fileWriter.onwriteend = function(e) {
-      // firebaseDatabaseの工事情報を更新
-      setFirebaseKoujiinfo(json_text);
       resolve(null);
     };
 
@@ -378,6 +406,10 @@ pictureUpload.uploadDlgHide = function() {
   } catch(e) {
   }	
 
+  // firebaseDatabaseの工事情報を更新
+  var koujiname = $('#koujiListItemName').text();
+  setFirebaseKoujiinfo(koujiname);
+
   // 工事一覧に戻る
   koujiPictureListTokoujiList();
 };
@@ -461,9 +493,6 @@ pictureUpload.controlReset = function(directoryEntry, count) {
             var json_out = JSON.stringify(json_text);
 
             blob = new Blob( [json_out], {type:"JSON\/javascript"} );
-
-            // firebaseDatabaseの工事情報を更新
-            setFirebaseKoujiinfo(json_text);
 
             fileEntry.createWriter(
               // (fileEntry.createWriter)の成功

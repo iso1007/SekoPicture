@@ -937,6 +937,7 @@ koujiInfoList.pictureFileDownload = function(firebaseFolderName, koujiname, file
       firebaseStorage.fileDownload(firebaseFolderName, koujiname, filename+'.jpg');
       firebaseStorage.fileDownload(firebaseFolderName+'thumbnail/', koujiname+'/thumbnail/', filename+'.jpg');
       firebaseStorage.fileDownload(firebaseFolderName+'information/', koujiname+'/information/', filename+'.json');
+      firebaseStorage.fileDownload(firebaseFolderName+'clipping/', koujiname+'/clipping/', filename+'.jpg');
 
       resolve(null);
     } catch(e) {

@@ -192,31 +192,40 @@ function setFirebaseKokubanToLocalStrage() {
 // setFirebaseKoujiinfo()
 // FirebaseDatabaseの工事情報を更新
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-function setFirebaseKoujiinfo(json_text) {
+function setFirebaseKoujiinfo(koujiname) {
   _log(1,'function','setFirebaseKoujiinfo()');
 
   // 実際の写真枚数をカウント
-  var folder = activeuser.uid+"/group00/pictureList/"+json_text.koujiname;
-  var pictureCount = json_text.picture_count;
+  var folder = activeuser.uid+"/group00/pictureList/"+koujiname;
   // UIDフォルダ内の全てのキー・値 を1回だけ読み込む
   firebase.database().ref(folder).once('value', function(snapshot) {
-    pictureCount = Object.keys(snapshot.val()).length;
+    var koujiList = Object.keys(snapshot.val());
+    var picture_count = koujiList.length;
+    var fast_datetime  = '9999/99/99 99:99';
+    var last_datetime  = '0000/00/00 00:00';
+    var datetime = '';
+    koujiList.forEach(function(key) {
+      datetime = snapshot.val()[key].datetime;
+      // 最初撮影日時をセット
+      if(fast_datetime > datetime) {
+        fast_datetime = datetime;
+      }
+      // 最終撮影日時をセット
+      if(last_datetime < datetime) {
+        last_datetime = datetime;
+      }
+    });
 
     // control.json からfirebaseDatabaseの工事情報を更新する
-    var folder = activeuser.uid+"/group00/koujiList/"+json_text.koujiname;
+    var folder = activeuser.uid+"/group00/koujiList/"+koujiname;
 
     // 撮影開始日時･最終撮影日時･写真枚数 情報の更新
     firebase.database().ref(folder).update({
-        fastDateTime : json_text.fast_datetime,
-        lastDateTime : json_text.last_datetime,
-        pictureCount : pictureCount
+       fastDateTime : fast_datetime,
+       lastDateTime : last_datetime,
+       pictureCount : picture_count
     });
-
-    // 撮影リスト番号が空白でない場合のみ更新する
-    if(json_text.shootinglistNo !== '') {
-      setFirebaseShootinglistNo(json_text.koujiname, json_text.shootinglistNo);
-    }
-	});
+  });
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
