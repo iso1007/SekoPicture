@@ -851,18 +851,23 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
     elm = 'li';
   }
 
-  var firebaseFolderName = activeuser.uid + '/' + koujiname + '/';
-  var select = '', filename = '';
-  var jpgfile = '', fileEntry = null, file = null;
+  var firebaseFolder = activeuser.uid + '/' + koujiname + '/';
+  var select = '', filename = '', errorFlg = false;
+  var downfile = '', fileEntry = null, file = null;
   var datetime = ''; fast_datetime = '9999/99/99 99:99'; last_datetime = '0000/00/00 00:00';
   var addcount = 0;
-  // ローカルフォルダのurl
-  var folderurl = localStorageDirectory + koujiname;
-  // directoryEntryオブジェクトを取得
-  var directoryEntry = await localFile.getFileSystemURL(folderurl);
+  var downloadStatusArray = new Array();
   // 写真の枚数を取得
   var pictureCount = $('#koujiPictureList').children(elm).length;
   if(pictureCount == 0) return;
+
+  var downloadCount = 0, progressValue = 0;
+  var downloadMaxCount = pictureCount;
+  $('#download-dlg').show();
+  $('#download-dlg-mesage').text('ダウンロード中です。');
+  $('#download-dlg-progress').attr('value',String(progressValue));
+  $('#download-dlg-progress').show();
+  $('#download-dlg-button').hide();
 
   for(var i=0; i<pictureCount; i++) {
     select = $('#koujiPictureList').children(elm)[i].id;
@@ -878,33 +883,114 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
     }
 
     // 工事写真、サムネイル写真、ファイル情報のダウンロード
-    var ret = await koujiInfoList.pictureFileDownload(firebaseFolderName, koujiname, filename);
-    if(ret === null) {
-      jpgfile = '', fileEntry = null, file = null;
-      try {
-        // ローカルに同じファイルの存在確認
-        jpgfile = filename + '.jpg';
-        // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
-        fileEntry = await localFile.getFileEntry(directoryEntry, jpgfile);
-        // ファイルエントリーオブジェクトからfileオブジェクトを取得
-        file = await localFile.getFileObject(fileEntry);
-      } catch(e) {
-        // ローカルに同じファイルがない場合は追加とみなす
-        addcount++;
-      }
-    }else{
-      _alert('サーバーから工事写真のダウンロードが出来ませんでした。['+ret+']');
+    downfile = '', fileEntry = null, file = null;
+    try {
+      // ローカルに同じファイルの存在確認
+      downfile = filename + '.jpg';
+      // directoryEntryオブジェクトを取得
+      directoryEntry = await localFile.getFileSystemURL(localStorageDirectory+koujiname);
+      // ディレクトリエントリーとファイルのパスからfileEntryオブジェクトを取得
+      fileEntry = await localFile.getFileEntry(directoryEntry, downfile);
+      // ファイルエントリーオブジェクトからfileオブジェクトを取得
+      file = await localFile.getFileObject(fileEntry);
+    } catch(e) {
+      // ローカルに同じファイルがない場合は追加とみなす
+      addcount++;
     }
+
+    // firebaseから写真と写真情報ファイルをダウンロード
+    errorFlg = false;
+    try {
+      downfile = filename + '.jpg';
+      // directoryEntryオブジェクトを取得
+      directoryEntry = await localFile.getFileSystemURL(localStorageDirectory+koujiname);
+      // fileEntryオブジェクトを取得
+      fileEntry = await localFile.getFileEntry(directoryEntry, downfile, true);
+      // FileWriterオブジェクトを作成
+      fileWriter = await localFile.getFileWriter(fileEntry);
+      // データ書き込み成功
+      downloadStatusArray.push(koujiInfoList.firebaseToLocal(firebaseFolder+downfile, fileWriter));
+    } catch(e) {
+      errorFlg = true;
+      _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/'+downfile+' : '+e.message+')');
+    }
+
+    if(!errorFlg) {
+      try {
+        downfile = filename + '.jpg';
+        // directoryEntryオブジェクトを取得
+        directoryEntry = await localFile.getFileSystemURL(localStorageDirectory+koujiname+'/thumbnail/');
+        // fileEntryオブジェクトを取得
+        fileEntry = await localFile.getFileEntry(directoryEntry, downfile, true);
+        // FileWriterオブジェクトを作成
+        fileWriter = await localFile.getFileWriter(fileEntry);
+        // データ書き込み成功
+        downloadStatusArray.push(koujiInfoList.firebaseToLocal(firebaseFolder+'thumbnail/'+downfile, fileWriter));
+      } catch(e) {
+        _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/thumbnail/'+downfile+' : '+e.message+')');
+      }
+
+      try {
+        downfile = filename + '.json';
+        // directoryEntryオブジェクトを取得
+        directoryEntry = await localFile.getFileSystemURL(localStorageDirectory+koujiname+'/information/');
+        // fileEntryオブジェクトを取得
+        fileEntry = await localFile.getFileEntry(directoryEntry, downfile, true);
+        // FileWriterオブジェクトを作成
+        fileWriter = await localFile.getFileWriter(fileEntry);
+        // データ書き込み成功
+        downloadStatusArray.push(koujiInfoList.firebaseToLocal(firebaseFolder+'information/'+downfile, fileWriter));
+      } catch(e) {
+        _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/information/'+downfile+' : '+e.message+')');
+      }
+
+      try {
+        downfile = filename + '.jpg';
+        // directoryEntryオブジェクトを取得
+        directoryEntry = await localFile.getFileSystemURL(localStorageDirectory+koujiname+'/clipping/');
+        // fileEntryオブジェクトを取得
+        fileEntry = await localFile.getFileEntry(directoryEntry, downfile, true);
+        // FileWriterオブジェクトを作成
+        fileWriter = await localFile.getFileWriter(fileEntry);
+        // データ書き込み成功
+        downloadStatusArray.push(koujiInfoList.firebaseToLocal(firebaseFolder+'clipping/'+downfile, fileWriter));
+      } catch(e) {
+        _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/clipping/'+downfile+' : '+e.message+')');
+      }
+    }
+
+    // プログレスバーの位置計算
+    downloadCount++;
+    progressValue = Math.ceil(downloadCount/downloadMaxCount*100);
+    $('#download-dlg-progress').attr('value',String(progressValue));
+    $('#download-dlg-counter').text(downloadCount+'/'+downloadMaxCount);
   }
 
   // 写真撮影日時・枚数 等の情報をセーブ (infomation/cotrol.json)
   koujiInfoList.setInformationHeader(koujiname, addcount, fast_datetime, last_datetime, function(ret) {
     if(ret === null) {
-      _information(pictureCount+'枚の写真が端末に保存されました。')
     }else{
-      _errorlog(1,'control.jsonが正常に保存できませんでした。',ret);
+      _alert('control.jsonが正常に保存できませんでした。('+ret+')');
     }
   })
+
+  $('#download-dlg-progress').hide();
+  $('#download-dlg-mesage').text('しばらくお待ちください。');
+
+  // pending状態のPromiseが全て完了してから終了メッセージを表示
+  Promise.all(downloadStatusArray).then(function(results) {
+    // 工事写真管理ファイルの件数情報更新
+    downloadEndMessage('ダウンロードが終了しました。');
+  })
+  .catch( function () {
+    uploadEndMessage('一つ以上の写真がダウンロードに失敗しました。');
+  });
+
+  function downloadEndMessage(msg) {
+    // 工事写真管理ファイルの件数情報更新
+    $('#download-dlg-mesage').text(msg);
+    $('#download-dlg-button').show();
+  }
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -924,27 +1010,36 @@ koujiInfoList.makeDirectory = function(koujiname) {
     })
   })
 }
-
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// koujiInfoList.pictureFileDownload()
-// firebase上の選択した工事写真をローカルにダウンロード
+// koujiInfoList.firebaseToLocal()
+// サーバーの写真ファイルをローカルにダウンロード
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-koujiInfoList.pictureFileDownload = function(firebaseFolderName, koujiname, filename) {
+koujiInfoList.firebaseToLocal = function(firebaseFilePath, fileWriter) {
   return new Promise(function(resolve, reject) {
-    _log(1,'function','koujiInfoList.pictureFileDownload()');
+    // firbase StorageからURLを取得
+    firebase.storage().ref().child(firebaseFilePath).getDownloadURL().then(function(url) {
+      // urlのファイルをローカルストレージに保存
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'blob';
+      xhr.onload = function(event) {
+        fileWriter.write(xhr.response);
+        resolve(null);
+      };
+      xhr.open('GET', url);
+      xhr.send();
 
-    try {
-      // firebaseStrageから工事写真・サムネイル写真・ファイル情報をダウンロード
-      firebaseStorage.fileDownload(firebaseFolderName, koujiname, filename+'.jpg');
-      firebaseStorage.fileDownload(firebaseFolderName+'thumbnail/', koujiname+'/thumbnail/', filename+'.jpg');
-      firebaseStorage.fileDownload(firebaseFolderName+'information/', koujiname+'/information/', filename+'.json');
-      firebaseStorage.fileDownload(firebaseFolderName+'clipping/', koujiname+'/clipping/', filename+'.jpg');
+    }).catch(function(err) {
+       reject(err);
+    });
+  });
+}
 
-      resolve(null);
-    } catch(e) {
-      reject(e);
-    }
-  })
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// koujiInfoList.downloadDlgHide()
+// サーバーの写真ファイルダウンロードメッセージダイアログの非表示
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+koujiInfoList.downloadDlgHide = function() {
+  $('#download-dlg').hide();
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_

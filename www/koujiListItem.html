@@ -176,4 +176,16 @@
     </div>
   </ons-alert-dialog>
   
+  <ons-alert-dialog id="download-dlg" animation="default">
+    <div class="alert-dialog-title textsize4">クラウドからダウンロード</div>
+    <div class="alert-dialog-content textsize4">
+      <p id="download-dlg-mesage"></p>
+      <ons-progress-bar id="download-dlg-progress" value="0"></ons-progress-bar>
+      <p id="download-dlg-counter"></p>
+    </div>
+
+    <div class="alert-dialog-footer textsize4" id="download-dlg-footer">
+      <button class="alert-dialog-button" id="download-dlg-button" onclick="koujiInfoList.downloadDlgHide()">OK</button>
+    </div>
+  </ons-alert-dialog>
 </ons-page>
