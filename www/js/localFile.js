@@ -35,9 +35,11 @@ localFile.getReadEntries = function(directoryEntry) {
 // getFileEntry(directoryEntry, filePath)
 // directoryEntryとファイルURLからfileEntryオブジェクトを取得
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-localFile.getFileEntry = function(directoryEntry, filePath) {
+localFile.getFileEntry = function(directoryEntry, filePath, create) {
   return new Promise(function(resolve, reject) {
-    directoryEntry.getFile(filePath, null, function(fileEntry) {
+    var createParam = { create: false };
+    if(create !== undefined || create === true) createParam = { create: true };
+    directoryEntry.getFile(filePath, createParam, function(fileEntry) {
       resolve(fileEntry);
     },
     function(e) {
