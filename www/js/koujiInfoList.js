@@ -396,7 +396,7 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
 
   // firebaseStorageの工事情報をjson形式で取得
   var json = await koujiInfoList.getCloudPictureList(koujiname);
-
+  var promiseArray = new Array();
   loopBreakflg = false;
   var errcode = '';
   for(key in json) {
@@ -406,19 +406,26 @@ koujiInfoList.koujiListItemSet = async function(koujiname) {
     var filename = key;
 
     try {
-      // 縮小写真のリンクをセット
-      var url = await koujiInfoList.getThumbnailUrl(koujiname, filename);
-
       // 写真リストのhtmlを作成
-      var ret = await koujiInfoList.koujiListAddElement(filename, url);
+      var ret = await koujiInfoList.koujiListAddElement(filename, 'img/dummy.jpg');
 
       // htmlにプレビュー･情報を付加
       var ret = await koujiInfoList.koujiListAddInfo(filename, json[key]);
+
+      // 縮小写真のリンクをセット
+      promiseArray.push(koujiInfoList.getThumbnailUrl(koujiname, filename));
 
     } catch(e) {
       errcode = e.code;
     }
   };
+
+  Promise.all(promiseArray).then(function(results) {
+  })
+  .catch( function (e) {
+    errcode = e.code;
+  });
+	
   if(errcode!=='') {
     _alert('全てのクラウド上の工事写真が取得できませんでした。('+errcode+')');
   }
@@ -462,8 +469,8 @@ koujiInfoList.getThumbnailUrl = function(koujiname, filename) {
     // firebaseStorage上にあるサムネイルのリンクをセット
     var thumbnailPath = firebase.storage().ref().child(activeuser.uid+'/'+koujiname+'/thumbnail/'+filename+'.jpg');
     thumbnailPath.getDownloadURL().then(function(url) {
-      resolve(url);
-
+      $('#imag'+filename).attr('src', url + '?1');
+      resolve(null);
     }).catch(function(e) {
       reject(e);
 
@@ -479,15 +486,12 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
   return new Promise(function(resolve, reject) {
     _log(1,'function','koujiInfoList.koujiListAddElement('+filename+' : '+uri+')');
 
-    // サムネイル画像をキャッシュさせない為の処理
-    var thumbnailuri = uri + '?1';
-
     // 工事毎の行を作成
     if(koujiPictureListViewStyle === 'list') {
       // 詳細リスト表示
       var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<ons-col align="top" width="40%">'+
-                      '<img id="imag'+filename+'" class="thumbnail-s" src="'+thumbnailuri+'">'+
+                      '<img id="imag'+filename+'" class="thumbnail-s" src="'+uri+'">'+
                     '</ons-col>'+
 
                     '<ons-col width=" 2%">'+
@@ -517,7 +521,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
     }else{
       // タイル表示
       var elm = $('<li class="thumbnailTile" id="listItem'+filename+'" style="margin: 1px; float: left; list-style: none; position: relative;" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
-                    '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+thumbnailuri+'">'+
+                    '<img class="thumbnail '+koujiPictureListViewStyle+'" id="imag'+filename+'" src="'+uri+'">'+
                     '<p id="upload'+filename+'" style="display:none"></p>'+
                     '<p id="date'+filename+'" style="display:none">'+filename+'</p>'+
                     '<p id="kousyu'+filename+'" style="display:none"></p>'+
