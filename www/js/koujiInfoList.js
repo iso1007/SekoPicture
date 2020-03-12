@@ -865,6 +865,12 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
   var pictureCount = $('#koujiPictureList').children(elm).length;
   if(pictureCount == 0) return;
 
+  // スリープモードを停止
+  try {
+    window.powerManagement.acquire();
+  } catch(e) {
+  }	
+
   var downloadCount = 0, progressValue = 0;
   var downloadMaxCount = pictureCount;
   $('#download-dlg').show();
@@ -959,7 +965,7 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
         // データ書き込み成功
         downloadStatusArray.push(koujiInfoList.firebaseToLocal(firebaseFolder+'clipping/'+downfile, fileWriter));
       } catch(e) {
-        _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/clipping/'+downfile+' : '+e.message+')');
+//        _alert('firebaseファイルのダウンロードに失敗しました。('+koujiname+'/clipping/'+downfile+' : '+e.message+')');
       }
     }
 
@@ -987,7 +993,7 @@ koujiInfoList.koujiPicturesDownload = async function(koujiname) {
     downloadEndMessage('ダウンロードが終了しました。');
   })
   .catch( function () {
-    uploadEndMessage('一つ以上の写真がダウンロードに失敗しました。');
+    downloadEndMessage('一つ以上の写真がダウンロードに失敗しました。');
   });
 
   function downloadEndMessage(msg) {
@@ -1033,7 +1039,12 @@ koujiInfoList.firebaseToLocal = function(firebaseFilePath, fileWriter) {
       xhr.send();
 
     }).catch(function(err) {
-       reject(err);
+			 // 黒板背景ファイルの場合は無くてもエラーにしない
+       if(firebaseFilePath.indexOf('/clipping/') == -1) {
+         reject(err);
+			 }else{
+         resolve(null);
+			 }
     });
   });
 }
@@ -1043,6 +1054,12 @@ koujiInfoList.firebaseToLocal = function(firebaseFilePath, fileWriter) {
 // サーバーの写真ファイルダウンロードメッセージダイアログの非表示
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 koujiInfoList.downloadDlgHide = function() {
+  // スリープモードを再開
+  try {
+  	window.powerManagement.release();
+  } catch(e) {
+  }
+
   $('#download-dlg').hide();
 }
 
