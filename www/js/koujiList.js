@@ -159,7 +159,7 @@ function koujiListHtml(koujiList, archiveCount) {
     }
 
     var elm =
-          $('<ons-list-item class="koujiListItem" id="koujiList_item_' + cnt + '" tappable lock-on-drag modifier="longdivider" style="background-color:'+backgroundcolor+'">'+
+          $('<ons-list-item class="koujiListItem" id="koujiList_item_' + cnt + '" tappable lock-on-drag modifier="longdivider">'+
             '<ons-col width="90%">'+
               '<ons-row>'+
                 '<ons-icon class="iconsize3" icon="'+itemArchiveIcon1+'" style="color:darkorange"></ons-icon>'+
@@ -174,14 +174,23 @@ function koujiListHtml(koujiList, archiveCount) {
                 '<ons-col><span id="koujiList_count_' + cnt + '" class="notification textsize5" style="background-color: '+iconbackcolor+'">'+picture_count+'</span></ons-col>'+
               '</ons-row>'+
             '</ons-col>'+
-            '<ons-button class="itemDelete archive" id="itemArchive_'+cnt+'" style="background-color:blue;display:none">'+
+            '<ons-button class="itemDelete archive" id="itemArchive_'+cnt+'">'+
               '<ons-icon class="itemDeleteIcon archive iconsize4" icon="'+itemArchiveIcon2+'" fixed-width="true"></ons-icon>'+
             '</ons-button>'+
-            '<ons-button class="itemDelete delete" id="itemDelete_'+cnt+'" style="display:none">'+
+            '<ons-button class="itemDelete delete" id="itemDelete_'+cnt+'">'+
               '<ons-icon class="itemDeleteIcon iconsize4" icon="ion-close-circled" fixed-width="true"></ons-icon>'+
             '</ons-button>'+
           '</ons-list-item>');
     elm.appendTo($('#koujiListBox'));
+
+    $('ons-list-item#koujiList_item_'+cnt).css({'background-color':backgroundcolor,
+		                                            'border-bottom':'1px solid darkgray',
+																								'padding':'5px 8px 0px 8px'});
+    $('div.list-item__center').css({'padding':'0px'});
+    $('ons-button.itemDelete.archive').css({'background-color':'steelblue',
+		                                        'display':'none'});
+    $('ons-button.itemDelete.delete').css({'background-color':'orangered',
+		                                       'display':'none'});
   }
 }
 
@@ -327,73 +336,114 @@ koujiListAddEvent = function() {
 
   // サムネイルリストを左ドラツグすると、スワイプリストで削除ボタンを表示する
   $('ons-list-item.koujiListItem').off('dragleft');
-  $('ons-list-item.koujiListItem').on('dragleft', function() {
-    var leftMargin = $(this).css('margin-left');
-    leftMargin = parseInt(leftMargin,10);
+  $('ons-list-item.koujiListItem').on('dragleft', function(event) {
+    var leftMargin = event.originalEvent.gesture.distance;
+    if(leftMargin < 0) leftMargin = 0;
+
+    var ichiranType = 'kouji';
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      ichiranType = 'archive';
+    }
 
     var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
-    var buttonWidth = iconWidth*3;
-    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-      buttonWidth = iconWidth*1.5;
+    var buttonWidth = Math.abs(leftMargin);
+    if(ichiranType === 'kouji') {
+      buttonWidth = buttonWidth / 2;
+    }
+
+    var buttonPadding = 0;
+    if(iconWidth < buttonWidth) {
+      buttonPadding = Math.round((buttonWidth - iconWidth) / 2);
     }
 
     var koujiListItemId = $(this).attr('id');
     var koujiListNameId = koujiListItemId.replace( 'koujiList_item_' , 'koujiList_name_');
     var koujiname = $('#'+koujiListNameId).text();
     if(koujiname !== '　アーカイブ') {
-      if(leftMargin > -1*buttonWidth) {
-        leftMargin = leftMargin - 2.5;
-        if(leftMargin === -2.5) {
-          $('ons-list-item.koujiListItem').css('margin-left','0px');
-          $('ons-button.itemDelete').css('width','0px');
-          $('ons-button.itemDelete').css('display','none');
-        }
-        if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-          $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)+'px');
-          if($('ons-button.itemDelete.archive',this).css('display') === 'none') {
-            $('ons-button.itemDelete.archive',this).css('display','block');
-		  		}
-        }else{
-          $('ons-button.itemDelete',this).css('width', Math.abs(leftMargin)/2+'px');
-          $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
-          if($('ons-button.itemDelete',this).css('display') === 'none') {
-            $('ons-button.itemDelete',this).css('display','block');
-		  		}
-        }
-        $('ons-button.itemDelete').css('text-align', 'left');
-        $(this).css('margin-left',leftMargin+'px');
+      if(ichiranType === 'kouji') {
+        $('ons-button.itemDelete.delete',this).css({'width': buttonWidth+'px',
+                                                    'text-align': 'unset',
+                                                    'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                    'display': 'block',
+                                                    'left': 'calc(100% + '+buttonWidth+'px)'});
+        $('ons-button.itemDelete.archive',this).css({'width': buttonWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
+      }else{
+        $('ons-button.itemDelete.archive',this).css({'width': buttonWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
       }
+      $(this).css('margin-left',(-1 * leftMargin)+'px');
     }
 	});
 
-  // スワイプリストで右ドラツグをすると、削除ボタンを非表示にする
+  // 表示されたスワイプリストで右スワイプをすると、ボタンを非表示にする
   $('ons-list-item.koujiListItem').off('dragright');
-  $('ons-list-item.koujiListItem').on('dragright', function() {
-    var leftMargin = $(this).css('margin-left');
-    leftMargin = parseInt(leftMargin,10);
+  $('ons-list-item.koujiListItem').on('dragright', function(event) {
+    if($(this).css('margin-left') === '0px') return;
+
+    var leftMargin = event.originalEvent.gesture.distance;
+    if(leftMargin < 0) leftMargin = 0;
+
+    var ichiranType = 'kouji';
+    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
+      ichiranType = 'archive';
+    }
 
     var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
-    var buttonWidth = iconWidth*3;
-    if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-      buttonWidth = iconWidth*1.5;
+    var buttonMaxWidth = iconWidth * 3;
+    if(ichiranType === 'archive') {
+      buttonMaxWidth = Math.round(iconWidth * 1.5);
+    }
+    if(buttonMaxWidth <= leftMargin) return;
+
+    var buttonWidth = buttonMaxWidth - Math.abs(leftMargin);
+    if(ichiranType === 'kouji') {
+      buttonWidth = buttonWidth / 2;
     }
 
-    if(leftMargin < -2.5) {
-      leftMargin = leftMargin + 2.5;
-      $(this).css('margin-left',leftMargin+'px');
-      if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-        $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)+'px');
-        $('ons-button.itemDelete.delete',this).css('left', Math.abs(leftMargin)+'px)');
-      }else{
-        $('ons-button.itemDelete',this).css('width',Math.abs(leftMargin)/2+'px');
-        $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
-			}
-    }else{
-      $('ons-button.itemDelete').css('width','0px');
-      $('ons-button.itemDelete').css('display','none');
-      $('ons-list-item.koujiListItem').css('margin-left','0px');
+    var buttonPadding = 0;
+    if(iconWidth < buttonWidth) {
+      buttonPadding = Math.round((buttonWidth - iconWidth) / 2);
     }
-	});
+
+    var koujiListItemId = $(this).attr('id');
+    var koujiListNameId = koujiListItemId.replace( 'koujiList_item_' , 'koujiList_name_');
+    var koujiname = $('#'+koujiListNameId).text();
+    if(koujiname !== '　アーカイブ') {
+      if(ichiranType === 'kouji') {
+        $('ons-button.itemDelete.delete',this).css({'width': buttonWidth+'px',
+                                                    'text-align': 'unset',
+                                                    'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                    'display': 'block',
+                                                    'left': 'calc(100% + '+buttonWidth+'px)'});
+        $('ons-button.itemDelete.archive',this).css({'width': buttonWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
+      }else{
+        $('ons-button.itemDelete.archive',this).css({'width': buttonWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
+      }
+      $(this).css('margin-left',(-1 * (buttonMaxWidth - leftMargin))+'px');
+    }
+  });
+
+  // サムネイルリストで左ドラツグを開始するためにタッチした時点で、他の工事の削除ボタンが表示されていたら非表示にする
+  $('ons-list-item.koujiListItem').off('touch');
+  $('ons-list-item.koujiListItem').on('touch', function(event) {
+    var leftMargin = $(this).css('margin-left');
+    leftMargin = parseInt(leftMargin,10);
+    if(leftMargin == 0) {
+      $('ons-list-item.koujiListItem:not(this)').css('margin-left','0px');
+      $('ons-button.itemDelete:not(this)').css({'width':'0px', 'display':'none'});
+    }
+  });
 
   // サムネイルリストで左右ドラツグを終了した場合の削除ボタン表示･非表示
   $('ons-list-item.koujiListItem').off('release');
@@ -401,35 +451,59 @@ koujiListAddEvent = function() {
     var leftMargin = $(this).css('margin-left');
     leftMargin = parseInt(leftMargin,10);
 
-    var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
-    var buttonWidth = iconWidth*3;
+    var ichiranType = 'kouji';
     if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-      buttonWidth = iconWidth*1.5;
+      ichiranType = 'archive';
     }
 
-    if(leftMargin < 0) {
-      if(Math.abs(leftMargin) < buttonWidth/2) {
-        $('ons-button.itemDelete',this).css('width','0px');
-        $('ons-button.itemDelete',this).css('display','none');
-        $('ons-list-item.koujiListItem').css('margin-left','0px');
+    var iconWidth = parseInt($('ons-icon.itemDeleteIcon', this).css('width'));
+    var buttonWidth = Math.abs(leftMargin);
+    if(ichiranType === 'kouji') {
+      buttonWidth = buttonWidth / 2;
+    }
+    var buttonPadding = 0;
+    if(iconWidth < buttonWidth) {
+      buttonPadding = (buttonWidth - iconWidth) / 2;
+    }
+    var buttonMaxWidth = iconWidth*3;
+    if(ichiranType === 'archive') {
+      buttonMaxWidth = iconWidth*1.5;
+    }
+
+    // 最大ボタン幅の半分でリリースした場合は、ボタンを非表示にする
+    if(Math.abs(leftMargin) < buttonMaxWidth/2) {
+      $(this).css('margin-left','0px');
+      $('ons-button.itemDelete').css({'width':'0px', 'display':'none'});
+    }else{
+    // 最大ボタン幅の半分以上の場合は、最大ボタン幅に調整する
+      $(this).css('margin-left',(-1 * buttonMaxWidth)+'px');
+      if(ichiranType === 'kouji') {
+        $('ons-button.itemDelete.delete',this).css({'width': buttonWidth+'px',
+                                                    'text-align': 'unset',
+                                                    'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                    'display': 'block',
+                                                    'left': 'calc(100% + '+buttonWidth+'px)'});
+        $('ons-button.itemDelete.archive',this).css({'width': buttonWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
       }else{
-        if($('#koujiListTytle').text() === '工事一覧(アーカイブ)') {
-          $('ons-button.itemDelete',this).css('width',buttonWidth+'px');
-          $('ons-button.itemDelete.archive',this).css('display','block');
-        }else{
-          $('ons-button.itemDelete',this).css('width',buttonWidth/2+'px');
-          $('ons-button.itemDelete.delete',this).css('left', 'calc(100% + '+Math.abs(leftMargin)/2+'px)');
-          $('ons-button.itemDelete',this).css('display','block');
-        }
-        $(this).css('margin-left',(-1*buttonWidth)+'px');
+        $('ons-button.itemDelete.archive',this).css({'width': buttonMaxWidth+'px',
+                                                     'text-align': 'unset',
+                                                     'padding': '0px 0px 0px '+buttonPadding+'px',
+                                                     'display': 'block'});
+      }
+      // 大きく左スワイプすると、アーカイブボタンのクリックイベントを発火する
+      if(Math.abs(leftMargin) > window.innerWidth / 2) {
+        $('ons-button.itemDelete.archive',this).click();
       }
     }
   });
 
   // 写真リストを選択すると、詳細表示画面を表示
   $('ons-list-item.koujiListItem').off('click');
-  if($('#koujiListTytle').text() !== '工事一覧(アーカイブ)') {
-    $('ons-list-item.koujiListItem').on('click', function(e) {
+  $('ons-list-item.koujiListItem').on('click', function(e) {
+    if($('#koujiListTytle').text() !== '工事一覧(アーカイブ)') {
       var koujiListItemId = $(this).attr('id');
       var koujiListNameId = koujiListItemId.replace( 'koujiList_item_' , 'koujiList_name_');
       var koujiname = $('#'+koujiListNameId).text();
@@ -442,8 +516,8 @@ koujiListAddEvent = function() {
          $('#koujiListArchiveBackButton').css('display','none');
          koujiListItemClick(this);
       }
-    });
-  }
+    }
+  });
 
   // アーカイブ一覧から通常の工事一覧に戻る
   $('#koujiListArchiveBackButton').off('click');
@@ -640,7 +714,7 @@ function koujiListAddElement(pictureInfoArray) {
       if(koujiPictureListViewStyle === 'list') {
         // 詳細リスト表示
         var elm =
-          $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="'+ary[filename].pictureId+'">'+
+          $('<ons-list-item class="thumbnailListItem" lock-on-drag id="listItem'+filename+'" tappable modifier="chevron" pictureId="'+ary[filename].pictureId+'">'+
               '<ons-col align="top" width="40%">'+
                 '<img class="thumbnail-s" id="thumbnailListItem_img'+filename+'" src="'+ary[filename].thumbnailuri+'">'+
                 '<img class="thumblogo-s" id="thumbnailListItem_hash'+filename+'" src="./img/logo.png" hash="'+ary[filename].hash+'">'+
@@ -690,6 +764,9 @@ function koujiListAddElement(pictureInfoArray) {
         elm.appendTo($('#koujiPictureList'));
       }
     };
+    $('ons-list-item.thumbnailListItem').css({'border-bottom':'1px solid darkgray',
+		                                          'padding':'2px 0px 0px 5px'});
+    $('div.list-item__center').css({'padding':'0px'});
     resolve(null);
   });
 }
@@ -736,45 +813,62 @@ pictureListAddEvent = function(folderReferences) {
 
     // サムネイルリストを左ドラツグすると、スワイプリストで削除ボタンを表示する
     $('ons-list-item.thumbnailListItem').off('dragleft');
-    $('ons-list-item.thumbnailListItem').on('dragleft', function() {
-      var leftMargin = $(this).css('margin-left');
-      leftMargin = parseInt(leftMargin,10);
+    $('ons-list-item.thumbnailListItem').on('dragleft', function(event) {
+
+      var leftMargin = event.originalEvent.gesture.distance;
+      if(leftMargin < 0) leftMargin = 0;
 
       var iconWidth = parseInt($('ons-icon.itemRecyclIcon', this).css('width'));
-      var buttonWidth = iconWidth*1.5;
+      var buttonWidth = Math.abs(leftMargin);
 
-      if(leftMargin > -1*buttonWidth) {
-        leftMargin = leftMargin - 2;
-        if(leftMargin === -2) {
-          $('ons-list-item.thumbnailListItem').css('margin-left','0px');
-          $('ons-button.itemRecycl').css('width','0px');
-          $('ons-button.itemRecycl').css('display','none');
-        }
-        $('ons-button.itemRecycl',this).css('width', Math.abs(leftMargin)+'px');
-        if($('ons-button.itemRecycl',this).css('display') === 'none') {
-          $('ons-button.itemRecycl',this).css('display','block');
-				}
-        $(this).css('margin-left',leftMargin+'px');
-        $('ons-button.itemRecycl').css('text-align', 'left');
+      var buttonPadding = 0;
+      if(iconWidth < buttonWidth) {
+        buttonPadding = Math.round((buttonWidth - iconWidth) / 2);
       }
+
+      $('ons-button.itemRecycl',this).css({'width': buttonWidth+'px',
+                                           'text-align': 'unset',
+                                           'padding': '0px 0px 0px '+buttonPadding+'px',
+                                           'display': 'block'});
+      $(this).css('margin-left',(-1 * leftMargin)+'px');
   	});
 
-    // スワイプリストで右ドラツグをすると、削除ボタンを非表示にする
+
+    // 表示されたスワイプリストで右スワイプをすると、ボタンを非表示にする
     $('ons-list-item.thumbnailListItem').off('dragright');
-    $('ons-list-item.thumbnailListItem').on('dragright', function() {
+    $('ons-list-item.thumbnailListItem').on('dragright', function(event) {
+      if($(this).css('margin-left') === '0px') return;
+
+      var leftMargin = event.originalEvent.gesture.distance;
+      if(leftMargin < 0) leftMargin = 0;
+
+      var iconWidth = parseInt($('ons-icon.itemRecyclIcon', this).css('width'));
+      var buttonMaxWidth = Math.round(iconWidth * 1.5);
+      if(buttonMaxWidth <= leftMargin) return;
+      var buttonWidth = buttonMaxWidth - Math.abs(leftMargin);
+
+      var buttonPadding = 0;
+      if(iconWidth < buttonWidth) {
+        buttonPadding = Math.round((buttonWidth - iconWidth) / 2);
+      }
+
+      $('ons-button.itemRecycl',this).css({'width': buttonWidth+'px',
+                                           'text-align': 'unset',
+                                           'padding': '0px 0px 0px '+buttonPadding+'px',
+                                           'display': 'block'});
+      $(this).css('margin-left',(-1 * (buttonMaxWidth - leftMargin))+'px');
+  	});
+
+    // サムネイルリストで左ドラツグを開始するためにタッチした時点で、他の写真の削除ボタンが表示されていたら非表示にする
+    $('ons-list-item.thumbnailListItem').off('touch');
+    $('ons-list-item.thumbnailListItem').on('touch', function(event) {
       var leftMargin = $(this).css('margin-left');
       leftMargin = parseInt(leftMargin,10);
-
-      if(leftMargin < -2) {
-        leftMargin = leftMargin + 2;
-
-        if(leftMargin === 0) {
-          $('ons-button.itemRecycl').css('width','0px');
-          $('ons-button.itemRecycl').css('display','none');
-        }
-        $(this).css('margin-left',leftMargin+'px');
+      if(leftMargin == 0) {
+        $('ons-list-item.thumbnailListItem:not(this)').css('margin-left','0px');
+        $('ons-button.itemRecycl:not(this)').css({'width':'0px', 'display':'none'});
       }
-  	});
+    });
 
     // サムネイルリストで左右ドラツグを終了した場合の削除ボタン表示･非表示
     $('ons-list-item.thumbnailListItem').off('release');
@@ -783,17 +877,30 @@ pictureListAddEvent = function(folderReferences) {
       leftMargin = parseInt(leftMargin,10);
 
       var iconWidth = parseInt($('ons-icon.itemRecyclIcon', this).css('width'));
-      var buttonWidth = iconWidth*1.5;
+      var buttonWidth = Math.round(iconWidth * 1.5);
+
+      var buttonPadding = 0;
+      if(iconWidth < buttonWidth) {
+        buttonPadding = (buttonWidth - iconWidth) / 2;
+      }
+      var buttonMaxWidth = iconWidth*3;
+      buttonMaxWidth = iconWidth * 1.5;
 
       if(leftMargin < 0) {
         if(Math.abs(leftMargin) < buttonWidth/2) {
-          $('ons-button.itemRecycl',this).css('width','0px');
-          $('ons-button.itemRecycl',this).css('display','none');
           $(this).css('margin-left','0px');
+          $('ons-button.itemRecycl').css({'width':'0px', 'display':'none'});
         }else{
-          $('ons-button.itemRecycl',this).css('width',buttonWidth+'px');
-          $('ons-button.itemRecycl',this).css('display','block');
-          $(this).css('margin-left',(-1*buttonWidth)+'px');
+          $(this).css('margin-left',(-1 * buttonMaxWidth)+'px');
+          $('ons-button.itemRecycl',this).css({'width': buttonMaxWidth+'px',
+                                               'text-align': 'unset',
+                                               'padding': '0px 0px 0px '+buttonPadding+'px',
+                                               'display': 'block'});
+
+          // 大きく左スワイプすると、ゴミ箱ボタンのクリックイベントを発火する
+          if(Math.abs(leftMargin) > window.innerWidth / 2) {
+            $('ons-button.itemRecycl',this).click();
+          }
         }
       }
     });
@@ -821,10 +928,10 @@ pictureListAddEvent = function(folderReferences) {
     });
 
     if(folderReferences === 'dustbox') {
-      $('ons-button.itemRecycl').css('background-color','blue');
+      $('ons-button.itemRecycl').css('background-color','steelblue');
       $('ons-icon.itemRecyclIcon').attr('icon','ion-reply');
     }else{
-      $('ons-button.itemRecycl').css('background-color','red');
+      $('ons-button.itemRecycl').css('background-color','orangered');
       $('ons-icon.itemRecyclIcon').attr('icon','ion-trash-a');
     }
   }else{

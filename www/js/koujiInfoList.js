@@ -489,7 +489,7 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
     // 工事毎の行を作成
     if(koujiPictureListViewStyle === 'list') {
       // 詳細リスト表示
-      var elm = $('<ons-list-item id="listItem'+filename+'" tappable modifier="chevron" style="padding:0px 5px;margin-top:-10px" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
+      var elm = $('<ons-list-item class="thumbnailListItem" id="listItem'+filename+'" tappable modifier="chevron" pictureId="" onclick="koujiInfoList.koujiPictureView(this)">'+
                     '<ons-col align="top" width="40%">'+
                       '<img id="imag'+filename+'" class="thumbnail-s" src="'+uri+'">'+
                     '</ons-col>'+
@@ -530,6 +530,9 @@ koujiInfoList.koujiListAddElement = function(filename, uri) {
                   '</li>');
 	  }
     elm.appendTo($('#koujiPictureList'));
+
+    $('ons-list-item.thumbnailListItem').css({'border-bottom':'1px solid darkgray','padding':'2px 0px 0px 5px'});
+    $('div.list-item__center').css({'padding':'0px'});
 
     resolve(null);
   });
