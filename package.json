@@ -32,7 +32,7 @@
         "cordova-plugin-geolocation": "4.0.1",
         "cordova-plugin-camera-preview": "file:plugins/cordova-plugin-camera-preview",
         "at.gofg.sportscomputer.powermanagement": "file:plugins/at.gofg.sportscomputer.powermanagement",
-        "cordova-plugin-inappbrowser": "2.0.1"
+        "cordova-plugin-inappbrowser": "3.1.0"
     },
     "scripts": {
         "monaca:preview": "npm run dev",
